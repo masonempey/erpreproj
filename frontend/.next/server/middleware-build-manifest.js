@@ -30,6 +30,16 @@ self.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/booking/barber.js"
     ],
+    "/booking/datetime": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/booking/datetime.js"
+    ],
+    "/booking/payment": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/booking/payment.js"
+    ],
     "/booking/service": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",

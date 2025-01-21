@@ -18,6 +18,8 @@ app.use(
   })
 );
 
+app.use(logger);
+
 //Connect to MongoDB using mongoose
 mongoose
   .connect(process.env.MONGO_URI)
@@ -36,11 +38,13 @@ app.get("/", (req, res) => {
 const appointmentRoutes = require("./routes/appointments");
 const userRoutes = require("./routes/users");
 const barberRoutes = require("./routes/barbers");
+const stripeRoutes = require("./routes/stripe");
 
 // Use Routes
-app.use("/appointments", appointmentRoutes);
-app.use("/users", userRoutes);
+app.use("/api/appointments", appointmentRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/barbers", barberRoutes);
+app.use("/api/payment", stripeRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
