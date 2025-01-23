@@ -39,7 +39,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ MyApp)\n/* harmony export */ });\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ \"react/jsx-dev-runtime\");\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _auth0_nextjs_auth0_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @auth0/nextjs-auth0/client */ \"@auth0/nextjs-auth0/client\");\n/* harmony import */ var _auth0_nextjs_auth0_client__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_auth0_nextjs_auth0_client__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _components_navBar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/navBar */ \"./src/components/navBar.jsx\");\n/* harmony import */ var _stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @stripe/react-stripe-js */ \"@stripe/react-stripe-js\");\n/* harmony import */ var _stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_3__);\n/* harmony import */ var _stripe_stripe_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @stripe/stripe-js */ \"@stripe/stripe-js\");\n/* harmony import */ var _stripe_stripe_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_stripe_stripe_js__WEBPACK_IMPORTED_MODULE_4__);\n\n\n\n\n\nconst stripePromise = (0,_stripe_stripe_js__WEBPACK_IMPORTED_MODULE_4__.loadStripe)(\"pk_test_51QjouOGELRRPocWM4KhjA6LdjU98BVpTMcCkU5bTCR7L5mZtrGKZ1j09K9PKOmZHz9e1tnazI4KxIZarGPD2ibZx00EkHBFctr\");\nfunction MyApp({ Component, pageProps }) {\n    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_auth0_nextjs_auth0_client__WEBPACK_IMPORTED_MODULE_1__.UserProvider, {\n        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_3__.Elements, {\n            stripe: stripePromise,\n            children: [\n                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_navBar__WEBPACK_IMPORTED_MODULE_2__[\"default\"], {}, void 0, false, {\n                    fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\_app.jsx\",\n                    lineNumber: 14,\n                    columnNumber: 9\n                }, this),\n                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(Component, {\n                    ...pageProps\n                }, void 0, false, {\n                    fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\_app.jsx\",\n                    lineNumber: 15,\n                    columnNumber: 9\n                }, this)\n            ]\n        }, void 0, true, {\n            fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\_app.jsx\",\n            lineNumber: 13,\n            columnNumber: 7\n        }, this)\n    }, void 0, false, {\n        fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\_app.jsx\",\n        lineNumber: 12,\n        columnNumber: 5\n    }, this);\n}\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvcGFnZXMvX2FwcC5qc3giLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7QUFBMEQ7QUFDaEI7QUFDUztBQUNKO0FBRS9DLE1BQU1JLGdCQUFnQkQsNkRBQVVBLENBQzlCO0FBR2EsU0FBU0UsTUFBTSxFQUFFQyxTQUFTLEVBQUVDLFNBQVMsRUFBRTtJQUNwRCxxQkFDRSw4REFBQ1Asb0VBQVlBO2tCQUNYLDRFQUFDRSw2REFBUUE7WUFBQ00sUUFBUUo7OzhCQUNoQiw4REFBQ0gsMERBQU1BOzs7Ozs4QkFDUCw4REFBQ0s7b0JBQVcsR0FBR0MsU0FBUzs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFJaEMiLCJzb3VyY2VzIjpbIkM6XFxHaXRcXGVycHJlcHJvalxcZnJvbnRlbmRcXHNyY1xccGFnZXNcXF9hcHAuanN4Il0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IFVzZXJQcm92aWRlciB9IGZyb20gXCJAYXV0aDAvbmV4dGpzLWF1dGgwL2NsaWVudFwiO1xyXG5pbXBvcnQgTmF2QmFyIGZyb20gXCIuLi9jb21wb25lbnRzL25hdkJhclwiO1xyXG5pbXBvcnQgeyBFbGVtZW50cyB9IGZyb20gXCJAc3RyaXBlL3JlYWN0LXN0cmlwZS1qc1wiO1xyXG5pbXBvcnQgeyBsb2FkU3RyaXBlIH0gZnJvbSBcIkBzdHJpcGUvc3RyaXBlLWpzXCI7XHJcblxyXG5jb25zdCBzdHJpcGVQcm9taXNlID0gbG9hZFN0cmlwZShcclxuICBcInBrX3Rlc3RfNTFRam91T0dFTFJSUG9jV000S2hqQTZMZGpVOThCVnBUTWNDa1U1YlRDUjdMNW1adHJHS1oxajA5SzlQS09tWkh6OWUxdG5hekk0S3hJWmFyR1BEMmliWngwMEVrSEJGY3RyXCJcclxuKTtcclxuXHJcbmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIE15QXBwKHsgQ29tcG9uZW50LCBwYWdlUHJvcHMgfSkge1xyXG4gIHJldHVybiAoXHJcbiAgICA8VXNlclByb3ZpZGVyPlxyXG4gICAgICA8RWxlbWVudHMgc3RyaXBlPXtzdHJpcGVQcm9taXNlfT5cclxuICAgICAgICA8TmF2QmFyIC8+XHJcbiAgICAgICAgPENvbXBvbmVudCB7Li4ucGFnZVByb3BzfSAvPlxyXG4gICAgICA8L0VsZW1lbnRzPlxyXG4gICAgPC9Vc2VyUHJvdmlkZXI+XHJcbiAgKTtcclxufVxyXG4iXSwibmFtZXMiOlsiVXNlclByb3ZpZGVyIiwiTmF2QmFyIiwiRWxlbWVudHMiLCJsb2FkU3RyaXBlIiwic3RyaXBlUHJvbWlzZSIsIk15QXBwIiwiQ29tcG9uZW50IiwicGFnZVByb3BzIiwic3RyaXBlIl0sImlnbm9yZUxpc3QiOltdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///./src/pages/_app.jsx\n");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ MyApp)\n/* harmony export */ });\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ \"react/jsx-dev-runtime\");\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _auth0_nextjs_auth0_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @auth0/nextjs-auth0/client */ \"@auth0/nextjs-auth0/client\");\n/* harmony import */ var _auth0_nextjs_auth0_client__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_auth0_nextjs_auth0_client__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _components_navBar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/navBar */ \"./src/components/navBar.jsx\");\n/* harmony import */ var _stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @stripe/react-stripe-js */ \"@stripe/react-stripe-js\");\n/* harmony import */ var _stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_3__);\n/* harmony import */ var _stripe_stripe_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @stripe/stripe-js */ \"@stripe/stripe-js\");\n/* harmony import */ var _stripe_stripe_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_stripe_stripe_js__WEBPACK_IMPORTED_MODULE_4__);\n/* harmony import */ var _mui_material_styles__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @mui/material/styles */ \"./node_modules/@mui/material/node/styles/index.js\");\n/* harmony import */ var _mui_material_styles__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_mui_material_styles__WEBPACK_IMPORTED_MODULE_5__);\n/* harmony import */ var _mui_material_CssBaseline__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @mui/material/CssBaseline */ \"./node_modules/@mui/material/node/CssBaseline/index.js\");\n\n\n\n\n\n\n\nconst stripePromise = (0,_stripe_stripe_js__WEBPACK_IMPORTED_MODULE_4__.loadStripe)(\"pk_test_51QjouOGELRRPocWM4KhjA6LdjU98BVpTMcCkU5bTCR7L5mZtrGKZ1j09K9PKOmZHz9e1tnazI4KxIZarGPD2ibZx00EkHBFctr\");\nconst theme = (0,_mui_material_styles__WEBPACK_IMPORTED_MODULE_5__.createTheme)();\nfunction MyApp({ Component, pageProps }) {\n    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_auth0_nextjs_auth0_client__WEBPACK_IMPORTED_MODULE_1__.UserProvider, {\n        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_stripe_react_stripe_js__WEBPACK_IMPORTED_MODULE_3__.Elements, {\n            stripe: stripePromise,\n            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_mui_material_styles__WEBPACK_IMPORTED_MODULE_5__.ThemeProvider, {\n                theme: theme,\n                children: [\n                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_mui_material_CssBaseline__WEBPACK_IMPORTED_MODULE_6__[\"default\"], {}, void 0, false, {\n                        fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\_app.jsx\",\n                        lineNumber: 19,\n                        columnNumber: 11\n                    }, this),\n                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_navBar__WEBPACK_IMPORTED_MODULE_2__[\"default\"], {}, void 0, false, {\n                        fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\_app.jsx\",\n                        lineNumber: 20,\n                        columnNumber: 11\n                    }, this),\n                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(Component, {\n                        ...pageProps\n                    }, void 0, false, {\n                        fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\_app.jsx\",\n                        lineNumber: 21,\n                        columnNumber: 11\n                    }, this)\n                ]\n            }, void 0, true, {\n                fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\_app.jsx\",\n                lineNumber: 18,\n                columnNumber: 9\n            }, this)\n        }, void 0, false, {\n            fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\_app.jsx\",\n            lineNumber: 17,\n            columnNumber: 7\n        }, this)\n    }, void 0, false, {\n        fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\_app.jsx\",\n        lineNumber: 16,\n        columnNumber: 5\n    }, this);\n}\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvcGFnZXMvX2FwcC5qc3giLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFBMEQ7QUFDaEI7QUFDUztBQUNKO0FBQ21CO0FBQ2Q7QUFFcEQsTUFBTU8sZ0JBQWdCSiw2REFBVUEsQ0FDOUI7QUFHRixNQUFNSyxRQUFRSCxpRUFBV0E7QUFFVixTQUFTSSxNQUFNLEVBQUVDLFNBQVMsRUFBRUMsU0FBUyxFQUFFO0lBQ3BELHFCQUNFLDhEQUFDWCxvRUFBWUE7a0JBQ1gsNEVBQUNFLDZEQUFRQTtZQUFDVSxRQUFRTDtzQkFDaEIsNEVBQUNILCtEQUFhQTtnQkFBQ0ksT0FBT0E7O2tDQUNwQiw4REFBQ0YsaUVBQVdBOzs7OztrQ0FDWiw4REFBQ0wsMERBQU1BOzs7OztrQ0FDUCw4REFBQ1M7d0JBQVcsR0FBR0MsU0FBUzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztBQUtsQyIsInNvdXJjZXMiOlsiQzpcXEdpdFxcZXJwcmVwcm9qXFxmcm9udGVuZFxcc3JjXFxwYWdlc1xcX2FwcC5qc3giXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgVXNlclByb3ZpZGVyIH0gZnJvbSBcIkBhdXRoMC9uZXh0anMtYXV0aDAvY2xpZW50XCI7XHJcbmltcG9ydCBOYXZCYXIgZnJvbSBcIi4uL2NvbXBvbmVudHMvbmF2QmFyXCI7XHJcbmltcG9ydCB7IEVsZW1lbnRzIH0gZnJvbSBcIkBzdHJpcGUvcmVhY3Qtc3RyaXBlLWpzXCI7XHJcbmltcG9ydCB7IGxvYWRTdHJpcGUgfSBmcm9tIFwiQHN0cmlwZS9zdHJpcGUtanNcIjtcclxuaW1wb3J0IHsgVGhlbWVQcm92aWRlciwgY3JlYXRlVGhlbWUgfSBmcm9tIFwiQG11aS9tYXRlcmlhbC9zdHlsZXNcIjtcclxuaW1wb3J0IENzc0Jhc2VsaW5lIGZyb20gXCJAbXVpL21hdGVyaWFsL0Nzc0Jhc2VsaW5lXCI7XHJcblxyXG5jb25zdCBzdHJpcGVQcm9taXNlID0gbG9hZFN0cmlwZShcclxuICBcInBrX3Rlc3RfNTFRam91T0dFTFJSUG9jV000S2hqQTZMZGpVOThCVnBUTWNDa1U1YlRDUjdMNW1adHJHS1oxajA5SzlQS09tWkh6OWUxdG5hekk0S3hJWmFyR1BEMmliWngwMEVrSEJGY3RyXCJcclxuKTtcclxuXHJcbmNvbnN0IHRoZW1lID0gY3JlYXRlVGhlbWUoKTtcclxuXHJcbmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIE15QXBwKHsgQ29tcG9uZW50LCBwYWdlUHJvcHMgfSkge1xyXG4gIHJldHVybiAoXHJcbiAgICA8VXNlclByb3ZpZGVyPlxyXG4gICAgICA8RWxlbWVudHMgc3RyaXBlPXtzdHJpcGVQcm9taXNlfT5cclxuICAgICAgICA8VGhlbWVQcm92aWRlciB0aGVtZT17dGhlbWV9PlxyXG4gICAgICAgICAgPENzc0Jhc2VsaW5lIC8+XHJcbiAgICAgICAgICA8TmF2QmFyIC8+XHJcbiAgICAgICAgICA8Q29tcG9uZW50IHsuLi5wYWdlUHJvcHN9IC8+XHJcbiAgICAgICAgPC9UaGVtZVByb3ZpZGVyPlxyXG4gICAgICA8L0VsZW1lbnRzPlxyXG4gICAgPC9Vc2VyUHJvdmlkZXI+XHJcbiAgKTtcclxufVxyXG4iXSwibmFtZXMiOlsiVXNlclByb3ZpZGVyIiwiTmF2QmFyIiwiRWxlbWVudHMiLCJsb2FkU3RyaXBlIiwiVGhlbWVQcm92aWRlciIsImNyZWF0ZVRoZW1lIiwiQ3NzQmFzZWxpbmUiLCJzdHJpcGVQcm9taXNlIiwidGhlbWUiLCJNeUFwcCIsIkNvbXBvbmVudCIsInBhZ2VQcm9wcyIsInN0cmlwZSJdLCJpZ25vcmVMaXN0IjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///./src/pages/_app.jsx\n");
 
 /***/ }),
 
@@ -49,7 +49,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ SelectService)\n/* harmony export */ });\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ \"react/jsx-dev-runtime\");\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ \"react\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/router */ \"./node_modules/next/router.js\");\n/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_2__);\n\n\n\nfunction SelectService() {\n    const [selectedService, setSelectedService] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);\n    const router = (0,next_router__WEBPACK_IMPORTED_MODULE_2__.useRouter)();\n    const handleServiceSelect = (service)=>{\n        setSelectedService(service);\n        // note: when redirecting to services page, display only the barbers who offer that service\n        router.push(`/booking/barber?service=${service}`);\n    };\n    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n        children: [\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"h1\", {\n                children: \"Choose a Service\"\n            }, void 0, false, {\n                fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\booking\\\\service.js\",\n                lineNumber: 16,\n                columnNumber: 7\n            }, this),\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"button\", {\n                onClick: ()=>handleServiceSelect('haircut'),\n                children: \"Haircut\"\n            }, void 0, false, {\n                fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\booking\\\\service.js\",\n                lineNumber: 17,\n                columnNumber: 7\n            }, this),\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"button\", {\n                onClick: ()=>handleServiceSelect('haircut & hairwash'),\n                children: \"Haircut & Hairwash\"\n            }, void 0, false, {\n                fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\booking\\\\service.js\",\n                lineNumber: 18,\n                columnNumber: 7\n            }, this),\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"button\", {\n                onClick: ()=>handleServiceSelect('haircut & beard trim'),\n                children: \"Haircut & Beard Trim\"\n            }, void 0, false, {\n                fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\booking\\\\service.js\",\n                lineNumber: 19,\n                columnNumber: 7\n            }, this),\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"button\", {\n                onClick: ()=>handleServiceSelect('kids haircut'),\n                children: \"Kid's Haircut\"\n            }, void 0, false, {\n                fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\booking\\\\service.js\",\n                lineNumber: 20,\n                columnNumber: 7\n            }, this),\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"button\", {\n                onClick: ()=>handleServiceSelect('womens haircut'),\n                children: \"Women's Haircut\"\n            }, void 0, false, {\n                fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\booking\\\\service.js\",\n                lineNumber: 21,\n                columnNumber: 7\n            }, this),\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"button\", {\n                onClick: ()=>handleServiceSelect('beard trim'),\n                children: \"Beard Trim\"\n            }, void 0, false, {\n                fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\booking\\\\service.js\",\n                lineNumber: 22,\n                columnNumber: 7\n            }, this),\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"button\", {\n                onClick: ()=>handleServiceSelect('hair perm'),\n                children: \"Hair Perm\"\n            }, void 0, false, {\n                fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\booking\\\\service.js\",\n                lineNumber: 23,\n                columnNumber: 7\n            }, this)\n        ]\n    }, void 0, true, {\n        fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\booking\\\\service.js\",\n        lineNumber: 15,\n        columnNumber: 5\n    }, this);\n}\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvcGFnZXMvYm9va2luZy9zZXJ2aWNlLmpzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7O0FBQWlDO0FBQ087QUFFekIsU0FBU0U7SUFDdEIsTUFBTSxDQUFDQyxpQkFBaUJDLG1CQUFtQixHQUFHSiwrQ0FBUUEsQ0FBQztJQUN2RCxNQUFNSyxTQUFTSixzREFBU0E7SUFFeEIsTUFBTUssc0JBQXNCLENBQUNDO1FBQzNCSCxtQkFBbUJHO1FBQ25CLDJGQUEyRjtRQUMzRkYsT0FBT0csSUFBSSxDQUFDLENBQUMsd0JBQXdCLEVBQUVELFNBQVM7SUFDbEQ7SUFFQSxxQkFDRSw4REFBQ0U7OzBCQUNDLDhEQUFDQzswQkFBRzs7Ozs7OzBCQUNKLDhEQUFDQztnQkFBT0MsU0FBUyxJQUFNTixvQkFBb0I7MEJBQVk7Ozs7OzswQkFDdkQsOERBQUNLO2dCQUFPQyxTQUFTLElBQU1OLG9CQUFvQjswQkFBdUI7Ozs7OzswQkFDbEUsOERBQUNLO2dCQUFPQyxTQUFTLElBQU1OLG9CQUFvQjswQkFBeUI7Ozs7OzswQkFDcEUsOERBQUNLO2dCQUFPQyxTQUFTLElBQU1OLG9CQUFvQjswQkFBaUI7Ozs7OzswQkFDNUQsOERBQUNLO2dCQUFPQyxTQUFTLElBQU1OLG9CQUFvQjswQkFBbUI7Ozs7OzswQkFDOUQsOERBQUNLO2dCQUFPQyxTQUFTLElBQU1OLG9CQUFvQjswQkFBZTs7Ozs7OzBCQUMxRCw4REFBQ0s7Z0JBQU9DLFNBQVMsSUFBTU4sb0JBQW9COzBCQUFjOzs7Ozs7Ozs7Ozs7QUFHL0QiLCJzb3VyY2VzIjpbIkM6XFxHaXRcXGVycHJlcHJvalxcZnJvbnRlbmRcXHNyY1xccGFnZXNcXGJvb2tpbmdcXHNlcnZpY2UuanMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgdXNlU3RhdGUgfSBmcm9tICdyZWFjdCc7XHJcbmltcG9ydCB7IHVzZVJvdXRlciB9IGZyb20gJ25leHQvcm91dGVyJztcclxuXHJcbmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIFNlbGVjdFNlcnZpY2UoKSB7XHJcbiAgY29uc3QgW3NlbGVjdGVkU2VydmljZSwgc2V0U2VsZWN0ZWRTZXJ2aWNlXSA9IHVzZVN0YXRlKG51bGwpO1xyXG4gIGNvbnN0IHJvdXRlciA9IHVzZVJvdXRlcigpO1xyXG5cclxuICBjb25zdCBoYW5kbGVTZXJ2aWNlU2VsZWN0ID0gKHNlcnZpY2UpID0+IHtcclxuICAgIHNldFNlbGVjdGVkU2VydmljZShzZXJ2aWNlKTtcclxuICAgIC8vIG5vdGU6IHdoZW4gcmVkaXJlY3RpbmcgdG8gc2VydmljZXMgcGFnZSwgZGlzcGxheSBvbmx5IHRoZSBiYXJiZXJzIHdobyBvZmZlciB0aGF0IHNlcnZpY2VcclxuICAgIHJvdXRlci5wdXNoKGAvYm9va2luZy9iYXJiZXI/c2VydmljZT0ke3NlcnZpY2V9YCk7XHJcbiAgfTtcclxuXHJcbiAgcmV0dXJuIChcclxuICAgIDxkaXY+XHJcbiAgICAgIDxoMT5DaG9vc2UgYSBTZXJ2aWNlPC9oMT5cclxuICAgICAgPGJ1dHRvbiBvbkNsaWNrPXsoKSA9PiBoYW5kbGVTZXJ2aWNlU2VsZWN0KCdoYWlyY3V0Jyl9PkhhaXJjdXQ8L2J1dHRvbj5cclxuICAgICAgPGJ1dHRvbiBvbkNsaWNrPXsoKSA9PiBoYW5kbGVTZXJ2aWNlU2VsZWN0KCdoYWlyY3V0ICYgaGFpcndhc2gnKX0+SGFpcmN1dCAmIEhhaXJ3YXNoPC9idXR0b24+XHJcbiAgICAgIDxidXR0b24gb25DbGljaz17KCkgPT4gaGFuZGxlU2VydmljZVNlbGVjdCgnaGFpcmN1dCAmIGJlYXJkIHRyaW0nKX0+SGFpcmN1dCAmIEJlYXJkIFRyaW08L2J1dHRvbj5cclxuICAgICAgPGJ1dHRvbiBvbkNsaWNrPXsoKSA9PiBoYW5kbGVTZXJ2aWNlU2VsZWN0KCdraWRzIGhhaXJjdXQnKX0+S2lkJ3MgSGFpcmN1dDwvYnV0dG9uPlxyXG4gICAgICA8YnV0dG9uIG9uQ2xpY2s9eygpID0+IGhhbmRsZVNlcnZpY2VTZWxlY3QoJ3dvbWVucyBoYWlyY3V0Jyl9PldvbWVuJ3MgSGFpcmN1dDwvYnV0dG9uPlxyXG4gICAgICA8YnV0dG9uIG9uQ2xpY2s9eygpID0+IGhhbmRsZVNlcnZpY2VTZWxlY3QoJ2JlYXJkIHRyaW0nKX0+QmVhcmQgVHJpbTwvYnV0dG9uPlxyXG4gICAgICA8YnV0dG9uIG9uQ2xpY2s9eygpID0+IGhhbmRsZVNlcnZpY2VTZWxlY3QoJ2hhaXIgcGVybScpfT5IYWlyIFBlcm08L2J1dHRvbj5cclxuICAgIDwvZGl2PlxyXG4gICk7XHJcbn1cclxuIl0sIm5hbWVzIjpbInVzZVN0YXRlIiwidXNlUm91dGVyIiwiU2VsZWN0U2VydmljZSIsInNlbGVjdGVkU2VydmljZSIsInNldFNlbGVjdGVkU2VydmljZSIsInJvdXRlciIsImhhbmRsZVNlcnZpY2VTZWxlY3QiLCJzZXJ2aWNlIiwicHVzaCIsImRpdiIsImgxIiwiYnV0dG9uIiwib25DbGljayJdLCJpZ25vcmVMaXN0IjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///./src/pages/booking/service.js\n");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ SelectService)\n/* harmony export */ });\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ \"react/jsx-dev-runtime\");\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ \"react\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/router */ \"./node_modules/next/router.js\");\n/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_2__);\n/* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @mui/material/Button */ \"./node_modules/@mui/material/node/Button/index.js\");\n/* harmony import */ var _mui_material_Button__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_mui_material_Button__WEBPACK_IMPORTED_MODULE_3__);\n/* __next_internal_client_entry_do_not_use__ default auto */ \n\n\n\nfunction SelectService() {\n    const [selectedService, setSelectedService] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);\n    const [services, setServices] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);\n    const router = (0,next_router__WEBPACK_IMPORTED_MODULE_2__.useRouter)();\n    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)({\n        \"SelectService.useEffect\": ()=>{\n            // Fetch services from the API\n            const fetchServices = {\n                \"SelectService.useEffect.fetchServices\": async ()=>{\n                    try {\n                        const response = await fetch(\"http://localhost:5000/api/services\");\n                        if (!response.ok) {\n                            throw new Error(\"Network response was not ok\");\n                        }\n                        const data = await response.json();\n                        setServices(data);\n                    } catch (error) {\n                        console.error(\"Error fetching barbers:\", error);\n                    }\n                }\n            }[\"SelectService.useEffect.fetchServices\"];\n            fetchServices();\n        }\n    }[\"SelectService.useEffect\"], []);\n    const handleServiceSelect = (service)=>{\n        setSelectedService(service);\n        // note: when redirecting to services page, display only the barbers who offer that service\n        router.push(`/booking/barber?service=${service}`);\n    };\n    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n        children: [\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"h1\", {\n                children: \"Choose a Service\"\n            }, void 0, false, {\n                fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\booking\\\\service.js\",\n                lineNumber: 38,\n                columnNumber: 7\n            }, this),\n            services.map((service)=>/*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)((_mui_material_Button__WEBPACK_IMPORTED_MODULE_3___default()), {\n                    onClick: ()=>handleServiceSelect(service.serviceName),\n                    children: service.serviceName\n                }, service._id, false, {\n                    fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\booking\\\\service.js\",\n                    lineNumber: 40,\n                    columnNumber: 9\n                }, this)),\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"p\", {\n                children: [\n                    \"Selected Service: \",\n                    selectedService ? selectedService.name : \"None\"\n                ]\n            }, void 0, true, {\n                fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\booking\\\\service.js\",\n                lineNumber: 47,\n                columnNumber: 7\n            }, this)\n        ]\n    }, void 0, true, {\n        fileName: \"C:\\\\Git\\\\erpreproj\\\\frontend\\\\src\\\\pages\\\\booking\\\\service.js\",\n        lineNumber: 37,\n        columnNumber: 5\n    }, this);\n}\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvcGFnZXMvYm9va2luZy9zZXJ2aWNlLmpzIiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7QUFFNEM7QUFDSjtBQUNFO0FBRTNCLFNBQVNJO0lBQ3RCLE1BQU0sQ0FBQ0MsaUJBQWlCQyxtQkFBbUIsR0FBR04sK0NBQVFBLENBQUM7SUFDdkQsTUFBTSxDQUFDTyxVQUFVQyxZQUFZLEdBQUdSLCtDQUFRQSxDQUFDLEVBQUU7SUFDM0MsTUFBTVMsU0FBU1Asc0RBQVNBO0lBRXhCRCxnREFBU0E7bUNBQUM7WUFDUiw4QkFBOEI7WUFDOUIsTUFBTVM7eURBQWdCO29CQUNwQixJQUFJO3dCQUNGLE1BQU1DLFdBQVcsTUFBTUMsTUFBTTt3QkFDN0IsSUFBSSxDQUFDRCxTQUFTRSxFQUFFLEVBQUU7NEJBQ2hCLE1BQU0sSUFBSUMsTUFBTTt3QkFDbEI7d0JBQ0EsTUFBTUMsT0FBTyxNQUFNSixTQUFTSyxJQUFJO3dCQUNoQ1IsWUFBWU87b0JBQ2QsRUFBRSxPQUFPRSxPQUFPO3dCQUNkQyxRQUFRRCxLQUFLLENBQUMsMkJBQTJCQTtvQkFDM0M7Z0JBQ0Y7O1lBRUFQO1FBQ0Y7a0NBQUcsRUFBRTtJQUVMLE1BQU1TLHNCQUFzQixDQUFDQztRQUMzQmQsbUJBQW1CYztRQUNuQiwyRkFBMkY7UUFDM0ZYLE9BQU9ZLElBQUksQ0FBQyxDQUFDLHdCQUF3QixFQUFFRCxTQUFTO0lBQ2xEO0lBRUEscUJBQ0UsOERBQUNFOzswQkFDQyw4REFBQ0M7MEJBQUc7Ozs7OztZQUNIaEIsU0FBU2lCLEdBQUcsQ0FBQyxDQUFDSix3QkFDYiw4REFBQ2pCLDZEQUFNQTtvQkFFTHNCLFNBQVMsSUFBTU4sb0JBQW9CQyxRQUFRTSxXQUFXOzhCQUVyRE4sUUFBUU0sV0FBVzttQkFIZk4sUUFBUU8sR0FBRzs7Ozs7MEJBTXBCLDhEQUFDQzs7b0JBQUU7b0JBQW1CdkIsa0JBQWtCQSxnQkFBZ0J3QixJQUFJLEdBQUc7Ozs7Ozs7Ozs7Ozs7QUFHckUiLCJzb3VyY2VzIjpbIkM6XFxHaXRcXGVycHJlcHJvalxcZnJvbnRlbmRcXHNyY1xccGFnZXNcXGJvb2tpbmdcXHNlcnZpY2UuanMiXSwic291cmNlc0NvbnRlbnQiOlsiXCJ1c2UgY2xpZW50XCI7XHJcblxyXG5pbXBvcnQgeyB1c2VTdGF0ZSwgdXNlRWZmZWN0IH0gZnJvbSBcInJlYWN0XCI7XHJcbmltcG9ydCB7IHVzZVJvdXRlciB9IGZyb20gXCJuZXh0L3JvdXRlclwiO1xyXG5pbXBvcnQgQnV0dG9uIGZyb20gXCJAbXVpL21hdGVyaWFsL0J1dHRvblwiO1xyXG5cclxuZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gU2VsZWN0U2VydmljZSgpIHtcclxuICBjb25zdCBbc2VsZWN0ZWRTZXJ2aWNlLCBzZXRTZWxlY3RlZFNlcnZpY2VdID0gdXNlU3RhdGUobnVsbCk7XHJcbiAgY29uc3QgW3NlcnZpY2VzLCBzZXRTZXJ2aWNlc10gPSB1c2VTdGF0ZShbXSk7XHJcbiAgY29uc3Qgcm91dGVyID0gdXNlUm91dGVyKCk7XHJcblxyXG4gIHVzZUVmZmVjdCgoKSA9PiB7XHJcbiAgICAvLyBGZXRjaCBzZXJ2aWNlcyBmcm9tIHRoZSBBUElcclxuICAgIGNvbnN0IGZldGNoU2VydmljZXMgPSBhc3luYyAoKSA9PiB7XHJcbiAgICAgIHRyeSB7XHJcbiAgICAgICAgY29uc3QgcmVzcG9uc2UgPSBhd2FpdCBmZXRjaChcImh0dHA6Ly9sb2NhbGhvc3Q6NTAwMC9hcGkvc2VydmljZXNcIik7XHJcbiAgICAgICAgaWYgKCFyZXNwb25zZS5vaykge1xyXG4gICAgICAgICAgdGhyb3cgbmV3IEVycm9yKFwiTmV0d29yayByZXNwb25zZSB3YXMgbm90IG9rXCIpO1xyXG4gICAgICAgIH1cclxuICAgICAgICBjb25zdCBkYXRhID0gYXdhaXQgcmVzcG9uc2UuanNvbigpO1xyXG4gICAgICAgIHNldFNlcnZpY2VzKGRhdGEpO1xyXG4gICAgICB9IGNhdGNoIChlcnJvcikge1xyXG4gICAgICAgIGNvbnNvbGUuZXJyb3IoXCJFcnJvciBmZXRjaGluZyBiYXJiZXJzOlwiLCBlcnJvcik7XHJcbiAgICAgIH1cclxuICAgIH07XHJcblxyXG4gICAgZmV0Y2hTZXJ2aWNlcygpO1xyXG4gIH0sIFtdKTtcclxuXHJcbiAgY29uc3QgaGFuZGxlU2VydmljZVNlbGVjdCA9IChzZXJ2aWNlKSA9PiB7XHJcbiAgICBzZXRTZWxlY3RlZFNlcnZpY2Uoc2VydmljZSk7XHJcbiAgICAvLyBub3RlOiB3aGVuIHJlZGlyZWN0aW5nIHRvIHNlcnZpY2VzIHBhZ2UsIGRpc3BsYXkgb25seSB0aGUgYmFyYmVycyB3aG8gb2ZmZXIgdGhhdCBzZXJ2aWNlXHJcbiAgICByb3V0ZXIucHVzaChgL2Jvb2tpbmcvYmFyYmVyP3NlcnZpY2U9JHtzZXJ2aWNlfWApO1xyXG4gIH07XHJcblxyXG4gIHJldHVybiAoXHJcbiAgICA8ZGl2PlxyXG4gICAgICA8aDE+Q2hvb3NlIGEgU2VydmljZTwvaDE+XHJcbiAgICAgIHtzZXJ2aWNlcy5tYXAoKHNlcnZpY2UpID0+IChcclxuICAgICAgICA8QnV0dG9uXHJcbiAgICAgICAgICBrZXk9e3NlcnZpY2UuX2lkfVxyXG4gICAgICAgICAgb25DbGljaz17KCkgPT4gaGFuZGxlU2VydmljZVNlbGVjdChzZXJ2aWNlLnNlcnZpY2VOYW1lKX1cclxuICAgICAgICA+XHJcbiAgICAgICAgICB7c2VydmljZS5zZXJ2aWNlTmFtZX1cclxuICAgICAgICA8L0J1dHRvbj5cclxuICAgICAgKSl9XHJcbiAgICAgIDxwPlNlbGVjdGVkIFNlcnZpY2U6IHtzZWxlY3RlZFNlcnZpY2UgPyBzZWxlY3RlZFNlcnZpY2UubmFtZSA6IFwiTm9uZVwifTwvcD5cclxuICAgIDwvZGl2PlxyXG4gICk7XHJcbn1cclxuIl0sIm5hbWVzIjpbInVzZVN0YXRlIiwidXNlRWZmZWN0IiwidXNlUm91dGVyIiwiQnV0dG9uIiwiU2VsZWN0U2VydmljZSIsInNlbGVjdGVkU2VydmljZSIsInNldFNlbGVjdGVkU2VydmljZSIsInNlcnZpY2VzIiwic2V0U2VydmljZXMiLCJyb3V0ZXIiLCJmZXRjaFNlcnZpY2VzIiwicmVzcG9uc2UiLCJmZXRjaCIsIm9rIiwiRXJyb3IiLCJkYXRhIiwianNvbiIsImVycm9yIiwiY29uc29sZSIsImhhbmRsZVNlcnZpY2VTZWxlY3QiLCJzZXJ2aWNlIiwicHVzaCIsImRpdiIsImgxIiwibWFwIiwib25DbGljayIsInNlcnZpY2VOYW1lIiwiX2lkIiwicCIsIm5hbWUiXSwiaWdub3JlTGlzdCI6W10sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///./src/pages/booking/service.js\n");
 
 /***/ }),
 
@@ -60,6 +60,396 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((module) => {
 
 module.exports = require("@auth0/nextjs-auth0/client");
+
+/***/ }),
+
+/***/ "@mui/system":
+/*!******************************!*\
+  !*** external "@mui/system" ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/system");
+
+/***/ }),
+
+/***/ "@mui/system/DefaultPropsProvider":
+/*!***************************************************!*\
+  !*** external "@mui/system/DefaultPropsProvider" ***!
+  \***************************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/system/DefaultPropsProvider");
+
+/***/ }),
+
+/***/ "@mui/system/InitColorSchemeScript":
+/*!****************************************************!*\
+  !*** external "@mui/system/InitColorSchemeScript" ***!
+  \****************************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/system/InitColorSchemeScript");
+
+/***/ }),
+
+/***/ "@mui/system/colorManipulator":
+/*!***********************************************!*\
+  !*** external "@mui/system/colorManipulator" ***!
+  \***********************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/system/colorManipulator");
+
+/***/ }),
+
+/***/ "@mui/system/createBreakpoints":
+/*!************************************************!*\
+  !*** external "@mui/system/createBreakpoints" ***!
+  \************************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/system/createBreakpoints");
+
+/***/ }),
+
+/***/ "@mui/system/createStyled":
+/*!*******************************************!*\
+  !*** external "@mui/system/createStyled" ***!
+  \*******************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/system/createStyled");
+
+/***/ }),
+
+/***/ "@mui/system/createTheme":
+/*!******************************************!*\
+  !*** external "@mui/system/createTheme" ***!
+  \******************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/system/createTheme");
+
+/***/ }),
+
+/***/ "@mui/system/cssVars":
+/*!**************************************!*\
+  !*** external "@mui/system/cssVars" ***!
+  \**************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/system/cssVars");
+
+/***/ }),
+
+/***/ "@mui/system/spacing":
+/*!**************************************!*\
+  !*** external "@mui/system/spacing" ***!
+  \**************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/system/spacing");
+
+/***/ }),
+
+/***/ "@mui/system/styleFunctionSx":
+/*!**********************************************!*\
+  !*** external "@mui/system/styleFunctionSx" ***!
+  \**********************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/system/styleFunctionSx");
+
+/***/ }),
+
+/***/ "@mui/system/useThemeProps":
+/*!********************************************!*\
+  !*** external "@mui/system/useThemeProps" ***!
+  \********************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/system/useThemeProps");
+
+/***/ }),
+
+/***/ "@mui/utils":
+/*!*****************************!*\
+  !*** external "@mui/utils" ***!
+  \*****************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils");
+
+/***/ }),
+
+/***/ "@mui/utils/capitalize":
+/*!****************************************!*\
+  !*** external "@mui/utils/capitalize" ***!
+  \****************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/capitalize");
+
+/***/ }),
+
+/***/ "@mui/utils/chainPropTypes":
+/*!********************************************!*\
+  !*** external "@mui/utils/chainPropTypes" ***!
+  \********************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/chainPropTypes");
+
+/***/ }),
+
+/***/ "@mui/utils/composeClasses":
+/*!********************************************!*\
+  !*** external "@mui/utils/composeClasses" ***!
+  \********************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/composeClasses");
+
+/***/ }),
+
+/***/ "@mui/utils/createChainedFunction":
+/*!***************************************************!*\
+  !*** external "@mui/utils/createChainedFunction" ***!
+  \***************************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/createChainedFunction");
+
+/***/ }),
+
+/***/ "@mui/utils/debounce":
+/*!**************************************!*\
+  !*** external "@mui/utils/debounce" ***!
+  \**************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/debounce");
+
+/***/ }),
+
+/***/ "@mui/utils/deepmerge":
+/*!***************************************!*\
+  !*** external "@mui/utils/deepmerge" ***!
+  \***************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/deepmerge");
+
+/***/ }),
+
+/***/ "@mui/utils/deprecatedPropType":
+/*!************************************************!*\
+  !*** external "@mui/utils/deprecatedPropType" ***!
+  \************************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/deprecatedPropType");
+
+/***/ }),
+
+/***/ "@mui/utils/elementTypeAcceptingRef":
+/*!*****************************************************!*\
+  !*** external "@mui/utils/elementTypeAcceptingRef" ***!
+  \*****************************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/elementTypeAcceptingRef");
+
+/***/ }),
+
+/***/ "@mui/utils/formatMuiErrorMessage":
+/*!***************************************************!*\
+  !*** external "@mui/utils/formatMuiErrorMessage" ***!
+  \***************************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/formatMuiErrorMessage");
+
+/***/ }),
+
+/***/ "@mui/utils/generateUtilityClass":
+/*!**************************************************!*\
+  !*** external "@mui/utils/generateUtilityClass" ***!
+  \**************************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/generateUtilityClass");
+
+/***/ }),
+
+/***/ "@mui/utils/generateUtilityClasses":
+/*!****************************************************!*\
+  !*** external "@mui/utils/generateUtilityClasses" ***!
+  \****************************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/generateUtilityClasses");
+
+/***/ }),
+
+/***/ "@mui/utils/isFocusVisible":
+/*!********************************************!*\
+  !*** external "@mui/utils/isFocusVisible" ***!
+  \********************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/isFocusVisible");
+
+/***/ }),
+
+/***/ "@mui/utils/isMuiElement":
+/*!******************************************!*\
+  !*** external "@mui/utils/isMuiElement" ***!
+  \******************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/isMuiElement");
+
+/***/ }),
+
+/***/ "@mui/utils/ownerDocument":
+/*!*******************************************!*\
+  !*** external "@mui/utils/ownerDocument" ***!
+  \*******************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/ownerDocument");
+
+/***/ }),
+
+/***/ "@mui/utils/ownerWindow":
+/*!*****************************************!*\
+  !*** external "@mui/utils/ownerWindow" ***!
+  \*****************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/ownerWindow");
+
+/***/ }),
+
+/***/ "@mui/utils/refType":
+/*!*************************************!*\
+  !*** external "@mui/utils/refType" ***!
+  \*************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/refType");
+
+/***/ }),
+
+/***/ "@mui/utils/requirePropFactory":
+/*!************************************************!*\
+  !*** external "@mui/utils/requirePropFactory" ***!
+  \************************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/requirePropFactory");
+
+/***/ }),
+
+/***/ "@mui/utils/resolveProps":
+/*!******************************************!*\
+  !*** external "@mui/utils/resolveProps" ***!
+  \******************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/resolveProps");
+
+/***/ }),
+
+/***/ "@mui/utils/setRef":
+/*!************************************!*\
+  !*** external "@mui/utils/setRef" ***!
+  \************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/setRef");
+
+/***/ }),
+
+/***/ "@mui/utils/unsupportedProp":
+/*!*********************************************!*\
+  !*** external "@mui/utils/unsupportedProp" ***!
+  \*********************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/unsupportedProp");
+
+/***/ }),
+
+/***/ "@mui/utils/useControlled":
+/*!*******************************************!*\
+  !*** external "@mui/utils/useControlled" ***!
+  \*******************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/useControlled");
+
+/***/ }),
+
+/***/ "@mui/utils/useEnhancedEffect":
+/*!***********************************************!*\
+  !*** external "@mui/utils/useEnhancedEffect" ***!
+  \***********************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/useEnhancedEffect");
+
+/***/ }),
+
+/***/ "@mui/utils/useEventCallback":
+/*!**********************************************!*\
+  !*** external "@mui/utils/useEventCallback" ***!
+  \**********************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/useEventCallback");
+
+/***/ }),
+
+/***/ "@mui/utils/useForkRef":
+/*!****************************************!*\
+  !*** external "@mui/utils/useForkRef" ***!
+  \****************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/useForkRef");
+
+/***/ }),
+
+/***/ "@mui/utils/useId":
+/*!***********************************!*\
+  !*** external "@mui/utils/useId" ***!
+  \***********************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/useId");
+
+/***/ }),
+
+/***/ "@mui/utils/useLazyRef":
+/*!****************************************!*\
+  !*** external "@mui/utils/useLazyRef" ***!
+  \****************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/useLazyRef");
+
+/***/ }),
+
+/***/ "@mui/utils/useTimeout":
+/*!****************************************!*\
+  !*** external "@mui/utils/useTimeout" ***!
+  \****************************************/
+/***/ ((module) => {
+
+module.exports = require("@mui/utils/useTimeout");
 
 /***/ }),
 
@@ -83,6 +473,16 @@ module.exports = require("@stripe/stripe-js");
 
 /***/ }),
 
+/***/ "clsx":
+/*!***********************!*\
+  !*** external "clsx" ***!
+  \***********************/
+/***/ ((module) => {
+
+module.exports = require("clsx");
+
+/***/ }),
+
 /***/ "next/dist/compiled/next-server/pages.runtime.dev.js":
 /*!**********************************************************************!*\
   !*** external "next/dist/compiled/next-server/pages.runtime.dev.js" ***!
@@ -90,6 +490,16 @@ module.exports = require("@stripe/stripe-js");
 /***/ ((module) => {
 
 module.exports = require("next/dist/compiled/next-server/pages.runtime.dev.js");
+
+/***/ }),
+
+/***/ "prop-types":
+/*!*****************************!*\
+  !*** external "prop-types" ***!
+  \*****************************/
+/***/ ((module) => {
+
+module.exports = require("prop-types");
 
 /***/ }),
 
@@ -110,6 +520,16 @@ module.exports = require("react");
 /***/ ((module) => {
 
 module.exports = require("react-dom");
+
+/***/ }),
+
+/***/ "react-transition-group":
+/*!*****************************************!*\
+  !*** external "react-transition-group" ***!
+  \*****************************************/
+/***/ ((module) => {
+
+module.exports = require("react-transition-group");
 
 /***/ }),
 
@@ -180,7 +600,7 @@ module.exports = require("zlib");
 var __webpack_require__ = require("../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, ["vendor-chunks/next","vendor-chunks/@swc"], () => (__webpack_exec__("./node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js?kind=PAGES&page=%2Fbooking%2Fservice&preferredRegion=&absolutePagePath=.%2Fsrc%5Cpages%5Cbooking%5Cservice.js&absoluteAppPath=private-next-pages%2F_app&absoluteDocumentPath=private-next-pages%2F_document&middlewareConfigBase64=e30%3D!")));
+var __webpack_exports__ = __webpack_require__.X(0, ["vendor-chunks/next","vendor-chunks/@mui","vendor-chunks/@babel","vendor-chunks/@swc"], () => (__webpack_exec__("./node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js?kind=PAGES&page=%2Fbooking%2Fservice&preferredRegion=&absolutePagePath=.%2Fsrc%5Cpages%5Cbooking%5Cservice.js&absoluteAppPath=private-next-pages%2F_app&absoluteDocumentPath=private-next-pages%2F_document&middlewareConfigBase64=e30%3D!")));
 module.exports = __webpack_exports__;
 
 })();

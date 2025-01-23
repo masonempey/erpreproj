@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import Button from "@mui/material/Button";
 
 export default function ChooseBarber() {
   const [barbers, setBarbers] = useState([]);
@@ -39,17 +40,17 @@ export default function ChooseBarber() {
       <h1>Choose a Barber</h1>
       <p>Selected Service: {service}</p>
       {barbers.map((barber) => (
-        <button
+        <Button
           key={barber.barberId}
           onClick={() => setSelectedBarber(barber.name)}
         >
           {barber.name}
-        </button>
+        </Button>
       ))}
       <p>Selected Barber: {selectedBarber || "None"}</p>
-      <button onClick={handleNext} disabled={!selectedBarber}>
+      <Button onClick={handleNext} disabled={!selectedBarber}>
         Next
-      </button>
+      </Button>
     </div>
   );
 }
