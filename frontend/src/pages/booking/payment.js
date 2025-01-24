@@ -1,4 +1,5 @@
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
+import PaymentForm from "../../components/paymentForm";
 
 export default function PaymentInfo() {
   const router = useRouter();
@@ -12,9 +13,7 @@ export default function PaymentInfo() {
 
   return (
     <div>
-      <h1>Payment Info</h1>
-      <p>Imagine stripe stuff here</p>
-      <button onClick={handleNext}>Next</button>
+      <PaymentForm onSuccess={handleNext} />
     </div>
   );
 }

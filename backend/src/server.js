@@ -36,11 +36,15 @@ app.get("/", (req, res) => {
 const appointmentRoutes = require("./routes/appointments");
 const userRoutes = require("./routes/users");
 const barberRoutes = require("./routes/barbers");
+const serviceRoutes = require("./routes/services");
+const stripeRoutes = require("./routes/stripe");
 
 // Use Routes
-app.use("/appointments", appointmentRoutes);
-app.use("/users", userRoutes);
+app.use("/api/appointments", appointmentRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/barbers", barberRoutes);
+app.use("/api/services", serviceRoutes);
+app.use("/api/payment", stripeRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
