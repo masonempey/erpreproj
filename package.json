@@ -1,0 +1,14 @@
+{
+  "name": "erpreproj",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "mobile": "concurrently \"npm start --prefix mobile\" \"npm start --prefix web/backend\"",
+    "web": "concurrently \"npm run dev --prefix web/frontend\" \"npm run dev --prefix web/backend\"",
+    "dev:frontend": "cd web/frontend && npm run dev",
+    "dev:backend": "cd web/backend && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.1"
+  }
+}
