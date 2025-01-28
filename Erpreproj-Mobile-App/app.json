@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "plugins": [
+      [
+        "react-native-auth0",
+        {
+          "domain": "dev-owtoc5eyyl18m5yw.us.auth0.com"
+        }
+      ]
+    ],
+    "name": "Erpreproj-Mobile-App",
+    "slug": "Erpreproj-Mobile-App",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.erpreapp"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.erpreapp"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "69c210f9-3df8-43fc-8c9e-60684b0db838"
+      }
+    },
+    "scheme": "exp+erpreproj-mobile-app",
+    "newArchEnabled": true
+  }
+}
