@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Barber = require("../models/barberModel");
+const logger = require("../middleware/logger");
 const { v4: uuidv4 } = require("uuid");
 
 // Setup middleware to use the logger function for my routes
@@ -17,7 +18,7 @@ router.get("/", async (req, res) => {
 });
 
 // Create New Barber
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const { name, email } = req.body;
 
@@ -32,7 +33,7 @@ router.post("/", (req, res) => {
       email,
     });
 
-    const savedBarber = Barber.save(newBarber);
+    const savedBarber = await newBarber.save();
     res.status(201).json({ message: "Barber created", savedBarber });
   } catch (err) {
     res.status(500).json({ message: "Error creating barber", err });
