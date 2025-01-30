@@ -5,7 +5,8 @@ import { Elements } from '@stripe/react-stripe-js';
 import PaymentForm from '../../../components/paymentForm';
 import styles from '../../../styles/Payment.module.css';
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+// Ask Mason
+// const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 export default function PaymentInfo() {
   const router = useRouter();
