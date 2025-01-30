@@ -1,9 +1,8 @@
 import React from "react";
 import {View,Text} from "react-native";
-import { useAuth0, Auth0Provider } from "react-native-auth0";
+import { useAuth0 } from "react-native-auth0";
 import LoginButton from "../component/loginScreenComponents/LoginButton";
-import LogoutButton from "../component/sharedComponents/LogoutButton";
-import ParentNav from "../routing/parentNav";
+
 
 function LogInPage() {
     // Get the user and the loading state from the auth0 hook

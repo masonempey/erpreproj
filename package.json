@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "mobile": "concurrently \"npm start --prefix mobile\" \"npm start --prefix web/backend\"",
+    "mobile": "concurrently \"cd mobile && npx expo start --android\" \"npm start --prefix web/backend\"",
     "web": "concurrently \"npm run dev --prefix web/frontend\" \"npm run dev --prefix web/backend\"",
     "dev:frontend": "cd web/frontend && npm run dev",
     "dev:backend": "cd web/backend && npm start"

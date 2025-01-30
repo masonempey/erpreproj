@@ -1,9 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import {useAuth0, Auth0Provider} from 'react-native-auth0';
+import { StyleSheet} from 'react-native';
+import {Auth0Provider} from 'react-native-auth0';
 import ParentNav from './src/routing/parentNav';
-import LogInPage from './src/screens/logInPage';
 import { NavigationContainer } from '@react-navigation/native';
 
 export default function App() {
