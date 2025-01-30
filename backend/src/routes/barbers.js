@@ -17,6 +17,22 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get barber by name
+router.get("/:name", async (req, res) => {
+  const { name } = req.params;
+
+  try {
+    const foundBarber = await Barber.findOne({ name: name });
+    if (foundBarber) {
+      res.status(200).json(foundBarber);
+    } else {
+      res.status(404).json({ message: "Barber not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Error finding barber", err });
+  }
+    }); 
+
 // Create New Barber
 router.post("/", async (req, res) => {
   try {
