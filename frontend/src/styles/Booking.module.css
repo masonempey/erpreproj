@@ -1,0 +1,22 @@
+.bookingContainer {
+    padding: 20px;
+    background-color: #fff; /* White background */
+  }
+  
+  .closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .backButton {
+    margin-top: 20px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
