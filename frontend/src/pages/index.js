@@ -8,20 +8,14 @@ import DateTime from '../pages/booking/datetime';
 import Info from '../pages/booking/info';
 import PaymentInfo from '../pages/booking/payment';
 import TiltedCard from '../components/TiltedCard';
-import Admin from '../components/admin';
-import { useUser } from "@auth0/nextjs-auth0/client";
 
 export default function Home() {
-  const { user, error, isLoading } = useUser();
   const [currentStep, setCurrentStep] = useState('service');
   const [selectedService, setSelectedService] = useState(null);
   const [selectedBarber, setSelectedBarber] = useState(null);
   const [selectedDateTime, setSelectedDateTime] = useState({ date: null, time: null });
   const [userInfo, setUserInfo] = useState({});
   const bookingSectionRef = useRef(null);
-
-  // Scuffed way of checking if the user is an admin, will be replaced with proper auth later
-  const isAdmin = user && user.given_name === 'Simon';
 
   const handleServiceSelect = (service) => {
     setSelectedService(service);
@@ -81,15 +75,6 @@ export default function Home() {
   };
 
   const CurrentStepComponent = steps[currentStep];
-
-  if (isAdmin) { 
-    return (
-      // return admin component
-      <div>
-        <Admin name={user.given_name}/>
-      </div>
-    );
- }
 
   return (
     <> 

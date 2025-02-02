@@ -1,20 +1,36 @@
 "use client";
 import { useEffect, useState } from "react";
+import styles from '../../styles/DateTime.module.css';
 import { useRouter } from "next/router";
+import Badge from '@mui/material/Badge';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import styles from '../styles/DateTime.module.css';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
+import { useUser } from "@auth0/nextjs-auth0/client";
 
-const admin = ({name}) => {
+
+export default function Admin() {
   const [barber, setBarber] = useState(null);
   const [appointments, setAppointments] = useState([]);
-  const [selectedDate, setSelectedDate] = useState();
+  const [selectedDate, setSelectedDate] = useState(null);
+  const { user, isLoading } = useUser();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  const isAdmin = user && user.given_name === 'Simon';
+
+  // Scuffed way of checking if the user is an admin, will be replaced with proper auth later
+  if (!isAdmin) {
+    console.log("Not an admin");
+    return <p>Not an Admin</p>;
+  }
 
   // Fetch current barber from the API -- Mason Assisted Code
-  const fetchBarber = async () => {
+  const fetchBarber = async (name) => {
     try {
       const fetchString = `http://localhost:5000/api/barbers/${name}`;
       const response = await fetch(fetchString);
@@ -43,8 +59,11 @@ const admin = ({name}) => {
   }
 
   useEffect(() => {
-    fetchBarber();
-  }, []);
+    console.log(user);
+    if (user) {
+      fetchBarber(user.given_name);
+    }
+  }, [user]);
 
   useEffect(() => {
       // Fetch using object ID
@@ -52,11 +71,6 @@ const admin = ({name}) => {
         fetchAppointments(barber._id);
       }
   }, [barber]);
-
-  // If the barber is not loaded yet, display a loading message
-  if (!barber) {
-    return <div>Loading...</div>;
-  }
 
   // Map the appointments to an array of dayjs objects so they can be compared with the calendar days
   const appointmentDays = appointments.map(appointment => dayjs(appointment.date));
@@ -78,22 +92,21 @@ const admin = ({name}) => {
             day: (props) => {
               const { day, appointmentDays, ...other } = props;
         
-              const isSelected = appointmentDays.some(date => date.isSame(day, 'day'));
-        
-              const dayStyle = !selectedDate && isSelected ? { backgroundColor: 'green', color: 'white' } : {};
+              const isSelected = !props.outsideCurrentMonth && appointmentDays.some(date => date.isSame(day, 'day'));
         
               return (
-                <PickersDay
-                  {...other}
-                  day={day}
-                  style={dayStyle}
-                />
+                <Badge overlap="circular" badgeContent={isSelected ? '🔴' : undefined}>
+                  <PickersDay
+                    {...other}
+                    day={day}
+                  /> 
+                </Badge>  
               );
             },
           }}
           slotProps={{
             day: {
-              appointmentDays,
+              appointmentDays: appointmentDays,
             },
           }}
           className={styles.calendar}      
@@ -104,7 +117,7 @@ const admin = ({name}) => {
         <div>
           <p>View Appointments on {selectedDate.format('MMMM DD YYYY')}</p>
           <ul>
-            {appointments.map((appointment) => (
+            {appointments.filter(appointment => dayjs(appointment.date).isSame(selectedDate, 'day')).map((appointment) => (
               <li key={appointments._id}>Customer: {appointment.customerName}, Haircut Type: {appointment.serviceType}, Time: {appointment.time}</li>
             ))}
           </ul>
@@ -113,6 +126,4 @@ const admin = ({name}) => {
     </div>
 
   );
-};
-
-export default admin;
+}
