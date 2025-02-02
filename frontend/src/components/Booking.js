@@ -1,104 +1,122 @@
-// This skeleton code was created by GPT 4o using the previous code as a reference.
-// Prompt used: please create a template/skeleton for this component-based booking system. 
-// I will implement the actual code and logic. There should be a booking component, sidebar component, 
-// and the landing page should also be updated to display this new booking setup.
+//Used Chat GPT to render temporary forms
+//PROMPT: Create a custom component that includes individual pages such as services, barbers, date and time, payment, and confirmation pages
 
-import React, { useState } from 'react';
-import styles from '../styles/Booking.module.css';
+import React, { useState } from "react";
+import styles from "../styles/Booking.module.css";
 
-function SelectService({ onServiceSelect }) {
-  return <div>Select Service Component</div>;
-}
+const STEPS = {
+  SERVICES: "services",
+  BARBERS: "barbers",
+  DATETIME: "datetime",
+  PAYMENT: "payment",
+  CONFIRMATION: "confirmation",
+};
 
-function ChooseBarber({ service, onBarberSelect }) {
-  return <div>Choose Barber Component</div>;
-}
+export default function BookingPopUp({ isOpen, onClose }) {
+  const [currentStep, setCurrentStep] = useState(STEPS.SERVICES);
+  const [formData, setFormData] = useState({
+    service: "",
+    barber: "",
+    date: "",
+    time: "",
+  });
 
-function DateTime({ onNext }) {
-  return <div>DateTime Component</div>;
-}
+  const renderStep = () => {
+    switch (currentStep) {
+      case STEPS.SERVICES:
+        return (
+          <div>
+            <h3>Select Service</h3>
+            <select
+              value={formData.service}
+              onChange={(e) => {
+                setFormData({ ...formData, service: e.target.value });
+              }}
+            >
+              <option value="">Select a service</option>
+              <option value="haircut">Haircut</option>
+              <option value="shave">Shave</option>
+            </select>
+            <button onClick={() => setCurrentStep(STEPS.BARBERS)}>Next</button>
+          </div>
+        );
 
-function Info({ onNext }) {
-  return <div>Info Component</div>;
-}
+      case STEPS.BARBERS:
+        return (
+          <div>
+            <h3>Select Barber</h3>
+            <select
+              value={formData.barber}
+              onChange={(e) =>
+                setFormData({ ...formData, barber: e.target.value })
+              }
+            >
+              <option value="">Select a barber</option>
+              <option value="john">John</option>
+              <option value="mike">Mike</option>
+            </select>
+            <button onClick={() => setCurrentStep(STEPS.SERVICES)}>Back</button>
+            <button onClick={() => setCurrentStep(STEPS.DATETIME)}>Next</button>
+          </div>
+        );
 
-function PaymentInfo() {
-  return <div>PaymentInfo Component</div>;
-}
+      case STEPS.DATETIME:
+        return (
+          <div>
+            <h3>Select Date & Time</h3>
+            <input
+              type="date"
+              value={formData.date}
+              onChange={(e) =>
+                setFormData({ ...formData, date: e.target.value })
+              }
+            />
+            <input
+              type="time"
+              value={formData.time}
+              onChange={(e) =>
+                setFormData({ ...formData, time: e.target.value })
+              }
+            />
+            <button onClick={() => setCurrentStep(STEPS.BARBERS)}>Back</button>
+            <button onClick={() => setCurrentStep(STEPS.PAYMENT)}>Next</button>
+          </div>
+        );
 
-function Confirmation() {
-  return <div>Confirmation Component</div>;
-}
+      case STEPS.PAYMENT:
+        return (
+          <div>
+            <h3>Payment</h3>
+            {/* Add payment form */}
+            <button onClick={() => setCurrentStep(STEPS.DATETIME)}>Back</button>
+            <button onClick={() => setCurrentStep(STEPS.CONFIRMATION)}>
+              Pay
+            </button>
+          </div>
+        );
 
-export default function Booking({ onClose }) {
-  const [currentStep, setCurrentStep] = useState('service');
-  const [selectedService, setSelectedService] = useState(null);
-  const [selectedBarber, setSelectedBarber] = useState(null);
-  const [selectedDateTime, setSelectedDateTime] = useState({ date: null, time: null });
-  const [userInfo, setUserInfo] = useState({});
-
-  const handleServiceSelect = (service) => {
-    setSelectedService(service);
-    setCurrentStep('barber');
-  };
-
-  const handleBarberSelect = (barber) => {
-    setSelectedBarber(barber);
-    setCurrentStep('datetime');
-  };
-
-  const handleDateTimeSelect = (date, time) => {
-    setSelectedDateTime({ date, time });
-    setCurrentStep('info');
-  };
-
-  const handleInfoSubmit = (info) => {
-    setUserInfo(info);
-    setCurrentStep('payment');
-  };
-
-  const handleBack = () => {
-    if (currentStep === 'barber') {
-      setCurrentStep('service');
-    } else if (currentStep === 'datetime') {
-      setCurrentStep('barber');
-    } else if (currentStep === 'info') {
-      setCurrentStep('datetime');
-    } else if (currentStep === 'payment') {
-      setCurrentStep('info');
+      case STEPS.CONFIRMATION:
+        return (
+          <div>
+            <h3>Booking Confirmed!</h3>
+            <p>Service: {formData.service}</p>
+            <p>Barber: {formData.barber}</p>
+            <p>Date: {formData.date}</p>
+            <p>Time: {formData.time}</p>
+            <button onClick={onClose}>Close</button>
+          </div>
+        );
     }
   };
 
-  const steps = {
-    service: (
-      <SelectService onServiceSelect={handleServiceSelect} />
-    ),
-    barber: (
-      <ChooseBarber service={selectedService} onBarberSelect={handleBarberSelect} />
-    ),
-    datetime: (
-      <DateTime onNext={handleDateTimeSelect} />
-    ),
-    info: (
-      <Info onNext={handleInfoSubmit} />
-    ),
-    payment: (
-      <PaymentInfo />
-    ),
-    confirmation: (
-      <Confirmation />
-    ),
-  };
-
-  const CurrentStepComponent = steps[currentStep];
-
   return (
-    <div className={styles.bookingContainer}>
-      <button className={styles.closeButton} onClick={onClose}>X</button>
-      {CurrentStepComponent}
-      {currentStep !== 'service' && (
-        <button className={styles.backButton} onClick={handleBack}>Back</button>
-      )}
+    <div className={`${styles.overlay} ${isOpen ? styles.visible : ""}`}>
+      <div className={`${styles.bookingPopUp} ${isOpen ? styles.visible : ""}`}>
+        <button className={styles.closeButton} onClick={onClose}>
+          ×
+        </button>
+        {renderStep()}
+      </div>
     </div>
   );
 }
