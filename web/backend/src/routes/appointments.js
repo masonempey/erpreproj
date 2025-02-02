@@ -3,6 +3,7 @@ const router = express.Router();
 const Appointment = require("../models/appointmentModel");
 const User = require("../models/userModel");
 const logger = require("../middleware/logger");
+const mongoose = require("mongoose"); // Testing Simon
 
 ///Setup middleware to use the logger function for my routes
 router.use(logger);
@@ -106,6 +107,37 @@ router.get("/users/:userId/appointments", async (req, res) => {
       .status(500)
       .send(
         "Error occurred while attempting to find appointments for the user"
+      );
+  }
+});
+
+// Get Appointments under a specific barber -- Simon -- Mason Assisted
+router.get("/barbers/:barberId", async (req, res) => {
+  const { barberId } = req.params;
+  console.log(`Fetching appointments for barber ID: ${barberId}`);
+  console.log(`Barber ID: ${barberId}`);
+
+  // From chatGPT, wasnt sure how to check if the barberId is valid and then convert it to an ObjectId
+  if (!mongoose.Types.ObjectId.isValid(barberId)) {
+    return res.status(400).send("Invalid barber ID format");
+  }
+
+  try {
+    const barberObjectId = new mongoose.Types.ObjectId(barberId);
+
+    const appointments = await Appointment.find({ barberId: barberObjectId });
+    console.log(`Appointments found: ${appointments.length}`);
+    // If the appointments under the user is 0 (No appointments)
+    if (appointments.length === 0) {
+      return res.status(404).send("No appointments found for this barber");
+    }
+    res.status(200).json(appointments);
+  } catch (err) {
+    console.error("Error fetching appointments:", err);
+    res
+      .status(500)
+      .send(
+        "Error occurred while attempting to find appointments for the barber"
       );
   }
 });

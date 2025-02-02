@@ -1,16 +1,19 @@
-import React, { useState, useRef } from "react";
-import styles from "../styles/Landing.module.css";
-import serviceStyles from "../styles/Services.module.css";
-import aboutStyles from "../styles/About.module.css";
-import SelectService from "./booking/service";
-import ChooseBarber from "./booking/barber";
-import DateTime from "./booking/datetime";
-import Info from "./booking/info";
-import PaymentInfo from "./booking/payment";
-import TiltedCard from "../components/TiltedCard";
+import React, { useState, useRef } from 'react';
+import styles from '../styles/Landing.module.css';
+import serviceStyles from '../styles/Services.module.css';
+import aboutStyles from '../styles/About.module.css';
+import SelectService from '../pages/booking/service';
+import ChooseBarber from '../pages/booking/barber';
+import DateTime from '../pages/booking/datetime';
+import Info from '../pages/booking/info';
+import PaymentInfo from '../pages/booking/payment';
+import TiltedCard from '../components/TiltedCard';
+import Admin from '../components/admin';
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 export default function Home() {
-  const [currentStep, setCurrentStep] = useState("service");
+  const { user, error, isLoading } = useUser();
+  const [currentStep, setCurrentStep] = useState('service');
   const [selectedService, setSelectedService] = useState(null);
   const [selectedBarber, setSelectedBarber] = useState(null);
   const [selectedDateTime, setSelectedDateTime] = useState({
@@ -19,6 +22,9 @@ export default function Home() {
   });
   const [userInfo, setUserInfo] = useState({});
   const bookingSectionRef = useRef(null);
+
+  // Scuffed way of checking if the user is an admin, will be replaced with proper auth later
+  const isAdmin = user && user.given_name === 'Simon';
 
   const handleServiceSelect = (service) => {
     setSelectedService(service);
@@ -73,8 +79,17 @@ export default function Home() {
 
   const CurrentStepComponent = steps[currentStep];
 
+  if (isAdmin) { 
+    return (
+      // return admin component
+      <div>
+        <Admin name={user.given_name}/>
+      </div>
+    );
+ }
+
   return (
-    <>
+    <> 
       <section className={styles.landing}>
         <header className={styles.header}>
           <img
