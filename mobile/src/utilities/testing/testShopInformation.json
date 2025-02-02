@@ -1,0 +1,50 @@
+{
+    "shopInfo": {
+      "shopName": "Erpre Barber Shop",
+      "shopNumber": "+1-999-999-9999",
+      "shopEmail": "contact@erpre.com",
+      "address": {
+        "street": "123 Main Street",
+        "city": "Calgary",
+        "province": "AB",
+        "zipCode": "t3m5f2"
+      },
+      "openHours": {
+        "monday": {
+          "open": "09:00 AM",
+          "close": "07:00 PM"
+        },
+        "tuesday": {
+          "open": "09:00 AM",
+          "close": "07:00 PM"
+        },
+        "wednesday": {
+          "open": "09:00 AM",
+          "close": "07:00 PM"
+        },
+        "thursday": {
+          "open": "09:00 AM",
+          "close": "08:00 PM"
+        },
+        "friday": {
+          "open": "09:00 AM",
+          "close": "08:00 PM"
+        },
+        "saturday": {
+          "open": "10:00 AM",
+          "close": "06:00 PM"
+        },
+        "sunday": {
+          "open": "Closed",
+          "close": "Closed"
+        }
+      },
+      "services": [
+        "Haircut",
+        "Shave",
+        "Beard Trim",
+        "Hair Coloring"
+      ]
+    }
+  }
+  
