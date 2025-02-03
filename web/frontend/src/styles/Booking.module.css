@@ -22,9 +22,9 @@
 .bookingPopUp {
   position: fixed;
   top: 50%;
-  right: -50%;
+  right: -40%;
   transform: translateY(-50%);
-  width: 40%;
+  width: 35%;
   height: 75%;
   border-radius: 3%;
   background-color: #fafafa;

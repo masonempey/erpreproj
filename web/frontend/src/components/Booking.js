@@ -1,8 +1,6 @@
-//Used Chat GPT to render temporary forms
-//PROMPT: Create a custom component that includes individual pages such as services, barbers, date and time, payment, and confirmation pages
-
 import React, { useState } from "react";
 import styles from "../styles/Booking.module.css";
+import SelectService from "./SelectService";
 
 const STEPS = {
   SERVICES: "services",
@@ -21,25 +19,15 @@ export default function BookingPopUp({ isOpen, onClose }) {
     time: "",
   });
 
+  const handleServiceSelect = (service) => {
+    setFormData({ ...formData, service });
+    setCurrentStep(STEPS.BARBERS);
+  };
+
   const renderStep = () => {
     switch (currentStep) {
       case STEPS.SERVICES:
-        return (
-          <div>
-            <h3>Select Service</h3>
-            <select
-              value={formData.service}
-              onChange={(e) => {
-                setFormData({ ...formData, service: e.target.value });
-              }}
-            >
-              <option value="">Select a service</option>
-              <option value="haircut">Haircut</option>
-              <option value="shave">Shave</option>
-            </select>
-            <button onClick={() => setCurrentStep(STEPS.BARBERS)}>Next</button>
-          </div>
-        );
+        return <SelectService onServiceSelect={handleServiceSelect} />;
 
       case STEPS.BARBERS:
         return (
