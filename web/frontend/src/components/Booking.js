@@ -3,6 +3,7 @@ import styles from "../styles/Booking.module.css";
 import SelectService from "./SelectService";
 import ChooseBarber from "./ChooseBarber";
 import PersonalInfo from "./PersonalInfo";
+import PaymentForm from "./PaymentForm";
 
 const STEPS = {
   SERVICES: "services",
@@ -47,6 +48,10 @@ export default function BookingPopUp({ isOpen, onClose }) {
     setCurrentStep(STEPS.PAYMENT);
   };
 
+  const handlePaymentSuccess = () => {
+    setCurrentStep(STEPS.CONFIRMATION);
+  };
+
   const renderStep = () => {
     switch (currentStep) {
       case STEPS.SERVICES:
@@ -73,7 +78,6 @@ export default function BookingPopUp({ isOpen, onClose }) {
                 setFormData({ ...formData, time: e.target.value })
               }
             />
-            <button onClick={() => setCurrentStep(STEPS.BARBERS)}>Back</button>
             <button onClick={() => handleDateTimeSelect(formData.date, formData.time)}>Next</button>
           </div>
         );
@@ -84,12 +88,7 @@ export default function BookingPopUp({ isOpen, onClose }) {
       case STEPS.PAYMENT:
         return (
           <div>
-            <h3>Payment</h3>
-            {/* Add payment form */}
-            <button onClick={() => setCurrentStep(STEPS.INFO)}>Back</button>
-            <button onClick={() => setCurrentStep(STEPS.CONFIRMATION)}>
-              Pay
-            </button>
+            <PaymentForm onSuccess={handlePaymentSuccess} />
           </div>
         );
 

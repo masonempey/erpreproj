@@ -6,9 +6,9 @@
 }
 
 .servicesTitle {
-  font-size: 2vw; /* Make the title bigger and responsive */
-  margin-bottom: 2vw;
-  margin-top: 2vw;
+  font-size: 2vw; /* Consistent title size */
+  margin-bottom: 2vw; /* Consistent margin-bottom */
+  margin-top: 2vw; /* Consistent margin-top */
 }
 
 .servicesContainer {

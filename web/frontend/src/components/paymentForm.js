@@ -1,9 +1,8 @@
-"use client";
 import React, { useState } from 'react';
-// Stripe libraries
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import styles from '../styles/Payment.module.css';
 
-const PaymentForm = ({ onSuccess }) => {
+export default function PaymentForm({ onSuccess }) {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState(null);
@@ -21,22 +20,17 @@ const PaymentForm = ({ onSuccess }) => {
 
     // GPT 4o, Helped created various parts of these methods for Strip service.
     // Along with https://medium.com/@hikmatullahmcs/here-is-a-step-by-step-guide-on-how-to-integrate-stripe-with-a-node-js-77a25adf7064
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
+    const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
       type: 'card',
       card: cardElement,
-      billing_details: {
-        address: {
-          postal_code: postalCode,
-        },
-      },
     });
 
-    if (error) {
-      setError(error.message);
+    if (paymentMethodError) {
+      setError(paymentMethodError.message);
       return;
     }
 
-    const response = await fetch('/api/stripe/payment', {
+    const response = await fetch('/create-payment-intent', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -73,11 +67,13 @@ const PaymentForm = ({ onSuccess }) => {
         iconColor: '#fa755a',
       },
     },
-    hidePostalCode: true, // Hide the default ZIP code field
+    hidePostalCode: true,
   };
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
+      <h1 className={styles.title}>Enter Your Payment Information</h1>
+      <p className={styles.note}>You will only be charged in case of a no-show or late cancellation.</p>
       <CardElement options={cardElementOptions} className={styles.cardElement} />
       <input
         type="text"
@@ -87,13 +83,11 @@ const PaymentForm = ({ onSuccess }) => {
         required
         className={styles.postalCodeInput}
       />
+      {error && <div className={styles.error}>{error}</div>}
+      {success && <div className={styles.success}>Payment successful!</div>}
       <button type="submit" disabled={!stripe} className={styles.submitButton}>
         Pay
       </button>
-      {error && <div className={styles.error}>{error}</div>}
-      {success && <div className={styles.success}>Payment successful!</div>}
     </form>
   );
-};
-
-export default PaymentForm;
+}
