@@ -1,3 +1,6 @@
+/* This file was generated using GPT 4o over many iterations
+   prompts like "lay out the images using flexbox and make sure the height stays consistent" were used. */
+
 .landing {
   display: flex;
   flex-direction: column;

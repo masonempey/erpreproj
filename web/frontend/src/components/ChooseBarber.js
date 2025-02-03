@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import styles from '../../../styles/Barber.module.css';
+import styles from "../styles/Barber.module.css";
 
-export default function ChooseBarber({ service, onBarberSelect }) {
+export default function ChooseBarber({ onBarberSelect }) {
   const [barbers, setBarbers] = useState([]);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function ChooseBarber({ service, onBarberSelect }) {
       <div className={styles.barbersContainer}>
         {barbers.map((barber) => (
           <div
-            key={barber.barberId}
+            key={barber._id}
             className={styles.barberCard}
             onClick={() => onBarberSelect(barber.name)}
           >
