@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "../styles/Booking.module.css";
 import SelectService from "./SelectService";
+import ChooseBarber from "./ChooseBarber";
 
 const STEPS = {
   SERVICES: "services",
@@ -24,29 +25,18 @@ export default function BookingPopUp({ isOpen, onClose }) {
     setCurrentStep(STEPS.BARBERS);
   };
 
+  const handleBarberSelect = (barber) => {
+    setFormData({ ...formData, barber });
+    setCurrentStep(STEPS.DATETIME);
+  };
+
   const renderStep = () => {
     switch (currentStep) {
       case STEPS.SERVICES:
         return <SelectService onServiceSelect={handleServiceSelect} />;
 
       case STEPS.BARBERS:
-        return (
-          <div>
-            <h3>Select Barber</h3>
-            <select
-              value={formData.barber}
-              onChange={(e) =>
-                setFormData({ ...formData, barber: e.target.value })
-              }
-            >
-              <option value="">Select a barber</option>
-              <option value="john">John</option>
-              <option value="mike">Mike</option>
-            </select>
-            <button onClick={() => setCurrentStep(STEPS.SERVICES)}>Back</button>
-            <button onClick={() => setCurrentStep(STEPS.DATETIME)}>Next</button>
-          </div>
-        );
+        return <ChooseBarber onBarberSelect={handleBarberSelect} />;
 
       case STEPS.DATETIME:
         return (
