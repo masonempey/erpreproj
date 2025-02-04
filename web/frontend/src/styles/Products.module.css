@@ -1,0 +1,37 @@
+.newsletterContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Slightly increased gap for better spacing */
+    justify-content: center;
+    padding: 10px;
+    max-width: 100%;
+  }
+  
+  .card {
+    background: #f1f1f1;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 12px;
+    flex: 1 1 200px; /* Increased minimum width */
+    max-width: 240px; /* Slightly wider */
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .card h3 {
+    font-size: 15px; /* Slightly larger for readability */
+    margin-bottom: 6px;
+  }
+  
+  .card p {
+    font-size: 13px;
+    margin: 4px 0;
+  }
+  
+  .date {
+    font-size: 11px; /* Slightly larger but still subtle */
+    color: gray;
+    margin-bottom: 4px; /* Adjusted for better spacing */
+  }
+  
