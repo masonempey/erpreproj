@@ -4,7 +4,6 @@ import styles from "../../styles/Landing.module.css";
 import aboutStyles from "../../styles/About.module.css";
 import Booking from "../../components/Booking";
 import Button from "@mui/material/Button";
-import FacebookIcon from "@mui/icons-material/Facebook";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,7 +15,6 @@ export default function Home() {
           <h1>erpre</h1>
           <h1>Barber & Shop</h1>
         </div>
-        <FacebookIcon sx={{ fontSize: "medium", color: "#35281F" }} />
         <Button
           variant="contained"
           onClick={() => setIsOpen(true)}
