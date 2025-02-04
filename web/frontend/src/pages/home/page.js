@@ -9,7 +9,8 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import AboutScreen from "./homeScreens/about";
 import newsletterStyles from "../../styles/Products.module.css"
-import NewsLetter from "./homeScreens/newsLetter";
+import NewsLetter from "./homeScreens/newsLetter";  
+import Footer from "../../components/footer";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -114,10 +115,10 @@ export default function Home() {
           <h2>Contact Us</h2>
           <p>Form will be added later</p>
         </section>
+        <Footer />
       </main>
-      <footer className={styles.footer}>
-        <p>Temporary Footer Content</p>
-      </footer>
+      </section>
+      </main>
     </div>
   );
 }

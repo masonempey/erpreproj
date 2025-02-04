@@ -14,7 +14,7 @@ const footer = () => {
               <InstagramButton/>
               <FacebookButton/>
             </div>
-          </div>
+          </div>  
           <img
             src="/images/logo.png"
             alt="Erpre Barber & Shop Logo"
