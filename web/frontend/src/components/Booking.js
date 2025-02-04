@@ -6,6 +6,7 @@ import ChooseBarber from "./ChooseBarber";
 import PersonalInfo from "./PersonalInfo";
 import PaymentForm from "./PaymentForm";
 import Confirmation from "./Confirmation";
+import ChooseDateTime from "./ChooseDateTime";
 
 const STEPS = {
   SERVICES: "services",
@@ -66,26 +67,7 @@ export default function BookingPopUp({ isOpen, onClose }) {
         return <ChooseBarber onBarberSelect={handleBarberSelect} />;
 
       case STEPS.DATETIME:
-        return (
-          <div>
-            <h3>Select Date & Time</h3>
-            <input
-              type="date"
-              value={formData.date}
-              onChange={(e) =>
-                setFormData({ ...formData, date: e.target.value })
-              }
-            />
-            <input
-              type="time"
-              value={formData.time}
-              onChange={(e) =>
-                setFormData({ ...formData, time: e.target.value })
-              }
-            />
-            <button onClick={() => handleDateTimeSelect(formData.date, formData.time)}>Next</button>
-          </div>
-        );
+        return <ChooseDateTime onNext={handleDateTimeSelect} />;
 
       case STEPS.INFO:
         return <PersonalInfo onNext={handleInfoSubmit} />;
