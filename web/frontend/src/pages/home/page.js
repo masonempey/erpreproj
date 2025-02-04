@@ -3,6 +3,8 @@ import { useState } from "react";
 import styles from "../../styles/Landing.module.css";
 import aboutStyles from "../../styles/About.module.css";
 import Booking from "../../components/Booking";
+import Button from "@mui/material/Button";
+import FacebookIcon from "@mui/icons-material/Facebook";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,17 +12,32 @@ export default function Home() {
   return (
     <section className={styles.landing}>
       <header className={styles.header}>
-        <img
-          src="/images/logo.png"
-          alt="Erpre Barber & Shop Logo"
-          className={styles.logo}
-        />
-        <button
-          className={styles.bookNowButton}
+        <div className={styles.logo}>
+          <h1>erpre</h1>
+          <h1>Barber & Shop</h1>
+        </div>
+        <FacebookIcon sx={{ fontSize: "medium", color: "#35281F" }} />
+        <Button
+          variant="contained"
           onClick={() => setIsOpen(true)}
+          sx={{
+            backgroundColor: "#FAFAFA",
+            color: "#35281f",
+            fontFamily: "Lato",
+            fontWeight: 800,
+            fontStyle: "normal",
+            padding: "1rem",
+            fontSize: "1.25rem",
+            margin: "3rem",
+            textTransform: "none",
+            "&:hover": {
+              backgroundColor: "#35281f",
+              color: "#FAFAFA",
+            },
+          }}
         >
           Book Now
-        </button>
+        </Button>
       </header>
       <Booking isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <h2>Book Appointment</h2>
@@ -31,7 +48,7 @@ export default function Home() {
           id="about"
           className={`${styles.section} ${aboutStyles.about}`}
         >
-          <h2 className={aboutStyles.title}>Erpre</h2>
+          <h1 className={aboutStyles.title}>Erpre</h1>
           <p className={aboutStyles.description}>
             means friend in Filipino. Erpre is more than just a haircut, it's a
             lifestyle.
@@ -47,11 +64,7 @@ export default function Home() {
               alt="About Card 2"
               className={aboutStyles.cardImage}
             />
-            <img
-              src="/images/about_card_3.png"
-              alt="About Card 3"
-              className={aboutStyles.cardImage}
-            />
+            <img />
           </div>
         </section>
 
