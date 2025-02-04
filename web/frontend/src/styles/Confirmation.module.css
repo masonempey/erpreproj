@@ -1,0 +1,24 @@
+.title {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .thankYou {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    color: #555;
+  }
+  
+  .detailsTitle {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .detail {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    color: #666;
+    text-align: left;
+  }

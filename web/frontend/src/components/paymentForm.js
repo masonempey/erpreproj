@@ -11,25 +11,23 @@ export default function PaymentForm({ onSuccess }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     if (!stripe || !elements) {
       return;
     }
-
+  
     const cardElement = elements.getElement(CardElement);
-
-    // GPT 4o, Helped created various parts of these methods for Strip service.
-    // Along with https://medium.com/@hikmatullahmcs/here-is-a-step-by-step-guide-on-how-to-integrate-stripe-with-a-node-js-77a25adf7064
+  
     const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
       type: 'card',
       card: cardElement,
     });
-
+  
     if (paymentMethodError) {
       setError(paymentMethodError.message);
       return;
     }
-
+  
     const response = await fetch('/create-payment-intent', {
       method: 'POST',
       headers: {
@@ -37,19 +35,24 @@ export default function PaymentForm({ onSuccess }) {
       },
       body: JSON.stringify({ amount: 5000 }), // Example amount in cents
     });
-
+  
     const { clientSecret } = await response.json();
-
+  
     const { error: confirmError } = await stripe.confirmCardPayment(clientSecret, {
       payment_method: paymentMethod.id,
     });
-
+  
     if (confirmError) {
       setError(confirmError.message);
       return;
     }
-
+  
     setSuccess(true);
+    console.log("Payment successful, calling onSuccess");
+    onSuccess();
+  };
+
+  const handleNext = () => {
     onSuccess();
   };
 
@@ -87,6 +90,9 @@ export default function PaymentForm({ onSuccess }) {
       {success && <div className={styles.success}>Payment successful!</div>}
       <button type="submit" disabled={!stripe} className={styles.submitButton}>
         Pay
+      </button>
+      <button type="button" onClick={handleNext} className={styles.nextButton}>
+        Next
       </button>
     </form>
   );
