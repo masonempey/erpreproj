@@ -1,5 +1,5 @@
 import { UserProvider } from "@auth0/nextjs-auth0/client";
-import NavBar from "../components/navBar";
+import Layout from "../components/layout";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -18,8 +18,9 @@ export default function MyApp({ Component, pageProps }) {
       <Elements stripe={stripePromise}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <NavBar />
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </ThemeProvider>
       </Elements>
     </UserProvider>
