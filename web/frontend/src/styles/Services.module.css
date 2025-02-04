@@ -1,0 +1,72 @@
+.services {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2vw;
+}
+
+.servicesTitle {
+  font-size: 2vw; /* Consistent title size */
+  margin-bottom: 2vw; /* Consistent margin-bottom */
+  margin-top: 2vw; /* Consistent margin-top */
+}
+
+.servicesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2vw;
+  margin-top: 2vw;
+}
+
+.serviceCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 6.5vw;
+  height: 6.5vw;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 0.45vw;
+  box-shadow: 0 0.2vw 0.4vw rgba(0, 0, 0, 0.1);
+  padding: 0.5vw;
+  cursor: pointer;
+  transition: transform 0.2s;
+  position: relative;
+}
+
+.serviceCard:hover {
+  transform: scale(1.05);
+}
+
+.serviceName {
+  font-weight: bold;
+  font-size: 0.6vw;
+  margin-bottom: 0.3vw;
+}
+
+.serviceDescription {
+  color: grey;
+  font-size: 0.5vw;
+  margin-bottom: auto;
+}
+
+.serviceTime {
+  color: grey;
+  font-size: 0.5vw;
+  position: absolute;
+  bottom: 0.5vw;
+  left: 0.5vw;
+}
+
+.servicePrice {
+  font-weight: bold;
+  color: white;
+  background-color: grey;
+  padding: 0.3vw 0.6vw;
+  border-radius: 0.3vw;
+  position: absolute;
+  bottom: 0.5vw;
+  right: 0.5vw;
+  font-size: 0.6vw;
+}

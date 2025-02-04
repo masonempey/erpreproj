@@ -1,0 +1,123 @@
+[
+    {
+      "barber_id": "B001",
+      "barber_name": "John Doe",
+      "services_offered": [
+        {
+          "service_id": "S001",
+          "service_name": "Haircut",
+          "price": 25,
+          "duration_minutes": 30
+        },
+        {
+          "service_id": "S002",
+          "service_name": "Beard Trim",
+          "price": 15,
+          "duration_minutes": 20
+        },
+        {
+          "service_id": "S003",
+          "service_name": "Shave",
+          "price": 20,
+          "duration_minutes": 25
+        }
+      ]
+    },
+    {
+      "barber_id": "B002",
+      "barber_name": "Jane Smith",
+      "services_offered": [
+        {
+          "service_id": "S004",
+          "service_name": "Haircut",
+          "price": 30,
+          "duration_minutes": 40
+        },
+        {
+          "service_id": "S005",
+          "service_name": "Beard Styling",
+          "price": 20,
+          "duration_minutes": 25
+        },
+        {
+          "service_id": "S006",
+          "service_name": "Hot Towel Shave",
+          "price": 35,
+          "duration_minutes": 30
+        }
+      ]
+    },
+    {
+      "barber_id": "B003",
+      "barber_name": "Mike Johnson",
+      "services_offered": [
+        {
+          "service_id": "S007",
+          "service_name": "Buzz Cut",
+          "price": 20,
+          "duration_minutes": 20
+        },
+        {
+          "service_id": "S008",
+          "service_name": "Classic Haircut",
+          "price": 28,
+          "duration_minutes": 35
+        },
+        {
+          "service_id": "S009",
+          "service_name": "Scalp Treatment",
+          "price": 40,
+          "duration_minutes": 45
+        }
+      ]
+    },
+    {
+      "barber_id": "B004",
+      "barber_name": "Emily Davis",
+      "services_offered": [
+        {
+          "service_id": "S010",
+          "service_name": "Fade Haircut",
+          "price": 35,
+          "duration_minutes": 45
+        },
+        {
+          "service_id": "S011",
+          "service_name": "Beard Grooming",
+          "price": 25,
+          "duration_minutes": 30
+        },
+        {
+          "service_id": "S012",
+          "service_name": "Hair Wash",
+          "price": 15,
+          "duration_minutes": 20
+        }
+      ]
+    },
+    {
+      "barber_id": "B005",
+      "barber_name": "Robert Brown",
+      "services_offered": [
+        {
+          "service_id": "S013",
+          "service_name": "Crew Cut",
+          "price": 22,
+          "duration_minutes": 25
+        },
+        {
+          "service_id": "S014",
+          "service_name": "Hot Oil Treatment",
+          "price": 50,
+          "duration_minutes": 60
+        },
+        {
+          "service_id": "S015",
+          "service_name": "Head Shave",
+          "price": 30,
+          "duration_minutes": 35
+        }
+      ]
+    }
+  ]
+  

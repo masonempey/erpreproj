@@ -1,0 +1,66 @@
+/* This file was generated using GPT 4o over many iterations
+   prompts like "lay out the images using flexbox and make sure the height stays consistent" were used. */
+
+.landing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image: url("/images/landing_background.png");
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  min-height: 100vh;
+  justify-content: flex-start;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  position: relative;
+}
+
+.logo {
+  width: 25vw;
+  height: auto;
+  margin-top: 40vh;
+}
+
+.bookNowButton {
+  background-color: white;
+  color: black;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  padding: 1rem;
+  margin: 5rem;
+}
+
+.section {
+  width: 100%;
+  padding: 50px 20px;
+  box-sizing: border-box;
+}
+
+.section h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.section p {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.section .cardsWrapper {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.section .cardImage {
+  width: 100px;
+  height: auto;
+}
