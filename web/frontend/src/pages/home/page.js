@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "../../styles/Landing.module.css";
 import aboutStyles from "../../styles/About.module.css";
 import Booking from "../../components/Booking";
+import Button from "@mui/material/Button";
 import CustomerReviewCard from "../../components/customerReviewCard";
 import reviewStyles from "../../styles/Reviews.module.css";
 import Pagination from '@mui/material/Pagination';
@@ -41,28 +42,40 @@ export default function Home() {
   }]
 
   return (
-
     <div className={styles.container}>
-      <main className={styles.main}>
-        <section className={styles.landing}>
-          <header className={styles.header}>
-            <img
-              src="/images/logo.png"
-              alt="Erpre Barber & Shop Logo"
-              className={styles.logo}
-            />
-            <button
-              className={styles.bookNowButton}
-              onClick={() => setIsOpen(true)}
-            >
-              Book Now
-            </button>
-          </header>
-        </section>
-        <Booking isOpen={isOpen} onClose={() => setIsOpen(false)}>
-          <h2>Book Appointment</h2>
-          {/* Add the forms */}
-        </Booking>
+    <main className={styles.main}>
+    <section className={styles.landing}>
+      <header className={styles.header}>
+        <div className={styles.logo}>
+          <h1>erpre</h1>
+          <h1>Barber & Shop</h1>
+        </div>
+        <Button
+          variant="contained"
+          onClick={() => setIsOpen(true)}
+          sx={{
+            backgroundColor: "#FAFAFA",
+            color: "#35281f",
+            fontFamily: "Lato",
+            fontWeight: 800,
+            fontStyle: "normal",
+            padding: "1rem",
+            fontSize: "1.25rem",
+            margin: "3rem",
+            textTransform: "none",
+            "&:hover": {
+              backgroundColor: "#35281f",
+              color: "#FAFAFA",
+            },
+          }}
+        >
+          Book Now
+        </Button>
+      </header>
+      <Booking isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <h2>Book Appointment</h2>
+      </Booking>
+      <main>
         <section
           id="about"
           className={`${styles.section} ${aboutStyles.about}`}
