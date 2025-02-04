@@ -6,6 +6,7 @@ import CustomerReviewCard from "../../components/customerReviewCard";
 import reviewStyles from "../../styles/Reviews.module.css";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
+import AboutScreen from "./homeScreens/about";
 
 
 export default function Home() {
