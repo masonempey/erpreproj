@@ -1,26 +1,26 @@
 .newsletterContainer {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; /* Slightly increased gap for better spacing */
+    gap: 10px; 
     justify-content: center;
     padding: 10px;
     max-width: 100%;
   }
   
   .card {
-    background: #f1f1f1;
+    background: #fafafa;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 12px;
-    flex: 1 1 200px; /* Increased minimum width */
-    max-width: 240px; /* Slightly wider */
+    flex: 1 1 200px; 
+    max-width: 240px; 
     display: flex;
     flex-direction: column;
     text-align: center;
   }
   
   .card h3 {
-    font-size: 15px; /* Slightly larger for readability */
+    font-size: 15px;
     margin-bottom: 6px;
   }
   
@@ -30,8 +30,19 @@
   }
   
   .date {
-    font-size: 11px; /* Slightly larger but still subtle */
+    font-size: 11px; 
     color: gray;
-    margin-bottom: 4px; /* Adjusted for better spacing */
+    margin-bottom: 4px; 
+  }
+  .sectionBG {
+    background-image: url('/images/newsletter.png');
+    background-size: cover;
+    background-position: center;
+    padding: 10vh 2vw;
+    position: relative;
+  }
+  .title {
+    font-size: 60px;
+    -webkit-text-stroke: 1px #fafafa;
   }
   

@@ -13,7 +13,7 @@ export default function NewsLetter() {
     ]
     return(
         <div>
-            <h2>Erpre Newsletter</h2>
+            <h2 className={newsletterStyles.title}>Erpre Newsletter</h2>
             <div className={newsletterStyles.newsletterContainer}>
                 {information.map((point, index) => (
                     <div key={index} className={newsletterStyles.card}>

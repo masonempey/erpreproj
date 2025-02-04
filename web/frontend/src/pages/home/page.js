@@ -42,7 +42,7 @@ export default function Home() {
           <p>Review card</p>
         </section>
 
-        <section id="products" className={styles.section}>
+        <section id="products" className={`${styles.section} ${newsletterStyles.sectionBG}`}>
           <NewsLetter />
         </section>
 
