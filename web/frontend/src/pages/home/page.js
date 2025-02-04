@@ -7,7 +7,8 @@ import reviewStyles from "../../styles/Reviews.module.css";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import AboutScreen from "./homeScreens/about";
-
+import newsletterStyles from "../../styles/Products.module.css"
+import NewsLetter from "./homeScreens/newsLetter";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
