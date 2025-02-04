@@ -1,68 +1,113 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import styles from "../../styles/Landing.module.css";
 import aboutStyles from "../../styles/About.module.css";
 import Booking from "../../components/Booking";
+import Button from "@mui/material/Button";
+import CustomerReviewCard from "../../components/customerReviewCard";
+import reviewStyles from "../../styles/Reviews.module.css";
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+import AboutScreen from "./homeScreens/about";
+import newsletterStyles from "../../styles/Products.module.css"
+import NewsLetter from "./homeScreens/newsLetter";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
 
+  // test data for the reviews section
+  const testData = [{
+    image: "https://cdn.iconscout.com/icon/premium/png-512-thumb/avatar-1810626-1536314.png?f=webp&w=512",
+    review: "Amazing service! I will definitely come back.",
+    numsReviews: 5
+  },
+  {
+    image: "https://cdn.iconscout.com/icon/premium/png-512-thumb/avatar-1810626-1536314.png?f=webp&w=512",
+    review: "Its a great place to get a haircut. The barbers are very friendly and professional.",
+    numsReviews: 3
+  },
+  {
+    image: "https://cdn.iconscout.com/icon/premium/png-512-thumb/avatar-1810626-1536314.png?f=webp&w=512",
+    review: "Its a great place to get a haircut. The barbers are very friendly and professional.",
+    numsReviews: 3
+  },
+  {
+    image: "https://cdn.iconscout.com/icon/premium/png-512-thumb/avatar-1810626-1536314.png?f=webp&w=512",
+    review: "Its a great place to get a haircut. The barbers are very friendly and professional.",
+    numsReviews: 3
+  },
+  {
+    image: "https://cdn.iconscout.com/icon/premium/png-512-thumb/avatar-1810626-1536314.png?f=webp&w=512",
+    review: "If you're looking for a barbershop that truly stands out, this is the place. The barbers here pay incredible attention to detail and really take the time to understand exactly what you're looking for. They listen carefully, offer helpful suggestions, and make sure you're happy with the result. I've been coming here for a few years now and I've never been disappointed. The atmosphere is great, the barbers are friendly and professional, and the prices are very reasonable. I highly recommend this place to anyone looking for a top-notch haircut.",
+    numsReviews: 2
+  }]
+
   return (
+    <div className={styles.container}>
+    <main className={styles.main}>
     <section className={styles.landing}>
       <header className={styles.header}>
-        <img
-          src="/images/logo.png"
-          alt="Erpre Barber & Shop Logo"
-          className={styles.logo}
-        />
-        <button
-          className={styles.bookNowButton}
+        <div className={styles.logo}>
+          <h1>erpre</h1>
+          <h1>Barber & Shop</h1>
+        </div>
+        <Button
+          variant="contained"
           onClick={() => setIsOpen(true)}
+          sx={{
+            backgroundColor: "#FAFAFA",
+            color: "#35281f",
+            fontFamily: "Lato",
+            fontWeight: 800,
+            fontStyle: "normal",
+            padding: "1rem",
+            fontSize: "1.25rem",
+            margin: "3rem",
+            textTransform: "none",
+            "&:hover": {
+              backgroundColor: "#35281f",
+              color: "#FAFAFA",
+            },
+          }}
         >
           Book Now
-        </button>
+        </Button>
       </header>
       <Booking isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <h2>Book Appointment</h2>
-        //add the forms
       </Booking>
       <main>
         <section
           id="about"
           className={`${styles.section} ${aboutStyles.about}`}
         >
-          <h2 className={aboutStyles.title}>Erpre</h2>
-          <p className={aboutStyles.description}>
-            means friend in Filipino. Erpre is more than just a haircut, it's a
-            lifestyle.
-          </p>
-          <div className={aboutStyles.cardsWrapper}>
-            <img
-              src="/images/about_card_1.png"
-              alt="About Card 1"
-              className={aboutStyles.cardImage}
-            />
-            <img
-              src="/images/about_card_2.png"
-              alt="About Card 2"
-              className={aboutStyles.cardImage}
-            />
-            <img
-              src="/images/about_card_3.png"
-              alt="About Card 3"
-              className={aboutStyles.cardImage}
-            />
+          <AboutScreen />
+        </section>
+
+        <section id="reviews" className={`${styles.section} ${reviewStyles.reviews}`}>
+          <div id = "reviewHeader" className={reviewStyles.reviewHeader}>
+            <h2>Customer Reviews</h2>
+            <p>Rate by you</p>  
           </div>
+          
+          <hr></hr>
+          <div id="cardsWrapper" className={reviewStyles.cardsWrapper}>
+              {testData.map((data) => (
+                <CustomerReviewCard
+                  image={data.image}
+                  review={data.review}
+                  numsReviews={data.numsReviews}
+                />
+              ))}
+          </div>
+          <Stack spacing={2} style={{display: "flex", justifyContent: "center", marginTop: "40px"}}>
+            <Pagination count={10} variant="outlined" size="large" />
+          </Stack>
+          <hr></hr>
+
         </section>
 
-        <section id="reviews" className={styles.section}>
-          <h2>Customer Reviews</h2>
-          <p>Review card</p>
-        </section>
-
-        <section id="products" className={styles.section}>
-          <h2>Product Newsletter</h2>
-          <p>Text here</p>
+        <section id="products" className={`${styles.section} ${newsletterStyles.sectionBG}`}>
+          <NewsLetter />
         </section>
 
         <section id="contact" className={styles.section}>
@@ -70,6 +115,9 @@ export default function Home() {
           <p>Form will be added later</p>
         </section>
       </main>
-    </section>
+      <footer className={styles.footer}>
+        <p>Temporary Footer Content</p>
+      </footer>
+    </div>
   );
 }

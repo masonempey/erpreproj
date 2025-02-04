@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useRouter } from 'next/router';
 import styles from "../styles/Booking.module.css";
 import SelectService from "./SelectService";
 import ChooseBarber from "./ChooseBarber";
 import PersonalInfo from "./PersonalInfo";
 import PaymentForm from "./PaymentForm";
+import Confirmation from "./Confirmation";
 
 const STEPS = {
   SERVICES: "services",
@@ -27,6 +29,7 @@ export default function BookingPopUp({ isOpen, onClose }) {
     phone: "",
     postalCode: ""
   });
+  const router = useRouter();
 
   const handleServiceSelect = (service) => {
     setFormData({ ...formData, service });
@@ -49,10 +52,12 @@ export default function BookingPopUp({ isOpen, onClose }) {
   };
 
   const handlePaymentSuccess = () => {
+    console.log("Payment successful, transitioning to confirmation step");
     setCurrentStep(STEPS.CONFIRMATION);
   };
 
   const renderStep = () => {
+    console.log("Current step:", currentStep);
     switch (currentStep) {
       case STEPS.SERVICES:
         return <SelectService onServiceSelect={handleServiceSelect} />;
@@ -93,21 +98,9 @@ export default function BookingPopUp({ isOpen, onClose }) {
         );
 
       case STEPS.CONFIRMATION:
-        return (
-          <div>
-            <h3>Booking Confirmed!</h3>
-            <p>Service: {formData.service}</p>
-            <p>Barber: {formData.barber}</p>
-            <p>Date: {formData.date}</p>
-            <p>Time: {formData.time}</p>
-            <p>Full Name: {formData.fullName}</p>
-            <p>Email: {formData.email}</p>
-            <p>Address: {formData.address}</p>
-            <p>Phone: {formData.phone}</p>
-            <p>Postal Code: {formData.postalCode}</p>
-            <button onClick={onClose}>Close</button>
-          </div>
-        );
+        return <Confirmation />;
+      default:
+        return null;
     }
   };
 

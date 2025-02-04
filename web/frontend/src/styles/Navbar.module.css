@@ -1,0 +1,91 @@
+@keyframes slideIn {
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: transparent;
+  padding: 1rem 2rem;
+  position: absolute;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  font-size: 1.2rem;
+  box-sizing: border-box;
+  font-family: "Lato", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+  transform: none;
+}
+
+.navbarLeft .logo {
+  font-weight: bold;
+  text-decoration: none;
+  color: #fafafa;
+  font-family: "Oleo Script";
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.navbarCenter {
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.navLinks {
+  display: flex;
+  gap: 6rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navLinks li a {
+  text-decoration: none;
+  color: #fafafa !important;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.navLinks li a:hover {
+  color: #453529 !important;
+}
+
+.navLinks li a::before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: #453529;
+  visibility: hidden;
+  transform: scaleX(0);
+  transition: all 0.3s ease-in-out;
+}
+
+.navLinks li a:hover::before {
+  visibility: visible;
+  transform: scaleX(1);
+  width: 100%;
+}
+
+.navLinks li a:hover {
+  color: #fafafa;
+}
+
+.navbarRight {
+  display: flex;
+  align-items: center;
+}
