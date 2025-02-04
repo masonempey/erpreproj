@@ -1,66 +1,85 @@
 /* This file was generated using GPT 4o over many iterations
    prompts like "lay out the images using flexbox and make sure the height stays consistent" were used. */
 
-.landing {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-image: url("/images/landing_background.png");
-  background-size: cover;
-  background-position: center;
-  width: 100%;
-  min-height: 100vh;
-  justify-content: flex-start;
-}
-
-.header {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  position: relative;
-}
-
-.logo {
-  width: 25vw;
-  height: auto;
-  margin-top: 40vh;
-}
-
-.bookNowButton {
-  background-color: white;
-  color: black;
-  font-size: 1rem;
-  border: none;
-  cursor: pointer;
-  padding: 1rem;
-  margin: 5rem;
-}
-
-.section {
-  width: 100%;
-  padding: 50px 20px;
-  box-sizing: border-box;
-}
-
-.section h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.section p {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.section .cardsWrapper {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.section .cardImage {
-  width: 100px;
-  height: auto;
-}
+   .container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .landing {
+    width: 100%;
+    padding: 50px 20px;
+    box-sizing: border-box;
+    background-image: url("/images/landing_background.png");
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: relative;
+    text-align: center; /* Center the contents */
+  }
+  
+  .logo {
+    width: 25vw;
+    height: auto;
+    margin-top: 20vh; /* Adjusted margin to center vertically */
+  }
+  
+  .bookNowButton {
+    background-color: white;
+    color: black;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    padding: 1rem;
+    margin-top: 2rem; /* Adjusted margin to center vertically */
+  }
+  
+  .section {
+    width: 100%;
+    padding: 50px 20px;
+    box-sizing: border-box;
+  }
+  
+  .section h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .section p {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .cardsWrapper {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .cardImage {
+    width: 100px;
+    height: auto;
+  }
+  
+  .footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #f1f1f1;
+  }
