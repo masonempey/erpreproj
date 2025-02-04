@@ -1,13 +1,17 @@
-//Used Chat GPT to render temporary forms
-//PROMPT: Create a custom component that includes individual pages such as services, barbers, date and time, payment, and confirmation pages
-
 import React, { useState } from "react";
+import { useRouter } from 'next/router';
 import styles from "../styles/Booking.module.css";
+import SelectService from "./SelectService";
+import ChooseBarber from "./ChooseBarber";
+import PersonalInfo from "./PersonalInfo";
+import PaymentForm from "./PaymentForm";
+import Confirmation from "./Confirmation";
 
 const STEPS = {
   SERVICES: "services",
   BARBERS: "barbers",
   DATETIME: "datetime",
+  INFO: "info",
   PAYMENT: "payment",
   CONFIRMATION: "confirmation",
 };
@@ -19,46 +23,47 @@ export default function BookingPopUp({ isOpen, onClose }) {
     barber: "",
     date: "",
     time: "",
+    fullName: "",
+    email: "",
+    address: "",
+    phone: "",
+    postalCode: ""
   });
+  const router = useRouter();
+
+  const handleServiceSelect = (service) => {
+    setFormData({ ...formData, service });
+    setCurrentStep(STEPS.BARBERS);
+  };
+
+  const handleBarberSelect = (barber) => {
+    setFormData({ ...formData, barber });
+    setCurrentStep(STEPS.DATETIME);
+  };
+
+  const handleDateTimeSelect = (date, time) => {
+    setFormData({ ...formData, date, time });
+    setCurrentStep(STEPS.INFO);
+  };
+
+  const handleInfoSubmit = (info) => {
+    setFormData({ ...formData, ...info });
+    setCurrentStep(STEPS.PAYMENT);
+  };
+
+  const handlePaymentSuccess = () => {
+    console.log("Payment successful, transitioning to confirmation step");
+    setCurrentStep(STEPS.CONFIRMATION);
+  };
 
   const renderStep = () => {
+    console.log("Current step:", currentStep);
     switch (currentStep) {
       case STEPS.SERVICES:
-        return (
-          <div>
-            <h3>Select Service</h3>
-            <select
-              value={formData.service}
-              onChange={(e) => {
-                setFormData({ ...formData, service: e.target.value });
-              }}
-            >
-              <option value="">Select a service</option>
-              <option value="haircut">Haircut</option>
-              <option value="shave">Shave</option>
-            </select>
-            <button onClick={() => setCurrentStep(STEPS.BARBERS)}>Next</button>
-          </div>
-        );
+        return <SelectService onServiceSelect={handleServiceSelect} />;
 
       case STEPS.BARBERS:
-        return (
-          <div>
-            <h3>Select Barber</h3>
-            <select
-              value={formData.barber}
-              onChange={(e) =>
-                setFormData({ ...formData, barber: e.target.value })
-              }
-            >
-              <option value="">Select a barber</option>
-              <option value="john">John</option>
-              <option value="mike">Mike</option>
-            </select>
-            <button onClick={() => setCurrentStep(STEPS.SERVICES)}>Back</button>
-            <button onClick={() => setCurrentStep(STEPS.DATETIME)}>Next</button>
-          </div>
-        );
+        return <ChooseBarber onBarberSelect={handleBarberSelect} />;
 
       case STEPS.DATETIME:
         return (
@@ -78,34 +83,24 @@ export default function BookingPopUp({ isOpen, onClose }) {
                 setFormData({ ...formData, time: e.target.value })
               }
             />
-            <button onClick={() => setCurrentStep(STEPS.BARBERS)}>Back</button>
-            <button onClick={() => setCurrentStep(STEPS.PAYMENT)}>Next</button>
+            <button onClick={() => handleDateTimeSelect(formData.date, formData.time)}>Next</button>
           </div>
         );
+
+      case STEPS.INFO:
+        return <PersonalInfo onNext={handleInfoSubmit} />;
 
       case STEPS.PAYMENT:
         return (
           <div>
-            <h3>Payment</h3>
-            {/* Add payment form */}
-            <button onClick={() => setCurrentStep(STEPS.DATETIME)}>Back</button>
-            <button onClick={() => setCurrentStep(STEPS.CONFIRMATION)}>
-              Pay
-            </button>
+            <PaymentForm onSuccess={handlePaymentSuccess} />
           </div>
         );
 
       case STEPS.CONFIRMATION:
-        return (
-          <div>
-            <h3>Booking Confirmed!</h3>
-            <p>Service: {formData.service}</p>
-            <p>Barber: {formData.barber}</p>
-            <p>Date: {formData.date}</p>
-            <p>Time: {formData.time}</p>
-            <button onClick={onClose}>Close</button>
-          </div>
-        );
+        return <Confirmation />;
+      default:
+        return null;
     }
   };
 

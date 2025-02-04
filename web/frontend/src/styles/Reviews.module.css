@@ -1,0 +1,134 @@
+
+/* Reviews section styling */
+.reviews{
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 80px;
+}
+.reviews hr{
+    position: relative;
+    width: 90%;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 6px 8px 0 rgba(0,0,0,0.2);
+    border: 1px solid #e1e1e1;
+
+}
+.reviewHeader{
+    position: fix;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    box-shadow: 0 4px 6px 0 rgba(0,0,0,0.2);
+    border-radius: 60px;
+    padding-top: 0px;
+    padding-left: 30%;
+    padding-right: 30%;
+
+}
+.reviewHeader h2{
+    position: relative;
+    margin-bottom: 0px;
+    font-size: xx-large;
+  
+}
+.reviewHeader p{
+    position: relative;
+    margin-top: 0px;
+    font-weight: 400;
+    
+    
+}
+
+
+/*custom scrollbar for styling card scrollbars
+    ref:https://www.w3schools.com/howto/howto_css_custom_scrollbar.asp 
+*/
+.card::-webkit-scrollbar {
+    width: 7px; 
+}
+
+.card::-webkit-scrollbar-thumb {
+    background: #a1a1a1; 
+    border-radius: 10px; 
+}
+
+.card::-webkit-scrollbar-track {
+    background: transparent; 
+    border-radius: 10px;
+}
+
+
+/* Cards styling */
+.cardsWrapper{
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    gap: 30px;
+    width: 100%;
+}
+.cardHeader{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content:center;
+    transition: 0.3s;
+    background-color: #f4f4f4;
+    border-radius: 60px;
+
+}
+.cardHeader img{
+    margin-top: 16px;
+    margin-right: 10px;
+    margin-left: 16px;
+    max-width: 48px;
+    max-height: 48px;
+    border-radius: 100%;
+    margin-bottom: 20px;   
+}
+.cardHeaderInfo{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin: auto;
+    margin-left: 0px;
+}
+.cardHeaderInfo p{
+    margin: 0px;
+}
+.card{
+    max-width: 300px;
+    padding: 20px;
+    height: 500px;
+    box-shadow: 0 6px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    border-radius: 60px;
+    border: 1px solid #d9d9d9;
+    overflow-y: hidden; 
+
+    
+}
+.cardRating{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-top: 10px;
+}
+.card:hover{
+    box-shadow: 2px 20px 30px rgba(0, 0, 0, 0.2);
+    border-radius:30px;
+    overflow-y: auto;
+    .cardHeader{
+        border-radius: 30px;
+    }
+}

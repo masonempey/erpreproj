@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import styles from '../../../styles/Services.module.css';
+import styles from "../styles/Services.module.css";
 
 export default function SelectService({ onServiceSelect }) {
   const [services, setServices] = useState([]);
