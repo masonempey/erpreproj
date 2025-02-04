@@ -3,6 +3,9 @@ import { useState } from "react";
 import styles from "../../styles/Landing.module.css";
 import aboutStyles from "../../styles/About.module.css";
 import Booking from "../../components/Booking";
+import AboutScreen from "./homeScreens/about";
+import NewsLetter from "./homeScreens/newsLetter";
+import newsletterStyles from "../../styles/Products.module.css";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +21,7 @@ export default function Home() {
         <button
           className={styles.bookNowButton}
           onClick={() => setIsOpen(true)}
-        >
+        >  
           Book Now
         </button>
       </header>
@@ -31,28 +34,7 @@ export default function Home() {
           id="about"
           className={`${styles.section} ${aboutStyles.about}`}
         >
-          <h2 className={aboutStyles.title}>Erpre</h2>
-          <p className={aboutStyles.description}>
-            means friend in Filipino. Erpre is more than just a haircut, it's a
-            lifestyle.
-          </p>
-          <div className={aboutStyles.cardsWrapper}>
-            <img
-              src="/images/about_card_1.png"
-              alt="About Card 1"
-              className={aboutStyles.cardImage}
-            />
-            <img
-              src="/images/about_card_2.png"
-              alt="About Card 2"
-              className={aboutStyles.cardImage}
-            />
-            <img
-              src="/images/about_card_3.png"
-              alt="About Card 3"
-              className={aboutStyles.cardImage}
-            />
-          </div>
+          <AboutScreen />
         </section>
 
         <section id="reviews" className={styles.section}>
@@ -60,9 +42,8 @@ export default function Home() {
           <p>Review card</p>
         </section>
 
-        <section id="products" className={styles.section}>
-          <h2>Product Newsletter</h2>
-          <p>Text here</p>
+        <section id="products" className={`${styles.section} ${newsletterStyles.sectionBG}`}>
+          <NewsLetter />
         </section>
 
         <section id="contact" className={styles.section}>
