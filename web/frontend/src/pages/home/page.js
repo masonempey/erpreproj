@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import styles from "../../styles/Landing.module.css";
 import aboutStyles from "../../styles/About.module.css";
 import Booking from "../../components/Booking";
@@ -11,25 +10,28 @@ export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <section className={styles.landing}>
-      <header className={styles.header}>
-        <img
-          src="/images/logo.png"
-          alt="Erpre Barber & Shop Logo"
-          className={styles.logo}
-        />
-        <button
-          className={styles.bookNowButton}
-          onClick={() => setIsOpen(true)}
-        >  
-          Book Now
-        </button>
-      </header>
-      <Booking isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <h2>Book Appointment</h2>
-        //add the forms
-      </Booking>
-      <main>
+
+    <div className={styles.container}>
+      <main className={styles.main}>
+        <section className={styles.landing}>
+          <header className={styles.header}>
+            <img
+              src="/images/logo.png"
+              alt="Erpre Barber & Shop Logo"
+              className={styles.logo}
+            />
+            <button
+              className={styles.bookNowButton}
+              onClick={() => setIsOpen(true)}
+            >
+              Book Now
+            </button>
+          </header>
+        </section>
+        <Booking isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          <h2>Book Appointment</h2>
+          {/* Add the forms */}
+        </Booking>
         <section
           id="about"
           className={`${styles.section} ${aboutStyles.about}`}
@@ -51,6 +53,9 @@ export default function Home() {
           <p>Form will be added later</p>
         </section>
       </main>
-    </section>
+      <footer className={styles.footer}>
+        <p>Temporary Footer Content</p>
+      </footer>
+    </div>
   );
 }
