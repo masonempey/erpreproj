@@ -38,6 +38,13 @@
   margin: 5rem;
 }
 
+.random {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 .section {
   width: 100%;
   padding: 50px 20px;
