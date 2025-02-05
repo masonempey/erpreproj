@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
 import styles from "../styles/Barber.module.css";
+import Image from "next/image";
+
+const barberImages = {
+  Anthony: "/images/barbers/Anthony.png",
+  Carl: "/images/barbers/Carl.png",
+  George: "/images/barbers/George.png",
+  Guio: "/images/barbers/Guio.png",
+  Rogin: "/images/barbers/Rogin.png",
+};
 
 export default function ChooseBarber({ onBarberSelect }) {
   const [barbers, setBarbers] = useState([]);
@@ -24,7 +33,6 @@ export default function ChooseBarber({ onBarberSelect }) {
 
   return (
     <div className={styles.barbers}>
-      <h1 className={styles.barbersTitle}>Choose a Barber</h1>
       <div className={styles.barbersContainer}>
         {barbers.map((barber) => (
           <div
@@ -32,9 +40,17 @@ export default function ChooseBarber({ onBarberSelect }) {
             className={styles.barberCard}
             onClick={() => onBarberSelect(barber.name)}
           >
-            <img src={barber.image} alt={barber.name} className={styles.barberImage} />
+            <Image
+              src={barberImages[barber.name] || "/images/default-avatar.png"}
+              alt={barber.name}
+              width={120}
+              height={120}
+              className={styles.barberImage}
+            />
             <div className={styles.barberName}>{barber.name}</div>
-            <div className={styles.barberAvailability}>Available on {barber.availableDate}</div>
+            <div className={styles.barberAvailability}>
+              Available Now {barber.availableDate}
+            </div>
           </div>
         ))}
       </div>

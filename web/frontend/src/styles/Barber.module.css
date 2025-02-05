@@ -1,63 +1,51 @@
-.barbers {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2vw;
-}
-
-.barbersTitle {
-  font-size: 2vw; /* Make the title bigger and responsive */
-  margin-bottom: 2vw;
-  margin-top: 2vw;
-}
-
 .barbersContainer {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 2vw;
-  margin-top: 2vw;
+  gap: 2rem;
+  padding: 2rem;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
 }
 
 .barberCard {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 7vw; /* Make the card wider */
-  height: 9vw; /* Make the card taller */
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 0.45vw;
-  box-shadow: 0 0.2vw 0.4vw rgba(0, 0, 0, 0.1);
-  padding: 0.5vw;
+  justify-content: center;
+  flex: 0 0 calc(33.333% - 2rem);
+  min-height: 200px;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(53, 40, 31, 0.1);
+  transition: all 0.3s ease;
+  margin: 0;
+  padding: 1.5rem;
   cursor: pointer;
-  transition: transform 0.2s;
-  position: relative;
-}
-
-.barberCard:hover {
-  transform: scale(1.05);
 }
 
 .barberImage {
-  width: 100%;
-  height: 7vw; /* Ensure the image stays square */
-  background-color: #f0f0f0;
-  border-radius: 0.45vw;
-  margin-bottom: 0.5vw;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
   object-fit: cover;
+  margin-bottom: 1rem;
 }
 
 .barberName {
+  font-size: 1.2rem;
   font-weight: bold;
-  font-size: 0.7vw; /* Keep the font size the same */
-  margin-bottom: 0.6vw; /* Keep the position the same */
+  color: #35281f;
+  margin-bottom: 0.5rem;
 }
 
 .barberAvailability {
-  color: grey;
-  font-size: 0.6vw; /* Keep the font size the same */
-  position: absolute;
-  bottom: 0.3vw; /* Move the availability text a bit down */
-  left: 0.5vw;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.barberCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(53, 40, 31, 0.2);
 }

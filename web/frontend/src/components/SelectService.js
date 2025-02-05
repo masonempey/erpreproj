@@ -23,22 +23,18 @@ export default function SelectService({ onServiceSelect }) {
   }, []);
 
   return (
-    <div className={styles.services}>
-      <h1 className={styles.servicesTitle}>Choose a Service</h1>
-      <div className={styles.servicesContainer}>
-        {services.map((service) => (
-          <div
-            key={service._id}
-            className={styles.serviceCard}
-            onClick={() => onServiceSelect(service.serviceName)}
-          >
-            <div className={styles.serviceName}>{service.serviceName}</div>
-            <div className={styles.serviceDescription}>This is a description of the service.</div>
-            <div className={styles.serviceTime}>45 min</div>
-            <div className={styles.servicePrice}>$50</div>
-          </div>
-        ))}
-      </div>
+    <div className={styles.servicesContainer}>
+      {services.map((service) => (
+        <div
+          key={service._id}
+          className={styles.serviceCard}
+          onClick={() => onServiceSelect(service.serviceName)}
+        >
+          <div className={styles.serviceName}>{service.serviceName}</div>
+          <div className={styles.serviceTime}>45 min</div>
+          <div className={styles.servicePrice}>$50</div>
+        </div>
+      ))}
     </div>
   );
 }

@@ -1,99 +1,145 @@
-import React, { useState } from 'react';
-import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import styles from '../styles/Payment.module.css';
+import React, { useState } from "react";
+import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { Box, TextField, Button, Typography } from "@mui/material";
 
 export default function PaymentForm({ onSuccess }) {
   const stripe = useStripe();
   const elements = useElements();
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [postalCode, setPostalCode] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [postalCode, setPostalCode] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+    setLoading(true);
+    setError("");
+
     if (!stripe || !elements) {
       return;
     }
-  
-    const cardElement = elements.getElement(CardElement);
-  
-    const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: cardElement,
-    });
-  
-    if (paymentMethodError) {
-      setError(paymentMethodError.message);
-      return;
-    }
-  
-    const response = await fetch('/create-payment-intent', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ amount: 5000 }), // Example amount in cents
-    });
-  
-    const { clientSecret } = await response.json();
-  
-    const { error: confirmError } = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: paymentMethod.id,
-    });
-  
-    if (confirmError) {
-      setError(confirmError.message);
-      return;
-    }
-  
-    setSuccess(true);
-    console.log("Payment successful, calling onSuccess");
-    onSuccess();
-  };
 
-  const handleNext = () => {
-    onSuccess();
+    try {
+      const { error } = await stripe.createPaymentMethod({
+        type: "card",
+        card: elements.getElement(CardElement),
+        billing_details: {
+          address: {
+            postal_code: postalCode,
+          },
+        },
+      });
+
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      // If card is valid, proceed to next step
+      setSuccess(true);
+      onSuccess();
+    } catch (err) {
+      setError("Card validation failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const cardElementOptions = {
     style: {
       base: {
-        fontSize: '16px',
-        color: '#32325d',
-        '::placeholder': {
-          color: '#aab7c4',
+        fontSize: "16px",
+        fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
+        color: "#35281f",
+        "::placeholder": {
+          color: "rgba(53, 40, 31, 0.5)",
         },
-      },
-      invalid: {
-        color: '#fa755a',
-        iconColor: '#fa755a',
       },
     },
     hidePostalCode: true,
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
-      <h1 className={styles.title}>Enter Your Payment Information</h1>
-      <p className={styles.note}>You will only be charged in case of a no-show or late cancellation.</p>
-      <CardElement options={cardElementOptions} className={styles.cardElement} />
-      <input
-        type="text"
-        placeholder="Postal Code"
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 3,
+        width: "100%",
+        maxWidth: "400px",
+        margin: "0 auto",
+        padding: "2rem",
+      }}
+    >
+      <Typography variant="body1" sx={{ color: "#666", mb: 2 }}>
+        You will only be charged in case of a no-show or late cancellation.
+      </Typography>
+
+      <Box
+        sx={{
+          p: 2,
+          border: "1px solid rgba(53, 40, 31, 0.2)",
+          borderRadius: 1,
+          mb: 2,
+          "& .StripeElement": {
+            padding: "10px",
+            backgroundColor: "white",
+          },
+          "& .StripeElement--focus": {
+            borderColor: "#35281f",
+            boxShadow: "0 0 0 2px rgba(53, 40, 31, 0.2)",
+          },
+        }}
+      >
+        <CardElement options={cardElementOptions} />
+      </Box>
+
+      <TextField
+        id="postalCode"
+        label="Postal Code"
+        variant="outlined"
         value={postalCode}
         onChange={(e) => setPostalCode(e.target.value)}
         required
-        className={styles.postalCodeInput}
+        fullWidth
+        error={!!error}
+        helperText={error}
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            "&.Mui-focused fieldset": {
+              borderColor: "#35281f",
+            },
+          },
+          "& label.Mui-focused": {
+            color: "#35281f",
+          },
+        }}
       />
-      {error && <div className={styles.error}>{error}</div>}
-      {success && <div className={styles.success}>Payment successful!</div>}
-      <button type="submit" disabled={!stripe} className={styles.submitButton}>
-        Pay
-      </button>
-      <button type="button" onClick={handleNext} className={styles.nextButton}>
-        Next
-      </button>
-    </form>
+
+      <Button
+        type="submit"
+        variant="contained"
+        disabled={!stripe || loading}
+        sx={{
+          mt: 2,
+          backgroundColor: "#35281f",
+          color: "#fafafa",
+          "&:hover": {
+            backgroundColor: "#fafafa",
+            color: "#35281f",
+          },
+        }}
+      >
+        {loading ? "Processing..." : "Submit Payment Details"}
+      </Button>
+
+      {success && (
+        <Typography color="success" sx={{ mt: 2 }}>
+          Payment details saved successfully!
+        </Typography>
+      )}
+    </Box>
   );
 }
