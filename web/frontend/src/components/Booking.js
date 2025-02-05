@@ -1,20 +1,19 @@
-import React, { useState } from "react";
-import { useRouter } from 'next/router';
+import React, { useEffect, useState } from "react";
 import styles from "../styles/Booking.module.css";
 import SelectService from "./SelectService";
 import ChooseBarber from "./ChooseBarber";
 import PersonalInfo from "./PersonalInfo";
-import PaymentForm from "./PaymentForm";
+import PaymentForm from "./paymentForm";
 import Confirmation from "./Confirmation";
 import ChooseDateTime from "./ChooseDateTime";
 
 const STEPS = {
-  SERVICES: "services",
-  BARBERS: "barbers",
-  DATETIME: "datetime",
-  INFO: "info",
-  PAYMENT: "payment",
-  CONFIRMATION: "confirmation",
+  SERVICES: 1,
+  BARBERS: 2,
+  DATETIME: 3,
+  INFO: 4,
+  PAYMENT: 5,
+  CONFIRMATION: 6,
 };
 
 export default function BookingPopUp({ isOpen, onClose }) {
@@ -28,59 +27,95 @@ export default function BookingPopUp({ isOpen, onClose }) {
     email: "",
     address: "",
     phone: "",
-    postalCode: ""
+    postalCode: "",
+    paymentMethod: null,
   });
-  const router = useRouter();
+
+  const setTitle = (currentStep) => {
+    switch (currentStep) {
+      case STEPS.SERVICES:
+        return "Select a service";
+      case STEPS.BARBERS:
+        return "Choose a barber";
+      case STEPS.DATETIME:
+        return "Choose a Time";
+      case STEPS.INFO:
+        return "Enter your information";
+      case STEPS.PAYMENT:
+        return "Enter payment information";
+      case STEPS.CONFIRMATION:
+        return "Confirmation";
+      default:
+        return "";
+    }
+  };
 
   const handleServiceSelect = (service) => {
-    setFormData({ ...formData, service });
+    setFormData((prev) => ({ ...prev, service }));
     setCurrentStep(STEPS.BARBERS);
   };
 
   const handleBarberSelect = (barber) => {
-    setFormData({ ...formData, barber });
+    setFormData((prev) => ({ ...prev, barber }));
     setCurrentStep(STEPS.DATETIME);
   };
 
   const handleDateTimeSelect = (date, time) => {
-    setFormData({ ...formData, date, time });
+    setFormData((prev) => ({ ...prev, date, time }));
     setCurrentStep(STEPS.INFO);
   };
 
   const handleInfoSubmit = (info) => {
-    setFormData({ ...formData, ...info });
+    setFormData((prev) => ({ ...prev, ...info }));
     setCurrentStep(STEPS.PAYMENT);
   };
 
-  const handlePaymentSuccess = () => {
-    console.log("Payment successful, transitioning to confirmation step");
+  const handlePaymentSuccess = (paymentMethod) => {
+    setFormData((prev) => ({ ...prev, paymentMethod }));
     setCurrentStep(STEPS.CONFIRMATION);
   };
 
   const renderStep = () => {
-    console.log("Current step:", currentStep);
     switch (currentStep) {
       case STEPS.SERVICES:
-        return <SelectService onServiceSelect={handleServiceSelect} />;
-
-      case STEPS.BARBERS:
-        return <ChooseBarber onBarberSelect={handleBarberSelect} />;
-
-      case STEPS.DATETIME:
-        return <ChooseDateTime onNext={handleDateTimeSelect} />;
-
-      case STEPS.INFO:
-        return <PersonalInfo onNext={handleInfoSubmit} />;
-
-      case STEPS.PAYMENT:
         return (
-          <div>
-            <PaymentForm onSuccess={handlePaymentSuccess} />
-          </div>
+          <SelectService
+            onServiceSelect={handleServiceSelect}
+            selectedService={formData.service}
+          />
         );
-
+      case STEPS.BARBERS:
+        return (
+          <ChooseBarber
+            onBarberSelect={handleBarberSelect}
+            selectedBarber={formData.barber}
+          />
+        );
+      case STEPS.DATETIME:
+        return (
+          <ChooseDateTime
+            onNext={handleDateTimeSelect}
+            selectedDate={formData.date}
+            selectedTime={formData.time}
+          />
+        );
+      case STEPS.INFO:
+        return (
+          <PersonalInfo
+            onNext={handleInfoSubmit}
+            initialData={{
+              fullName: formData.fullName,
+              email: formData.email,
+              address: formData.address,
+              phone: formData.phone,
+              postalCode: formData.postalCode,
+            }}
+          />
+        );
+      case STEPS.PAYMENT:
+        return <PaymentForm onSuccess={handlePaymentSuccess} />;
       case STEPS.CONFIRMATION:
-        return <Confirmation />;
+        return <Confirmation bookingData={formData} />;
       default:
         return null;
     }
@@ -89,10 +124,21 @@ export default function BookingPopUp({ isOpen, onClose }) {
   return (
     <div className={`${styles.overlay} ${isOpen ? styles.visible : ""}`}>
       <div className={`${styles.bookingPopUp} ${isOpen ? styles.visible : ""}`}>
-        <button className={styles.closeButton} onClick={onClose}>
-          ×
-        </button>
-        {renderStep()}
+        <div className={styles.bookingNav}>
+          <h2>{setTitle(currentStep)}</h2>
+          <button className={styles.closeButton} onClick={onClose}>
+            ×
+          </button>
+          {currentStep !== STEPS.SERVICES && (
+            <button
+              className={styles.backButton}
+              onClick={() => setCurrentStep((prev) => prev - 1)}
+            >
+              Back
+            </button>
+          )}
+        </div>
+        <div className={styles.bookingContent}>{renderStep()}</div>
       </div>
     </div>
   );
