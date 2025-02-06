@@ -127,10 +127,7 @@ export default function Home() {
               <hr></hr>
             </section>
 
-            <section
-              id="products"
-              className={`${styles.section} ${newsletterStyles.sectionBG}`}
-            >
+            <section className={`${styles.section} ${styles.newsletter}`}>
               <NewsLetter />
             </section>
             <Footer />

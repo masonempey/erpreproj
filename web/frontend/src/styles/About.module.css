@@ -1,15 +1,18 @@
 .about {
-  background-image: url('/images/about_us.png');
+  background-image: linear-gradient(
+      rgba(53, 40, 31, 0.25),
+      rgba(53, 40, 31, 0.25)
+    ),
+    url("/images/about_us.png");
   background-size: cover;
   background-position: center;
   padding: 10vh 2vw;
   position: relative;
-  color: white;
 }
 
 .title {
   font-size: 4vw;
-  color: black;
+  color: #35281f;
   position: absolute;
   top: 10vh;
   left: 8vw;
@@ -20,7 +23,7 @@
   font-size: 2vw;
   width: 35vw;
   word-wrap: break-word;
-  color: black;
+  color: #35281f;
   position: absolute;
   top: 18vh;
   left: 16vh;
