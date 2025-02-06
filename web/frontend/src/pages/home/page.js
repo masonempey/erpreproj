@@ -18,38 +18,38 @@ export default function Home() {
   // test data for the reviews section
   const testData = [
     {
+      cusName: "John Doe",
       image:
         "https://cdn.iconscout.com/icon/premium/png-512-thumb/avatar-1810626-1536314.png?f=webp&w=512",
       review: "Amazing service! I will definitely come back.",
       numsReviews: 5,
+      stars: 3
     },
     {
+      cusName: "John Brody",
+      image:
+        "https://cdn.iconscout.com/icon/premium/png-512-thumb/avatar-1810626-1536314.png?f=webp&w=512",
+      review: "Amazing service! I will definitely come back.",
+      numsReviews: 100,
+      stars: 4
+    },
+    {
+      cusName: "Alice Jane",
       image:
         "https://cdn.iconscout.com/icon/premium/png-512-thumb/avatar-1810626-1536314.png?f=webp&w=512",
       review:
         "Its a great place to get a haircut. The barbers are very friendly and professional.",
       numsReviews: 3,
+      stars: 1
     },
     {
-      image:
-        "https://cdn.iconscout.com/icon/premium/png-512-thumb/avatar-1810626-1536314.png?f=webp&w=512",
-      review:
-        "Its a great place to get a haircut. The barbers are very friendly and professional.",
-      numsReviews: 3,
-    },
-    {
-      image:
-        "https://cdn.iconscout.com/icon/premium/png-512-thumb/avatar-1810626-1536314.png?f=webp&w=512",
-      review:
-        "Its a great place to get a haircut. The barbers are very friendly and professional.",
-      numsReviews: 3,
-    },
-    {
+      cusName: "Karen Mather",
       image:
         "https://cdn.iconscout.com/icon/premium/png-512-thumb/avatar-1810626-1536314.png?f=webp&w=512",
       review:
         "If you're looking for a barbershop that truly stands out, this is the place. The barbers here pay incredible attention to detail and really take the time to understand exactly what you're looking for. They listen carefully, offer helpful suggestions, and make sure you're happy with the result. I've been coming here for a few years now and I've never been disappointed. The atmosphere is great, the barbers are friendly and professional, and the prices are very reasonable. I highly recommend this place to anyone looking for a top-notch haircut.",
       numsReviews: 2,
+      stars: 4.5
     },
   ];
 
@@ -108,9 +108,11 @@ export default function Home() {
               <div id="cardsWrapper" className={reviewStyles.cardsWrapper}>
                 {testData.map((data) => (
                   <CustomerReviewCard
+                    cusName={data.cusName}
                     image={data.image}
                     review={data.review}
                     numsReviews={data.numsReviews}
+                    stars={data.stars}
                   />
                 ))}
               </div>
@@ -122,7 +124,23 @@ export default function Home() {
                   marginTop: "40px",
                 }}
               >
-                <Pagination count={10} variant="outlined" size="large" />
+                <Pagination
+                    sx={{
+                      "& .MuiPaginationItem-root": {
+                        color: "#35281f", 
+                        borderColor: "#35281f", 
+                      },
+                      "& .MuiPaginationItem-root.Mui-selected": {
+                        backgroundColor: "#35281f", 
+                        color: "white", 
+                        borderColor: "#35281f", 
+                      },
+                      "& .MuiPaginationItem-root:hover": {
+                        backgroundColor: "#35281f", 
+                        color: "white",
+                      },
+                    }}
+                count={10} size="large"/>
               </Stack>
               <hr></hr>
             </section>

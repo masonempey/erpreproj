@@ -1,11 +1,13 @@
 /* Reviews section styling */
 .reviews {
+  background: linear-gradient(-40deg, #fafafa 50%, #35281f 50%);
+  background-size: cover;
+  background-position: center;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 80px;
 }
 .reviews hr {
   position: relative;
@@ -16,17 +18,20 @@
   border: 1px solid #e1e1e1;
 }
 .reviewHeader {
-  position: fix;
+
+  background-color: #fafafa;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   margin: auto;
-  box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   border-radius: 60px;
-  padding-top: 0px;
-  padding-left: 30%;
-  padding-right: 30%;
+  border: black solid 3px;
+  text-align: center;
+  width: 80%;
+  max-width: 600px;
 }
 .reviewHeader h2 {
   position: relative;
@@ -96,6 +101,7 @@
   margin: 0px;
 }
 .card {
+  background-color: #fafafa;
   max-width: 300px;
   padding: 20px;
   height: 500px;
