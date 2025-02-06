@@ -15,25 +15,25 @@
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
 .main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    justify-content: flex-start;
-  }
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  justify-content: flex-start;
+}
 
 .footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #f1f1f1;
-  }
+  text-align: center;
+  padding: 20px;
+  background-color: #fafafa;
+}
 
 .header {
   display: flex;
@@ -78,7 +78,6 @@
 
 .section {
   width: 100%;
-  padding: 50px 20px;
   box-sizing: border-box;
 }
 
@@ -93,12 +92,23 @@
 }
 
 .cardsWrapper {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
- }
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
 
- .cardImage {
-    width: 100px;
-    height: auto;
- }
+.cardImage {
+  width: 100px;
+  height: auto;
+}
+
+.newsletter {
+  width: 100%;
+  background: linear-gradient(135deg, #fafafa 50%, #35281f 50%);
+  padding: 6rem 2rem;
+  color: #35281f;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
