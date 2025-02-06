@@ -23,7 +23,7 @@ export default function Home() {
         "https://cdn.iconscout.com/icon/premium/png-512-thumb/avatar-1810626-1536314.png?f=webp&w=512",
       review: "Amazing service! I will definitely come back.",
       numsReviews: 5,
-      stars: 3
+      stars: 3,
     },
     {
       cusName: "John Brody",
@@ -31,7 +31,7 @@ export default function Home() {
         "https://cdn.iconscout.com/icon/premium/png-512-thumb/avatar-1810626-1536314.png?f=webp&w=512",
       review: "Amazing service! I will definitely come back.",
       numsReviews: 100,
-      stars: 4
+      stars: 4,
     },
     {
       cusName: "Alice Jane",
@@ -40,7 +40,7 @@ export default function Home() {
       review:
         "Its a great place to get a haircut. The barbers are very friendly and professional.",
       numsReviews: 3,
-      stars: 1
+      stars: 1,
     },
     {
       cusName: "Karen Mather",
@@ -49,7 +49,7 @@ export default function Home() {
       review:
         "If you're looking for a barbershop that truly stands out, this is the place. The barbers here pay incredible attention to detail and really take the time to understand exactly what you're looking for. They listen carefully, offer helpful suggestions, and make sure you're happy with the result. I've been coming here for a few years now and I've never been disappointed. The atmosphere is great, the barbers are friendly and professional, and the prices are very reasonable. I highly recommend this place to anyone looking for a top-notch haircut.",
       numsReviews: 2,
-      stars: 4.5
+      stars: 4.5,
     },
   ];
 
@@ -73,7 +73,7 @@ export default function Home() {
                 fontStyle: "normal",
                 padding: "1rem",
                 fontSize: "1.25rem",
-                margin: "3rem",
+                marginBottom: "15rem",
                 textTransform: "none",
                 "&:hover": {
                   backgroundColor: "#35281f",
@@ -125,22 +125,24 @@ export default function Home() {
                 }}
               >
                 <Pagination
-                    sx={{
-                      "& .MuiPaginationItem-root": {
-                        color: "#35281f", 
-                        borderColor: "#35281f", 
-                      },
-                      "& .MuiPaginationItem-root.Mui-selected": {
-                        backgroundColor: "#35281f", 
-                        color: "white", 
-                        borderColor: "#35281f", 
-                      },
-                      "& .MuiPaginationItem-root:hover": {
-                        backgroundColor: "#35281f", 
-                        color: "white",
-                      },
-                    }}
-                count={10} size="large"/>
+                  sx={{
+                    "& .MuiPaginationItem-root": {
+                      color: "#35281f",
+                      borderColor: "#35281f",
+                    },
+                    "& .MuiPaginationItem-root.Mui-selected": {
+                      backgroundColor: "#35281f",
+                      color: "white",
+                      borderColor: "#35281f",
+                    },
+                    "& .MuiPaginationItem-root:hover": {
+                      backgroundColor: "#35281f",
+                      color: "white",
+                    },
+                  }}
+                  count={10}
+                  size="large"
+                />
               </Stack>
               <hr></hr>
             </section>
