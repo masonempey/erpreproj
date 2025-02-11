@@ -38,7 +38,6 @@ export default function Home() {
     }, []);
 
   return (
-    <div className={styles.container}>
       <main className={styles.main}>
         <section className={styles.landing}>
           <header className={styles.header}>
@@ -140,7 +139,6 @@ export default function Home() {
           </main>
         </section>
       </main>
-    </div>
   );
 }
 
