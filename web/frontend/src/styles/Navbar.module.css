@@ -29,7 +29,7 @@
 }
 
 .admin {
-  background-color: #35281f;
+  background-color: #2d2d2d;
 }
 
 .navbarLeft .logo {
@@ -93,3 +93,13 @@
   display: flex;
   align-items: center;
 }
+
+
+/* Mobile / Small Screens */
+@media (max-width: 768px) { 
+    /* Could display links with hamburger menu */
+    .navbarCenter {
+        display: none;
+    }
+}
+
