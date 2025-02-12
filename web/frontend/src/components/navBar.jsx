@@ -1,12 +1,19 @@
 import React from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "../pages/firebase/config";
+import { useUser } from "../context/UserContext";
 import styles from "../styles/Navbar.module.css";
 
-const Navbar = ({ user }) => {
+const Navbar = () => {
+  const { user, loading } = useUser();
+
   const handleLogout = async () => {
     await signOut(auth);
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <nav className={styles.navbar} aria-label="Main Navigation">

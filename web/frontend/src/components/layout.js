@@ -1,12 +1,20 @@
-import NavBar from "./navBar";
+import React from "react";
+import { useRouter } from "next/router";
+import Navbar from "./navBar";
 import Footer from "./footer";
 import styles from "../styles/Layout.module.css";
 
-export default function Layout({ children }) {
+const Layout = ({ children }) => {
+  const router = useRouter();
+  const isLoginPage = router.pathname === "/login";
+
   return (
-    <div className={styles.container}>
-      <NavBar />
-        <div className={styles.content}>{children}</div>
+    <div className={styles.layout}>
+      {!isLoginPage && <Navbar />}
+      <main className={styles.main}>{children}</main>
+      <Footer />
     </div>
   );
-}
+};
+
+export default Layout;

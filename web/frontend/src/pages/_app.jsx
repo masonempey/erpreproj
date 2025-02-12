@@ -3,9 +3,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import "../styles/globals.css";
-import { getAuth } from "firebase/auth";
-import { onAuthStateChanged } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { UserProvider } from "../context/UserContext";
 import Layout from "../components/layout";
 
 const stripePromise = loadStripe(
@@ -13,25 +11,17 @@ const stripePromise = loadStripe(
 );
 
 const theme = createTheme();
-const auth = getAuth();
+
 function MyApp({ Component, pageProps }) {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
   return (
     <Elements stripe={stripePromise}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Layout>
-          <Component {...pageProps} user={user} />
-        </Layout>
+        <UserProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </UserProvider>
       </ThemeProvider>
     </Elements>
   );

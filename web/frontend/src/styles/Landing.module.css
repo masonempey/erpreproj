@@ -1,4 +1,13 @@
-.landing {
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  justify-content: flex-start;
+}
+
+.header {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,36 +21,6 @@
   width: 100%;
   min-height: 100vh;
   justify-content: flex-start;
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  justify-content: flex-start;
-}
-
-.footer {
-  text-align: center;
-  padding: 20px;
-  background-color: #fafafa;
-}
-
-.header {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  position: relative;
 }
 
 .logo {
@@ -67,48 +46,4 @@
   color: #fafafa;
   font-family: "Oleo Script";
   font-weight: bold;
-}
-
-.random {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.section {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.section h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.section p {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.cardsWrapper {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.cardImage {
-  width: 100px;
-  height: auto;
-}
-
-.newsletter {
-  width: 100%;
-  background: linear-gradient(135deg, #fafafa 50%, #35281f 50%);
-  padding: 6rem 2rem;
-  color: #35281f;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 50vh;
 }
