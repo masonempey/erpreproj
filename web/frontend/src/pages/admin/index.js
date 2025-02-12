@@ -1,34 +1,35 @@
 "use client";
 import { useEffect, useState } from "react";
-import styles from "../../styles/DateTime.module.css";
-// import { useUser } from "@auth0/nextjs-auth0/client";
-import Badge from "@mui/material/Badge";
-import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import Calendar from "./components/Calendar";
 import dayjs from "dayjs";
-import { PickersDay } from "@mui/x-date-pickers/PickersDay";
+import styles from "../../styles/Admin.module.css";
+
 
 export default function Admin() {
   const [barber, setBarber] = useState(null);
   const [appointments, setAppointments] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(null);
-  // const { user, isLoading } = useUser();
+  const [selectedDate, setSelectedDate] = useState(dayjs());
 
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
+  // Fetch current barber and replace placeholder
+  const placeholderBarber = 
+   { 
+    _id: "67900a087dbbc690cb282427",
+    name: "George",
+    email: "george@gmail.com",
+    phone: "123-456-7890",
+    role: "barber"
+  };
 
   // Fetch current barber from the API
   useEffect(() => {
     const fetchBarber = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/barbers/Simon");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const currentUser = await response.json();
-        setBarber(currentUser);
+        // const response = await fetch("http://localhost:5000/api/barbers/george");
+        // if (!response.ok) {
+        //   throw new Error("Network response was not ok");
+        // }
+        // const currentUser = await response.json();
+        setBarber(placeholderBarber);
       } catch (error) {
         console.error("Error fetching barber:", error);
       }
@@ -39,12 +40,10 @@ export default function Admin() {
 
   // Fetch appointments when barber is set
   useEffect(() => {
-    if (!barber || !barber._id) return;
-
     const fetchAppointments = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/appointments/barbers/${barber._id}`
+          `http://localhost:5000/api/appointments/barbers/${placeholderBarber._id}`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -59,54 +58,51 @@ export default function Admin() {
     fetchAppointments();
   }, [barber]);
 
-  // Map appointments to dayjs objects
+  const handleSetSelectedDate = (date) => {
+    setSelectedDate(date);
+  }
+
+  // Map appointments to dayjs objects for the calendar
   const appointmentDays = appointments.map((appointment) => dayjs(appointment.date));
 
+  const appointmentFound = appointmentDays.some((date) =>
+    date.isSame(selectedDate, "day")
+  );
+
   return (
-    <div>
-      {barber ? <h1>Welcome {barber.name}!</h1> : <h1>Loading Barber...</h1>}
+    <main className={styles.dashboard}>
+      <div className={styles.header}>
+        {barber ? (<h1 className={styles.welcome}>Welcome {barber.name}!</h1> ) : null}
+      </div>
+      <section className={styles.view}>
+        <div className={styles.calendar}>
+          <Calendar handleSetSelectedDate={handleSetSelectedDate} selectedDate={selectedDate} appointmentDays={appointmentDays}/>
+        </div>
 
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DateCalendar
-          disablePast
-          showDaysOutsideCurrentMonth
-          fixedWeekNumber={6}
-          value={selectedDate}
-          onChange={(newValue) => setSelectedDate(newValue)}
-          views={["day"]}
-          slots={{
-            day: (props) => {
-              const { day, outsideCurrentMonth, ...other } = props;
-              const isSelected =
-                !outsideCurrentMonth &&
-                appointmentDays.some((date) => date.isSame(day, "day"));
-
-              return (
-                <Badge overlap="circular" badgeContent={isSelected ? "🔴" : undefined}>
-                  <PickersDay {...other} day={day} />
-                </Badge>
-              );
-            },
-          }}
-          className={styles.calendar}
-        />
-      </LocalizationProvider>
-
-      {selectedDate &&
-        appointmentDays.some((date) => date.isSame(selectedDate, "day")) && (
-          <div>
-            <p>View Appointments on {selectedDate.format("MMMM DD YYYY")}</p>
-            <ul>
-              {appointments
-                .filter((appointment) => dayjs(appointment.date).isSame(selectedDate, "day"))
-                .map((appointment) => (
-                  <li key={appointment._id}>
-                    Customer: {appointment.customerName}, Haircut Type: {appointment.serviceType}, Time: {appointment.time}
-                  </li>
-                ))}
-            </ul>
-          </div>
-        )}
-    </div>
+        <div className={styles.appointments}>
+          {appointmentFound ? (
+              <div>
+                <h1 className={styles.appointmentHeader}>View Appointments on</h1>
+                <h1 className={styles.appointmentHeader}>{selectedDate.format("MMMM DD YYYY")}</h1>
+                <ul>
+                  {appointments
+                    .filter((appointment) => dayjs(appointment.date).isSame(selectedDate, "day"))
+                    .map((appointment) => (
+                      <li key={appointment._id} className={styles.appointment}>
+                        Customer: {appointment.customerName}, Haircut Type: {appointment.serviceType}, Time: {appointment.time}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            ) : (
+              <div>
+                <h1 className={styles.appointmentHeader}>No Appointments on</h1>
+                <h1 className={styles.appointmentHeader}>{selectedDate.format("MMMM DD YYYY")}</h1>
+              </div>
+            )
+          }
+        </div>
+      </section>  
+    </main>
   );
 }
