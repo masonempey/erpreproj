@@ -1,23 +1,21 @@
 "use client";
 
-import React from "react";
-import { useState } from "react";
-import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { auth } from "../firebase/config";
+import React, { useState } from "react";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const [createUserWithEmailAndPassword] =
-    useCreateUserWithEmailAndPassword(auth);
+  const [error, setError] = useState(""); 
+  const auth = getAuth();
 
   const handleSignUp = async () => {
     try {
-      const res = await createUserWithEmailAndPassword(email, password);
+      const res = await createUserWithEmailAndPassword(auth, email, password);
       console.log(res);
       setEmail("");
       setPassword("");
+      setError(""); 
     } catch (error) {
       setError(error.message);
     }
@@ -26,6 +24,7 @@ const Login = () => {
   return (
     <div>
       <h1>Sign Up</h1>
+      {error && <p style={{ color: "red" }}>{error}</p>} {/* <-- Display error if any */}
       <input
         type="email"
         placeholder="Email"
