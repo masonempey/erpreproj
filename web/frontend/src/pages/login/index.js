@@ -70,7 +70,12 @@ const Login = () => {
           variant="h4"
           align="center"
           gutterBottom
-          sx={{ fontFamily: "Lato", fontWeight: 800, fontStyle: "normal" }}
+          sx={{
+            fontFamily: "Lato",
+            fontWeight: 800,
+            fontStyle: "normal",
+            color: "#35281f",
+          }}
         >
           {isLogin ? "Login" : "Sign Up"}
         </Typography>
