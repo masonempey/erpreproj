@@ -1,9 +1,19 @@
 import React from "react";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { signOut } from "firebase/auth";
+import { auth } from "../pages/firebase/config";
+import { useUser } from "../context/UserContext";
 import styles from "../styles/Navbar.module.css";
 
 const Navbar = () => {
-  const { user, error, isLoading } = useUser();
+  const { user, loading } = useUser();
+
+  const handleLogout = async () => {
+    await signOut(auth);
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <nav className={styles.navbar} aria-label="Main Navigation">
@@ -29,11 +39,11 @@ const Navbar = () => {
         <ul className={styles.navLinks}>
           {user ? (
             <li>
-              <a href="/api/auth/logout">Logout</a>
+              <button onClick={handleLogout}>Logout</button>
             </li>
           ) : (
             <li>
-              <a href="/api/auth/login">Login</a>
+              <a href="/login">Login</a>
             </li>
           )}
         </ul>
