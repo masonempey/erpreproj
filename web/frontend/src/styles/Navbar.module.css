@@ -15,7 +15,6 @@
   align-items: center;
   background-color: transparent;
   padding: 1rem 2rem;
-  position: absolute;
   width: 100vw;
   top: 0;
   left: 0;
@@ -26,6 +25,7 @@
   font-weight: 800;
   font-style: normal;
   transform: none;
+  position: fixed;
 }
 
 .admin {

@@ -5,10 +5,14 @@
   align-items: center;
   background-color: #35281f;
   color: white;
-  padding: 2rem, 0;
+  padding: 2rem 0;
   text-align: center;
   width: 100%;
   border-top: 1px solid #fafafa;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 .contact {
