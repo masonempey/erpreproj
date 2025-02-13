@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import Calendar from "./components/Calendar";
+import Calendar from "../../components/Calendar";
 import dayjs from "dayjs";
 import styles from "../../styles/Admin.module.css";
 
