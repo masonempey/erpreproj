@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-// const bcrypt = require("bcryptjs");
-// const jwt = require("jsonwebtoken");
 
 const UserSchema = new mongoose.Schema(
   {
@@ -18,28 +16,23 @@ const UserSchema = new mongoose.Schema(
       required: false,
       unique: false,
     },
-    address: {
-      type: String,
-      required: false,
-      unique: false,
-    },
-    city: {
-      type: String,
-      required: false,
-      unique: false,
-    },
-    postalcode: {
-      type: String,
-      required: false,
-      unique: false,
-    },
     password: {
       type: String,
       required: true,
     },
+    lastLogin: {
+      type: Date,
+      required: false,
+      unique: false,
+    },
     phoneNumber: {
       type: String,
       required: true,
+    },
+    address: {
+      type: String,
+      required: false,
+      unique: false,
     },
     roleId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -50,14 +43,6 @@ const UserSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Appointment",
-      },
-    ],
-    tokens: [
-      {
-        token: {
-          type: String,
-          required: true,
-        },
       },
     ],
   },
