@@ -20,6 +20,8 @@ const Navbar = () => {
     return <div>Loading...</div>;
   }
 
+  const isAdmin = true;
+
   return (
     <nav className={`${styles.navbar} ${isAdmin ? styles.admin : ""}`} aria-label="Main Navigation">
       <div className={styles.navbarLeft}>
