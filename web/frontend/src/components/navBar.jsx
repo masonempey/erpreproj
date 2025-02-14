@@ -15,22 +15,14 @@ const Navbar = () => {
     return <div>Loading...</div>;
   }
 
-  const isAdmin = true;
-
   return (
-    <nav className={`${styles.navbar} ${isAdmin ? styles.admin : ""}`} aria-label="Main Navigation">
+    <nav className={styles.navbar} aria-label="Main Navigation">
       <div className={styles.navbarLeft}>
-        { !isAdmin ? (
         <a href="/" className={styles.logo}>
           erpre
-        </a> ) : (
-          <a href="/admin" className={styles.logo}>
-          erpre
         </a>
-        )}
       </div>
       <div className={styles.navbarCenter}>
-        {!isAdmin ? (
         <ul className={styles.navLinks}>
           <li>
             <a href="#home">Home</a>
@@ -42,17 +34,6 @@ const Navbar = () => {
             <a href="#book">Book Now</a>
           </li>
         </ul>
-        ) : ( <ul className={styles.navLinks}>
-          <li>
-            <a href="#profile">Profile</a>
-          </li>
-          <li>
-            <a href="#appointments">Appointments</a>
-          </li>
-          <li>
-            <a href="#reports">Reports</a>
-          </li>
-        </ul> )}
       </div>
       <div className={styles.navbarRight}>
         <ul className={styles.navLinks}>
