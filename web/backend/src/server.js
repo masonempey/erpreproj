@@ -8,7 +8,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-
 //Allow express to read JSON data from body
 app.use(express.json());
 //Enables cors for any requests coming from the frontend origin
@@ -39,6 +38,7 @@ const barberRoutes = require("./routes/barbers");
 const serviceRoutes = require("./routes/services");
 const stripeRoutes = require("./routes/stripe");
 const reviewRoutes = require("./routes/reviews");
+const emailRoutes = require("./routes/email");
 
 // Use Routes
 app.use("/api/appointments", appointmentRoutes);
@@ -47,7 +47,7 @@ app.use("/api/barbers", barberRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/payment", stripeRoutes);
 app.use("/api/reviews", reviewRoutes);
-
+app.use("/api/email", emailRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
