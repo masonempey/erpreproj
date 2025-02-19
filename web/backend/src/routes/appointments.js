@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 const Appointment = require("../models/appointmentModel");
 const User = require("../models/userModel");
+const Service = require("../models/serviceModel");
 const logger = require("../middleware/logger");
-const mongoose = require("mongoose"); // Testing Simon
+const mongoose = require("mongoose");
 
 ///Setup middleware to use the logger function for my routes
 router.use(logger);
@@ -34,36 +35,49 @@ router.post("/", async (req, res) => {
       userId,
       barberId,
       serviceType,
+      guestDetails,
     } = req.body;
 
-    if (
-      !customerName ||
-      !barberName ||
-      !date ||
-      !time ||
-      !userId ||
-      !barberId ||
-      !serviceType
-    ) {
+    console.log("Request payload:", req.body);
+
+    if (!barberName || !date || !time || !barberId || !serviceType) {
+      console.log("Missing required fields");
       return res.status(400).json({ message: "All fields are required" });
     }
+
+    const service = await Service.findOne({ serviceName: serviceType });
+    if (!service) {
+      return res.status(400).json({ message: "Service not found" });
+    }
+
+    // COPILOT REFERENCE: Prompt: use the data and time and combine them to create 1 total date time object
+    const dateTime = new Date(date);
+    const [timeHour, timeMinute] = time.split(/[: ]/);
+    let hour = parseInt(timeHour);
+    if (time.includes("PM") && hour !== 12) {
+      hour += 12;
+    } else if (time.includes("AM") && hour === 12) {
+      hour = 0;
+    }
+    dateTime.setUTCHours(hour);
+    dateTime.setUTCMinutes(parseInt(timeMinute));
 
     // Create a new appointment object
     const newAppointment = new Appointment({
       customerName,
       barberName,
-      date,
-      time,
+      date: dateTime,
       userId,
       barberId,
-      serviceType,
+      services: [service._id],
+      guestDetails,
     });
 
     const appointmentCreated = await newAppointment.save();
 
     try {
-      await User.findByIdAndUpdate(
-        userId,
+      await User.findOneAndUpdate(
+        { userId: userId },
         { $push: { appointments: appointmentCreated._id } },
         { new: true, useFindAndModify: false }
       );
@@ -76,8 +90,11 @@ router.post("/", async (req, res) => {
         );
     }
 
-    res.status(200).json({ message: "appointment created" });
-    console.log("appointment created for", customerName);
+    res.status(200).json({
+      message: "Appointment created",
+      appointment: appointmentCreated,
+    });
+    console.log("Appointment created for", customerName || guestDetails.name);
   } catch (err) {
     console.error("Error creating appointment:", err);
     res
@@ -210,12 +227,10 @@ router.put("/:id", async (req, res) => {
       return res.status(404).json({ message: "Appointment not found" });
     }
 
-    res
-      .status(200)
-      .json({
-        message: "Appointment updated successfully",
-        appointment: updatedAppointment,
-      });
+    res.status(200).json({
+      message: "Appointment updated successfully",
+      appointment: updatedAppointment,
+    });
   } catch (err) {
     res
       .status(500)
