@@ -3,12 +3,12 @@ const router = express.Router();
 const User = require("../models/userModel");
 const Role = require("../models/roleModel");
 const logger = require("../middleware/logger");
-const bcrypt = require("bcryptjs");
-const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
+const admin = require("../middleware/firebase-admin");
 
 //Setup middleware to use the logger function for my routes
 router.use(logger);
+
 
 // Gets all users
 router.get("/", async (req, res) => {
@@ -22,46 +22,105 @@ router.get("/", async (req, res) => {
       .json({ message: "Error Fetching Users", error: err.message });
   }
 });
-
-//Creates new user
-router.post("/register", async (req, res) => {
+// Check if user that login with google exist?
+router.post("/validate", async (req, res) => {
   try {
-    const { email, password, roleId, phoneNumber } = req.body;
+    const { uid } = req.body;
+    const user = await User.findOne({ userId: uid });
+    res.status(200).json({ exists: !!user });
+  } catch (error) {
+    console.error("Error checking user:", error);
+    res.status(500).json({ message: "Error checking user", error: error.message });
+  }
+});
 
-    if (!email || !password || !phoneNumber) {
+// Create google users with no password and phone number
+router.post("/googleregister", async (req, res) => {
+  try {
+    const { email, uid, name, phoneNumber } = req.body;
+
+    if (!email || !uid || !name) {
       return res.status(400).json({ message: "All fields are required" });
     }
+
+    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
-    //Generate a hashedPassword (encrypted) from the users given password
-    const hashedPassword = await bcrypt.hash(password, 10);
 
-    //find the default role
+    // Create new user in MongoDB
     const defaultRole = await Role.findOne({ roleType: "Customer" });
-
-    //Create the newUser
     const newUser = new User({
-      //Using uuidv4 we can create a unique userId and assign that to the user
-      userId: uuidv4(),
+      userId: uid,
       email,
-      password: hashedPassword,
-      //If no role given then select the default role via its objectId
-      roleId: roleId ? mongoose.Types.ObjectId(roleId) : defaultRole._id,
-      phoneNumber,
+      name,
+      lastLogin: new Date(),
+      roleId: defaultRole ? defaultRole._id : null,
+      phoneNumber: phoneNumber || "",
     });
-    //Save the user to the mongoDB
-    const savedUser = await newUser.save();
-    res
-      .status(201)
-      .json({ message: "User created successfully", user: savedUser });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error Creating User", error: err.message });
+
+    await newUser.save();
+    return res.status(201).json({ message: "User created successfully", userId: uid });
+  } catch (error) {
+    console.error("Error in /register/google route:", error);
+    return res.status(500).json({ message: "Error creating user", error: error.message });
   }
 });
+
+//Creates new user
+router.post("/register", async (req, res) => {
+  try {
+    const { email, password, phoneNumber } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // error handling if users register with the same email
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    try {
+      // create new users on firebase auth
+      const firebaseUser = await admin.auth().createUser({
+        email,
+        password,
+      });
+      
+      // get the firebase uid
+      const firebaseUID = firebaseUser.uid;
+      const defaultRole = await Role.findOne({ roleType: "Customer" });
+
+      // create new users in mongodb using uid from firebase auth
+      // since we don't have user name right now so I just assign the name is the email
+      // phone number is required
+      const newUser = new User({
+        userId: firebaseUID,
+        email,
+        name: email,
+        lastLogin: new Date(),
+        roleId: defaultRole ? defaultRole._id : null,
+        phoneNumber: phoneNumber || "",
+      });
+
+      await newUser.save();
+      return res.status(201).json({ message: "User created successfully", userId: firebaseUID });
+
+    } catch (firebaseError) {
+      console.error("Error creating user in Firebase:", firebaseError);
+      return res.status(500).json({ message: "Error creating user in Firebase", error: firebaseError.message });
+    }
+
+  } catch (err) {
+    console.error("Error in /register route:", err);
+    return res.status(500).json({ message: "Error Creating User", error: err.message });
+  }
+});
+
+
 
 //Gets user by id
 router.get("/:id", async (req, res) => {
