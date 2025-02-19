@@ -1,16 +1,18 @@
-const auth = require("../../config/firebase_config.js");
+const admin = require("../middleware/firebase-admin");
 
+// Verify token for some endpoints such as booking appointments,etc or some page need to be protected like profile page 
 const VerifyToken = async (req, res, next) => {
-    const token = req.headers.authorization.split(" ")[1];
-  
+    const token = req.headers.authorization;
+    if(!token){
+      return res.status(401).send("Unauthorized");
+    }
+
     try {
-      const decodeValue = await auth.verifyIdToken(token);
-      if (decodeValue) {
-        req.user = decodeValue;
-        return next();
-      }
+      const decodeValue = await admin.auth().verifyIdToken(token);
+      req.user = decodeValue;
+      next();
     } catch (e) {
-      return res.json({ message: "Internal Error" });
+      return res.status(401).send("Unauthorized");
     }
   };
   
