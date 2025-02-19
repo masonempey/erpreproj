@@ -4,13 +4,13 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 
-export default function PersonalInfo({ onNext }) {
+export default function PersonalInfo({ onNext, initialData }) {
   const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    address: "",
-    phone: "",
-    postalCode: "",
+    fullName: initialData.fullName || "",
+    email: initialData.email || "",
+    address: initialData.address || "",
+    phone: initialData.phone || "",
+    postalCode: initialData.postalCode || "",
   });
   const [error, setError] = useState("");
 

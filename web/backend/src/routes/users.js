@@ -9,7 +9,6 @@ const admin = require("../middleware/firebase-admin");
 //Setup middleware to use the logger function for my routes
 router.use(logger);
 
-
 // Gets all users
 router.get("/", async (req, res) => {
   try {
@@ -30,7 +29,9 @@ router.post("/validate", async (req, res) => {
     res.status(200).json({ exists: !!user });
   } catch (error) {
     console.error("Error checking user:", error);
-    res.status(500).json({ message: "Error checking user", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error checking user", error: error.message });
   }
 });
 
@@ -61,10 +62,14 @@ router.post("/googleregister", async (req, res) => {
     });
 
     await newUser.save();
-    return res.status(201).json({ message: "User created successfully", userId: uid });
+    return res
+      .status(201)
+      .json({ message: "User created successfully", userId: uid });
   } catch (error) {
     console.error("Error in /register/google route:", error);
-    return res.status(500).json({ message: "Error creating user", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Error creating user", error: error.message });
   }
 });
 
@@ -89,7 +94,7 @@ router.post("/register", async (req, res) => {
         email,
         password,
       });
-      
+
       // get the firebase uid
       const firebaseUID = firebaseUser.uid;
       const defaultRole = await Role.findOne({ roleType: "Customer" });
@@ -107,27 +112,30 @@ router.post("/register", async (req, res) => {
       });
 
       await newUser.save();
-      return res.status(201).json({ message: "User created successfully", userId: firebaseUID });
-
+      return res
+        .status(201)
+        .json({ message: "User created successfully", userId: firebaseUID });
     } catch (firebaseError) {
       console.error("Error creating user in Firebase:", firebaseError);
-      return res.status(500).json({ message: "Error creating user in Firebase", error: firebaseError.message });
+      return res.status(500).json({
+        message: "Error creating user in Firebase",
+        error: firebaseError.message,
+      });
     }
-
   } catch (err) {
     console.error("Error in /register route:", err);
-    return res.status(500).json({ message: "Error Creating User", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Error Creating User", error: err.message });
   }
 });
-
-
 
 //Gets user by id
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
     // Gets the user from mongo by id
-    const userFound = await User.findById(id);
+    const userFound = await User.findOne({ userId: id });
     if (userFound) {
       res.status(200).json(userFound);
     }
