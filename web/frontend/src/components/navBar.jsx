@@ -1,14 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "../pages/firebase/config";
 import { useUser } from "../context/UserContext";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
+import { deepOrange } from "@mui/material/colors";
+import ProfilePopup from "./ProfilePopup"; // Import the ProfilePopup component
 import styles from "../styles/Navbar.module.css";
 
 const Navbar = () => {
   const { user, loading } = useUser();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const handleLogout = async () => {
-    await signOut(auth);
+  const toggleProfilePopup = () => {
+    setIsProfileOpen(!isProfileOpen);
   };
 
   if (loading) {
@@ -39,7 +44,14 @@ const Navbar = () => {
         <ul className={styles.navLinks}>
           {user ? (
             <li>
-              <button onClick={handleLogout}>Logout</button>
+              <Stack direction="row" spacing={2}>
+                <Avatar
+                  sx={{ bgcolor: deepOrange[500], visibility: isProfileOpen ? 'hidden' : 'visible' }}
+                  onClick={toggleProfilePopup}
+                >
+                  {user.displayName ? user.displayName.charAt(0) : "U"}
+                </Avatar>
+              </Stack>
             </li>
           ) : (
             <li>
@@ -48,6 +60,7 @@ const Navbar = () => {
           )}
         </ul>
       </div>
+      {isProfileOpen && <ProfilePopup user={user} onClose={toggleProfilePopup} />}
     </nav>
   );
 };
