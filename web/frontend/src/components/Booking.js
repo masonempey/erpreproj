@@ -46,15 +46,15 @@ export default function BookingPopUp({ isOpen, onClose }) {
   const setTitle = (currentStep) => {
     switch (currentStep) {
       case STEPS.SERVICES:
-        return "Select a service";
+        return "Select a Service";
       case STEPS.BARBERS:
-        return "Choose a barber";
+        return "Choose a Barber";
       case STEPS.DATETIME:
-        return "Choose a Time";
+        return "Choose a Date and Time";
       case STEPS.INFO:
-        return "Enter your information";
+        return "Enter Your Information";
       case STEPS.PAYMENT:
-        return "Enter payment information";
+        return "Enter Payment Information";
       case STEPS.CONFIRMATION:
         return "Confirmation";
       default:
