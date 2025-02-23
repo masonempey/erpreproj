@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useUser } from "../context/UserContext";
 import styles from "../styles/Booking.module.css";
 import SelectService from "./SelectService";
 import ChooseBarber from "./ChooseBarber";
@@ -17,6 +18,7 @@ const STEPS = {
 };
 
 export default function BookingPopUp({ isOpen, onClose }) {
+  const { user } = useUser();
   const [currentStep, setCurrentStep] = useState(STEPS.SERVICES);
   const [formData, setFormData] = useState({
     service: "",
@@ -30,6 +32,16 @@ export default function BookingPopUp({ isOpen, onClose }) {
     postalCode: "",
     paymentMethod: null,
   });
+
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        email: user.email || "",
+        phone: user.phoneNumber || "",
+      }));
+    }
+  }, [user]);
 
   const setTitle = (currentStep) => {
     switch (currentStep) {
@@ -70,9 +82,68 @@ export default function BookingPopUp({ isOpen, onClose }) {
     setCurrentStep(STEPS.PAYMENT);
   };
 
-  const handlePaymentSuccess = (paymentMethod) => {
+  const handlePaymentSuccess = async (paymentMethod) => {
     setFormData((prev) => ({ ...prev, paymentMethod }));
+    await createAppointment();
     setCurrentStep(STEPS.CONFIRMATION);
+  };
+
+  const getBarberID = async (barberName) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/barbers/${barberName}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      return data.barberId;
+    } catch (error) {
+      console.error("Error fetching barber ID:", error);
+    }
+  };
+
+  const createAppointment = async () => {
+    try {
+      const barberId = await getBarberID(formData.barber);
+
+      const appointmentData = {
+        customerName: formData.fullName,
+        barberName: formData.barber,
+        date: formData.date,
+        time: formData.time,
+        userId: user ? user.uid : null,
+        barberId: barberId,
+        serviceType: formData.service,
+        guestDetails: user
+          ? null
+          : {
+              name: formData.fullName,
+              email: formData.email,
+              phoneNumber: formData.phone,
+              address: formData.address,
+            },
+      };
+
+      console.log("Sending appointment data:", appointmentData);
+
+      const response = await fetch("http://localhost:5000/api/appointments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(appointmentData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.json();
+      console.log("Appointment created:", result);
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+    }
   };
 
   const renderStep = () => {

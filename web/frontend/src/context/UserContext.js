@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../pages/firebase/config";
+import axios from "axios";
 
 const UserContext = createContext();
 
@@ -11,8 +12,24 @@ export const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          const response = await fetch(
+            `http://localhost:5000/api/users/${firebaseUser.uid}`
+          );
+          const userData = await response.json();
+          setUser({
+            phoneNumber: userData.phoneNumber,
+            email: userData.email,
+            uid: firebaseUser.uid,
+          });
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     });
 

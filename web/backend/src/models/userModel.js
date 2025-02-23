@@ -16,18 +16,16 @@ const UserSchema = new mongoose.Schema(
       required: false,
       unique: false,
     },
-    password: {
-      type: String,
-      required: true,
-    },
     lastLogin: {
       type: Date,
       required: false,
       unique: false,
     },
+    // NOTE: I make this field optional since sign in with google is not give us phone number need to find someway
     phoneNumber: {
       type: String,
-      required: true,
+      required: false,
+      default: ""
     },
     address: {
       type: String,
