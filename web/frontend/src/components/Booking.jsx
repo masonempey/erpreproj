@@ -103,6 +103,7 @@ export default function BookingPopUp({ isOpen, onClose }) {
     }
   };
 
+  //Create an appointment for the booking
   const createAppointment = async () => {
     try {
       const barberId = await getBarberID(formData.barber);
@@ -115,6 +116,7 @@ export default function BookingPopUp({ isOpen, onClose }) {
         userId: user ? user.uid : null,
         barberId: barberId,
         serviceType: formData.service,
+        // If user is logged in, use their details, otherwise use the details entered in the form
         guestDetails: user
           ? null
           : {
@@ -132,6 +134,7 @@ export default function BookingPopUp({ isOpen, onClose }) {
         headers: {
           "Content-Type": "application/json",
         },
+        // Send the appointment data as the request body
         body: JSON.stringify(appointmentData),
       });
 

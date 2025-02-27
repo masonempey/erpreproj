@@ -1,3 +1,5 @@
+// STRIPE IS NOT SETUP TO PROPERLY CREATE PAYMENTS YET
+
 const express = require("express");
 const router = express.Router();
 const Stripe = require("stripe");
