@@ -20,8 +20,11 @@ const STEPS = {
 
 export default function BookingPopUp({ isOpen, onClose }) {
   const { user } = useUser(); // get current user from UserContext
+
   // Constants to manage current step and form data
-  const [currentStep, setCurrentStep] = useState(STEPS.SERVICES); // Defaults to services step
+  // useState is a hook that lets you add a state to a functional component
+  // currentStep behaves like a variable (but the useState is what lets us keep track of it in the background), setCurrentStep is a setter, 
+  const [currentStep, setCurrentStep] = useState(STEPS.SERVICES); // Sets STEPS.SERVICES as the initial value of currentStep
   const [formData, setFormData] = useState({
     service: "",
     barber: "",

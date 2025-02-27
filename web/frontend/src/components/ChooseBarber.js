@@ -14,6 +14,7 @@ const barberImages = {
 export default function ChooseBarber({ onBarberSelect }) {
   const [barbers, setBarbers] = useState([]);
 
+  // useEffect hook runs the fetchBarbers function when the component is mounted/rendered. That's when we fetch the barbers from the database.
   useEffect(() => {
     // Fetch barbers from the API
     const fetchBarbers = async () => {
