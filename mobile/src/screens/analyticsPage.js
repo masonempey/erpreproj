@@ -70,9 +70,8 @@ export default function AnalyticsPage() {
             const appointmentDate = new Date(appointment.date);
             appointmentsPerDay[appointmentDate.getDate() - 1] += 1;
         });
-        //const labels = ["2025-01-1", "0", "0", "0", "0", "0", "0", "2025-02-8", "0", "0", "0", "0", "0", "0", "2025-02-15", "0", "0", "0", "0", "0", "0", "2025-02-22", "0", "0", "0", "0", "0", "0"]
-        //setChartData({data: appointmentsPerDay, labels: labels});
-
+        const labels = ["2025-01-1", "0", "0", "0", "0", "0", "0", "2025-02-8", "0", "0", "0", "0", "0", "0", "2025-02-15", "0", "0", "0", "0", "0", "0", "2025-02-22", "0", "0", "0", "0", "0", "0"]
+        setChartData({data: appointmentsPerDay, labels: labels});
     }, [applicableData])
 
     const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
@@ -121,7 +120,22 @@ export default function AnalyticsPage() {
                 <Button title="Reviews" onPress={setFilteredType}/>
             </View>
             {/* react native charts component, coppied hieght and width props https://www.npmjs.com/package/react-native-chart-kit  */}
-            <LineChart data={chartData}
+            <LineChart data={{
+                labels: ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"],
+                datasets:[
+                    {
+                        data: [
+                            1,
+                            1,
+                            1,
+                            1,
+                            1,
+                            1,
+                            1,
+                        ]      
+                    }
+                ]
+            }}
             width={Dimensions.get("window").width} // from react-native
         height={220}
         yAxisSuffix="App"
