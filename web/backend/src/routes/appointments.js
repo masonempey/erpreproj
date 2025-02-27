@@ -203,6 +203,7 @@ router.put("/:id", async (req, res) => {
     const updatedAppointment = await Appointment.findByIdAndUpdate(
       id,
       {
+        //Mongo update operator ($set) to update the fields
         $set: {
           customerName,
           barberName,

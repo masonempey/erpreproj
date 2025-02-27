@@ -130,6 +130,7 @@ export default function BookingPopUp({ isOpen, onClose }) {
         userId: user ? user.uid : null,
         barberId: barberId,
         serviceType: formData.service,
+        // If user is logged in, use their details, otherwise use the details entered in the form
         guestDetails: user
           ? null
           : {
@@ -147,6 +148,7 @@ export default function BookingPopUp({ isOpen, onClose }) {
         headers: {
           "Content-Type": "application/json",
         },
+        // Send the appointment data as the request body
         body: JSON.stringify(appointmentData),
       });
 
