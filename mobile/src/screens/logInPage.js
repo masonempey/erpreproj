@@ -2,15 +2,15 @@ import React from "react";
 import {View,Text} from "react-native";
 
 
-function LogInPage() {
+export default function LogInPage() {
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
+    const [loading, setLoading] = React.useState(false);
+
     return(
         <View>
-            <Text>
-                PLEASE LOGIN TO SEE THE CONTENT:
-            </Text>
+            <Text>This is the login Page</Text>
         </View>
-        )
+    );
     
 }
-
-export default LogInPage;
