@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { deepOrange } from "@mui/material/colors";
 
+// Generated using Github Copilot (GPT 4o)
 const ProfilePopup = ({ user, onClose }) => {
   const handleLogout = async () => {
     await signOut(auth);
