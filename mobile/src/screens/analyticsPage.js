@@ -70,13 +70,14 @@ export default function AnalyticsPage() {
             const appointmentDate = new Date(appointment.date);
             appointmentsPerDay[appointmentDate.getDate() - 1] += 1;
         });
-        const labels = ["2025-01-1", "0", "0", "0", "0", "0", "0", "2025-02-8", "0", "0", "0", "0", "0", "0", "2025-02-15", "0", "0", "0", "0", "0", "0", "2025-02-22", "0", "0", "0", "0", "0", "0"]
+        const labels = ["2025-01-1", "", "", "", "", "", "", "2025-02-8", "", "", "", "", "", "", "2025-02-15", "", "", "", "", "", "", "2025-02-22", "", "", "", "", "", ""]
         setChartData({data: appointmentsPerDay, labels: labels});
     }, [applicableData])
 
     const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
 
     const allTimeSelection = () => {
+        console.log(chartData);
         setDateRange("All");
     }
 
