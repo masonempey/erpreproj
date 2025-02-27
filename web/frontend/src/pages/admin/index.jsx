@@ -13,11 +13,9 @@ export default function Admin() {
   // Fetch current barber and replace placeholder
   const placeholderBarber = 
    { 
-    _id: "67900a087dbbc690cb282427",
-    name: "George",
-    email: "george@gmail.com",
-    phone: "123-456-7890",
-    role: "barber"
+    _id: "7bc50236-a87a-450e-ae56-d87a42615a63",
+    name: "Anthony",
+    email: "Anthony@gmail.com",
   };
 
   // Fetch current barber from the API
