@@ -28,6 +28,10 @@
   position: fixed;
 }
 
+.admin {
+  background-color: #35281f;
+}
+
 .navbarLeft .logo {
   font-weight: bold;
   text-decoration: none;
