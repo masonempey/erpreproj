@@ -1,0 +1,93 @@
+[
+    {
+      "id": 1,
+      "customer_name": "John Doe",
+      "haircut_type": "Fade Cut",
+      "barber_name": "Emily Davis",
+      "date": "2025-01-29T10:00:00-07:00",
+      "star_rating": 4,
+      "review": "Great fade cut! Emily was very skilled and took the time to ensure everything was perfect. Would recommend her to anyone looking for a clean fade."
+    },
+    {
+      "id": 2,
+      "customer_name": "Jane Smith",
+      "haircut_type": "Layered Cut",
+      "barber_name": "Jane Smith",
+      "date": "2025-01-29T12:00:00-07:00",
+      "star_rating": 5,
+      "review": "Jane is amazing! She gave me the perfect layered cut and took extra care to listen to what I wanted. The layers look so natural and I'm very happy with the result."
+    },
+    {
+      "id": 3,
+      "customer_name": "Emily Johnson",
+      "haircut_type": "Buzz Cut",
+      "barber_name": "Mike Johnson",
+      "date": "2025-01-29T14:00:00-07:00",
+      "star_rating": 3,
+      "review": "Good buzz cut, but the shave could have been a bit sharper. Mike was friendly, though, and the cut was quick. Not bad for the price."
+    },
+    {
+      "id": 4,
+      "customer_name": "Michael Brown",
+      "haircut_type": "Crew Cut",
+      "barber_name": "Robert Brown",
+      "date": "2025-01-29T16:00:00-07:00",
+      "star_rating": 4,
+      "review": "Robert did a solid job on my crew cut. The fade was clean, and he was very detailed with the edges. I’ll definitely be coming back for my next cut."
+    },
+    {
+      "id": 5,
+      "customer_name": "Sarah Wilson",
+      "haircut_type": "Bob Cut",
+      "barber_name": "John Doe",
+      "date": "2025-01-29T18:00:00-07:00",
+      "star_rating": 5,
+      "review": "John gave me the best bob cut I've ever had! He was very precise and took his time to make sure everything was even. Absolutely love the style and how it frames my face."
+    },
+    {
+      "id": 6,
+      "customer_name": "Chris Evans",
+      "haircut_type": "Pompadour",
+      "barber_name": "Robert Brown",
+      "date": "2025-01-28T11:00:00-07:00",
+      "star_rating": 4,
+      "review": "I’m a big fan of my new pompadour. Robert did a great job styling it, and it looks fantastic. My only complaint is that it took a bit longer than expected."
+    },
+    {
+      "id": 7,
+      "customer_name": "Emma Watson",
+      "haircut_type": "Pixie Cut",
+      "barber_name": "Emily Davis",
+      "date": "2025-01-30T15:00:00-07:00",
+      "star_rating": 5,
+      "review": "I absolutely love my pixie cut! Emily was so kind and made sure to give me exactly what I asked for. She even showed me how to style it at home. Highly recommended!"
+    },
+    {
+      "id": 8,
+      "customer_name": "Robert Downey",
+      "haircut_type": "Undercut",
+      "barber_name": "Mike Johnson",
+      "date": "2025-01-31T09:00:00-07:00",
+      "star_rating": 3,
+      "review": "Mike gave me a decent undercut, but I felt the fade wasn’t as sharp as I would’ve liked. Overall, it’s not bad, just not exactly what I envisioned."
+    },
+    {
+      "id": 9,
+      "customer_name": "Natalie Portman",
+      "haircut_type": "Shag Cut",
+      "barber_name": "Jane Smith",
+      "date": "2025-02-01T13:00:00-07:00",
+      "star_rating": 5,
+      "review": "Jane absolutely nailed the shag cut! It’s exactly what I wanted, and she styled it in a way that complements my face shape. Very professional and skilled. Highly recommend her services."
+    },
+    {
+      "id": 10,
+      "customer_name": "Chris Hemsworth",
+      "haircut_type": "Taper Cut",
+      "barber_name": "Emily Davis",
+      "date": "2025-02-02T17:00:00-07:00",
+      "star_rating": 4,
+      "review": "Taper cut was good, but I think Emily could have spent a bit more time on the detailing. Still happy with the outcome though, and I’ll probably return."
+    }
+  ]
+  
