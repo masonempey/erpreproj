@@ -9,7 +9,9 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { deepOrange } from "@mui/material/colors";
 
+// Generated using Github Copilot (GPT 4o)
 const ProfilePopup = ({ user, onClose }) => {
+  // handleLogout uses async to handle promises returned by signOut using await. Async keyword makes it an asynchronous function.
   const handleLogout = async () => {
     await signOut(auth);
     onClose();

@@ -5,6 +5,7 @@ import Paper from "@mui/material/Paper";
 import Divider from "@mui/material/Divider";
 import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 
+// Generated using Github Copilot (GPT 4o)
 export default function Confirmation({ bookingData }) {
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString("en-US", {
