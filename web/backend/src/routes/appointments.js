@@ -134,15 +134,8 @@ router.get("/barbers/:barberId", async (req, res) => {
   console.log(`Fetching appointments for barber ID: ${barberId}`);
   console.log(`Barber ID: ${barberId}`);
 
-  // From chatGPT, wasnt sure how to check if the barberId is valid and then convert it to an ObjectId
-  if (!mongoose.Types.ObjectId.isValid(barberId)) {
-    return res.status(400).send("Invalid barber ID format");
-  }
-
   try {
-    const barberObjectId = new mongoose.Types.ObjectId(barberId);
-
-    const appointments = await Appointment.find({ barberId: barberObjectId });
+    const appointments = await Appointment.find({ barberId: barberId });
     console.log(`Appointments found: ${appointments.length}`);
     // If the appointments under the user is 0 (No appointments)
     if (appointments.length === 0) {

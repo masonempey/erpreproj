@@ -28,6 +28,10 @@
   position: fixed;
 }
 
+.admin {
+  background-color: #2d2d2d;
+}
+
 .navbarLeft .logo {
   font-weight: bold;
   text-decoration: none;
@@ -89,3 +93,13 @@
   display: flex;
   align-items: center;
 }
+
+
+/* Mobile / Small Screens */
+@media (max-width: 768px) { 
+    /* Could display links with hamburger menu */
+    .navbarCenter {
+        display: none;
+    }
+}
+
