@@ -11,7 +11,7 @@ export default function SchedulingPage({selectedDate}) {
     const [appointments, setAppointments] = useState([]);
     const [date, setDate] = useState(new Date().toISOString())
 
-    useMemo(() => {
+    useEffect(() => {
         const sortedAppointments = [...testAppointments].sort(
             /*
                 refer to landing page
