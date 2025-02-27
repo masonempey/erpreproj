@@ -35,6 +35,8 @@ const AdminNavbar = () => {
       </div>
       <div className={styles.navbarCenter}>
         <ul className={styles.navLinks}>
+          {/* Using some MUI components that I'm still learning how to use 
+            Reference: chatgpt.com */}
           <li>
             <Tooltip title="View Profile" sx={{ color: "white" }}>
               <IconButton>
