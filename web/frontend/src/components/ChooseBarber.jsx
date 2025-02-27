@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import styles from "../styles/Barber.module.css";
 import Image from "next/image";
 
+// Hard-coded for now, but we will later get the images from the database
 const barberImages = {
   Anthony: "/images/barbers/Anthony.png",
   Carl: "/images/barbers/Carl.png",

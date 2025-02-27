@@ -8,6 +8,7 @@ import PaymentForm from "./paymentForm";
 import Confirmation from "./Confirmation";
 import ChooseDateTime from "./ChooseDateTime";
 
+// Defining step constants for the booking system (in order)
 const STEPS = {
   SERVICES: 1,
   BARBERS: 2,
@@ -18,8 +19,9 @@ const STEPS = {
 };
 
 export default function BookingPopUp({ isOpen, onClose }) {
-  const { user } = useUser();
-  const [currentStep, setCurrentStep] = useState(STEPS.SERVICES);
+  const { user } = useUser(); // get current user from UserContext
+  // Constants to manage current step and form data
+  const [currentStep, setCurrentStep] = useState(STEPS.SERVICES); // Defaults to services step
   const [formData, setFormData] = useState({
     service: "",
     barber: "",
@@ -33,6 +35,8 @@ export default function BookingPopUp({ isOpen, onClose }) {
     paymentMethod: null,
   });
 
+  // Update the form data whenever user info changes
+  // Tracks user changes via [user] in the dependency array
   useEffect(() => {
     if (user) {
       setFormData((prev) => ({
@@ -43,6 +47,7 @@ export default function BookingPopUp({ isOpen, onClose }) {
     }
   }, [user]);
 
+  // Change the title of the booking popup based on the current step
   const setTitle = (currentStep) => {
     switch (currentStep) {
       case STEPS.SERVICES:
@@ -62,32 +67,38 @@ export default function BookingPopUp({ isOpen, onClose }) {
     }
   };
 
+  // When the user selects a service, update the form data and switch the step to barbers.
   const handleServiceSelect = (service) => {
     setFormData((prev) => ({ ...prev, service }));
     setCurrentStep(STEPS.BARBERS);
   };
 
+  // When the user selects a barber, update the form data and switch the step to datetime.
   const handleBarberSelect = (barber) => {
     setFormData((prev) => ({ ...prev, barber }));
     setCurrentStep(STEPS.DATETIME);
   };
 
+  // When the user selects a date and time, update the form data and switch the step to info.
   const handleDateTimeSelect = (date, time) => {
     setFormData((prev) => ({ ...prev, date, time }));
     setCurrentStep(STEPS.INFO);
   };
 
+  // When the user submits their personal info, update the form data and switch the step to payment.
   const handleInfoSubmit = (info) => {
     setFormData((prev) => ({ ...prev, ...info }));
     setCurrentStep(STEPS.PAYMENT);
   };
 
+  // When the user successfully completes payment, update the form data and create an appointment.
   const handlePaymentSuccess = async (paymentMethod) => {
     setFormData((prev) => ({ ...prev, paymentMethod }));
     await createAppointment();
     setCurrentStep(STEPS.CONFIRMATION);
   };
 
+  // Fetch the barber ID based on the barber name
   const getBarberID = async (barberName) => {
     try {
       const response = await fetch(
@@ -103,6 +114,7 @@ export default function BookingPopUp({ isOpen, onClose }) {
     }
   };
 
+  // Create an appointment based on the form data
   const createAppointment = async () => {
     try {
       const barberId = await getBarberID(formData.barber);
@@ -147,6 +159,7 @@ export default function BookingPopUp({ isOpen, onClose }) {
   };
 
   const renderStep = () => {
+    // Check what the current step is, then render it, pass a function to handle the user's selection and current form data.
     switch (currentStep) {
       case STEPS.SERVICES:
         return (

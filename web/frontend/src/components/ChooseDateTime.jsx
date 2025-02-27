@@ -23,6 +23,7 @@ export default function ChooseDateTime({ onNext }) {
     }
   };
 
+  // A function to generate time slots (hard-coded placeholder for now) for the chosen barber.
   const generateTimeSlots = () => {
     const slots = [];
     const startTime = new Date();
@@ -45,6 +46,7 @@ export default function ChooseDateTime({ onNext }) {
   const timeSlots = generateTimeSlots();
 
   return (
+    // MUI component implemented using Github Copilot (GPT 4o)
     <div className={styles.dateTime}>
       {view === "calendar" && (
         <>
