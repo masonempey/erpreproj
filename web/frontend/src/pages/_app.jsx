@@ -5,6 +5,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import "../styles/globals.css";
 import { UserProvider } from "../context/UserContext";
 import Layout from "../components/layout";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const stripePromise = loadStripe(
   "pk_test_51QjouOGELRRPocWM4KhjA6LdjU98BVpTMcCkU5bTCR7L5mZtrGKZ1j09K9PKOmZHz9e1tnazI4KxIZarGPD2ibZx00EkHBFctr"
