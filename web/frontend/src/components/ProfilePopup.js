@@ -10,6 +10,8 @@ import Image from "next/image";
 import CloseIcon from "@mui/icons-material/Close";
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import ProgressBar from 'react-bootstrap/ProgressBar';
+import EarnTable from "./TableOfRewards";
+import SpendTable from "./TableSpend";
 
 const ProfilePopup = ({user}) => {
   const handleLogout = async () => {
@@ -59,9 +61,9 @@ const ProfilePopup = ({user}) => {
                       key={1} 
                     >
                     </ProgressBar>
-                </span>
-                
+                </span>      
             </div>
+
             
             <div className={styles.userInformation}>
               <h3>User Information</h3>
@@ -75,7 +77,9 @@ const ProfilePopup = ({user}) => {
                 <span className={styles.greyInfo}>{user.phoneNumber}</span>
               </p>
             </div>
-
+            <SpendTable></SpendTable>
+            <EarnTable></EarnTable>
+            
           </Dialog.Description>
           
           <div className={styles.Actions}>          
