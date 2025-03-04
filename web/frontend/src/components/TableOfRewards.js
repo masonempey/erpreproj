@@ -21,11 +21,13 @@ const rowsEarned = [
 ];
 export default function EarnTable() {
     return (
-        <div style={{display: "flex", width:"25rem", gap: "10px"}}>
+        <div style={{display: "flex", width:"24rem", gap: "10px"}}>
             <TableContainer 
             component={Paper} 
             sx={{ flexGrow: 0, flexShrink: 1, flexBasis: "50rem", marginLeft: "auto" }}
             >
+            <h5 style={{display: "flex", justifyContent: "center", marginTop: "20px"}}>How to Earn</h5>
+            <hr></hr>
             <Table aria-label="simple table">
                 <TableHead>
                 <TableRow>

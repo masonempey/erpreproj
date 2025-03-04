@@ -87,14 +87,27 @@
   .Description {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
-    justify-content: flex-end;
+    max-width: calc(100vw - 3rem);
     flex-wrap: wrap;
-    align-items: flex-start;
+    justify-content: flex-start;
     gap: 20px;
   }
   .userProgress{
-    flex: 0 1 60rem;
+    flex: 0 2 50rem;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.05);
+    background-color: rgb(255, 255, 255);
+    padding: 5px;
+    font-weight: 500;
+    border: 1px solid rgb(229, 229, 229);
+    margin-top: 20px;
+    max-width: 70rem;
+    border-radius: 10px;
+    line-height: 1.5rem;
+  }
+  
+  .userInformation{
+    flex: 0 1 24rem;
+    justify-content: flex-end;
     box-shadow: 0 5px 5px rgba(0, 0, 0, 0.05);
     background-color: rgb(255, 255, 255);
     padding: 5px;
@@ -105,26 +118,7 @@
     border-radius: 10px;
     line-height: 1.5rem;
   }
-  
-  .userInformation{
-    flex: 0 1 40rem;
-    justify-content: flex-end;
-    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.05);
-    background-color: rgb(255, 255, 255);
-    padding: 5px;
-    font-weight: 500;
-    border: 1px solid rgb(229, 229, 229);
-    margin-top: 20px;
-    max-width: 25rem;
-    border-radius: 10px;
-    line-height: 1.5rem;
-  }
-  
-  .Actions {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-  }
+
   .Close{
     display: flex;
     gap: 1rem;
@@ -132,6 +126,8 @@
   .Logout{
     display: flex;
     gap: 1rem;
+    justify-content: center;
+    justify-items: center;
   }
 
   .Description::-webkit-scrollbar {

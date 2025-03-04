@@ -6,7 +6,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Image from "next/image";
-
+import { Button } from '@mui/material';
 function createData(name, data) {
   return { name,data };
 }
@@ -23,10 +23,13 @@ const rowsSpend = [
 export default function SpendTable() {
     return (
         <div style={{display: "flex", width:"50rem", gap: "10px"}}>
+            
             <TableContainer 
             component={Paper} 
             sx={{ flexGrow: 0, flexShrink: 1, flexBasis: "50rem", marginLeft: "auto" }}
             >
+            <h5 style={{display: "flex", justifyContent: "center", marginTop: "20px"}}>How to Spend your Barber Coins</h5>
+            <hr></hr>
             <Table aria-label="simple table">
                 <TableHead>
                 <TableRow>
@@ -47,6 +50,15 @@ export default function SpendTable() {
                             alt="Coin Icon"
                             style={{ marginLeft: "10px" }}
                             />
+                        </TableCell>
+                        <TableCell align="right">
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleRedeem(row.name)}
+                            >
+                                Redeem
+                            </Button>
                         </TableCell>
                         </TableRow>
                     ))}

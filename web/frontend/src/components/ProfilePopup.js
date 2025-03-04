@@ -3,7 +3,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../pages/firebase/config";
 import { Dialog } from '@base-ui-components/react/dialog';
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
+import { Button } from '@mui/material';
 import styles from "../styles/Profile_Popup.module.css";
 import { deepOrange } from "@mui/material/colors";
 import Image from "next/image";
@@ -82,10 +82,15 @@ const ProfilePopup = ({user}) => {
             
           </Dialog.Description>
           
-          <div className={styles.Actions}>          
-            <div className={styles.Logout}>
-              <Button onClick={handleLogout}>Logout</Button>
-            </div>
+          <hr></hr>
+          <div className={styles.Logout}>
+            <Button 
+              variant="contained"  
+              onClick={handleLogout}
+              style={{marginTop: "10px", width: "50%"}}
+            >
+              Logout
+            </Button>
           </div>
         </Dialog.Popup>
       
