@@ -115,28 +115,24 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get Appointments under a specific user
-router.get("/users/:userId/appointments", async (req, res) => {
+// Fetch user appointments by userId
+router.get("/:userId/appointments", async (req, res) => {
   const { userId } = req.params;
-  console.log(`Fetching appointments for user ID: ${userId}`);
   try {
-    // Reference: GPT 4o, used insight on searching for the appointments that have the correct userId
-    const appointments = await Appointment.find({ userId: userId });
-    console.log(`Appointments found: ${appointments.length}`);
-    // If the appointments under the user is 0 (No appointments)
-    if (appointments.length === 0) {
-      return res.status(404).send("No appointments found for this user");
+    // Find the user by userId
+    const userFound = (await User.findOne({ userId: userId })).populate('appointments');
+
+    if (userFound) {
+      // Return the user's appointments
+      res.status(200).json(userFound.appointments);
+    } else {
+      res.status(404).json({ message: `User with userId ${userId} not found` });
     }
-    res.status(200).json(appointments);
   } catch (err) {
-    console.error("Error fetching appointments:", err);
-    res
-      .status(500)
-      .send(
-        "Error occurred while attempting to find appointments for the user"
-      );
+    res.status(500).json({ message: "Error fetching user appointments", error: err.message });
   }
 });
+
 
 // Get Appointments under a specific barber -- Simon -- Mason Assisted
 router.get("/barbers/:barberId", async (req, res) => {

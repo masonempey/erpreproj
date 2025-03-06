@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { type } = require("os");
 
 const UserSchema = new mongoose.Schema(
   {
@@ -10,6 +11,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+    },
+    coins: {
+      type: Number,
+      required:true,
     },
     name: {
       type: String,
@@ -43,10 +48,12 @@ const UserSchema = new mongoose.Schema(
         ref: "Appointment",
       },
     ],
+
   },
   {
     timestamps: true,
   }
+
 );
 
 module.exports = mongoose.model("User", UserSchema);

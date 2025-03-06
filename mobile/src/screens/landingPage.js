@@ -18,7 +18,25 @@ function LandingPage() {
       because it deals with dynamic sorting which is something we might want to implement on other pages
       of our app: https://dev.to/ramonak/react-how-to-dynamically-sort-an-array-of-objects-using-the-dropdown-with-react-hooks-195p
     */
+
+    
     useEffect(() => {
+        const fetchBarberAppointments = async () => {
+            try {
+                const barberId = "7bc50236-a87a-450e-ae56-d87a42615a63";
+                const response = await fetch(`http://localhost:5000/barbers/${barberId}`);
+                const appointmentData = await response.json();
+
+                console.log(appointmentData);
+                setAppointments(appointmentData);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+
+
+
         const dateSortedAppointments = [...testAppointments].sort(
             /* 
                 https://www.youtube.com/watch?v=bZ-s5Q5KVn4

@@ -9,16 +9,13 @@ import ProfilePopup from "./ProfilePopup"; // Import the ProfilePopup component
 import styles from "../styles/Navbar.module.css";
 
 const Navbar = () => {
-  const { user, loading } = useUser();
+  const { user } = useUser();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const toggleProfilePopup = () => {
     setIsProfileOpen(!isProfileOpen);
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <nav className={styles.navbar} aria-label="Main Navigation">
@@ -45,12 +42,7 @@ const Navbar = () => {
           {user ? (
             <li>
               <Stack direction="row" spacing={2}>
-                <Avatar
-                  sx={{ bgcolor: deepOrange[500], visibility: isProfileOpen ? 'hidden' : 'visible' }}
-                  onClick={toggleProfilePopup}
-                >
-                  {user.displayName ? user.displayName.charAt(0) : "U"}
-                </Avatar>
+                <ProfilePopup user={user}></ProfilePopup>
               </Stack>
             </li>
           ) : (

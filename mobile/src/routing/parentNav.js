@@ -17,7 +17,11 @@ function ParentNav() {
         return(
             <Tab.Navigator
                 initialRouteName="Home"
-            >
+            >   
+                <Tab.Screen
+                    name="LogIn"
+                    component={LogInPage}
+                />
                 <Tab.Screen 
                     name="Home" 
                     component={LandingPage}

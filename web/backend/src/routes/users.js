@@ -131,18 +131,78 @@ router.post("/register", async (req, res) => {
 });
 
 //Gets user by id
-router.get("/:id", async (req, res) => {
-  const { id } = req.params;
+router.get("/:userId", async (req, res) => {
+  const { userId } = req.params;
   try {
-    // Gets the user from mongo by id
-    const userFound = await User.findOne({ userId: id });
+    // Find the user by userId in the database
+    const userFound = await User.findOne({ userId: userId });
+
     if (userFound) {
       res.status(200).json(userFound);
+    } else {
+      res.status(404).json({ message: `User with userId ${userId} not found` });
     }
   } catch (err) {
-    res.status(500).json({ message: "Cannot Find User by id of", id });
+    res.status(500).json({ message: "Error fetching user", error: err.message });
   }
 });
+
+//Update by increasing the user coins
+router.patch('/:userId/coins', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { coins } = req.body;
+
+    // Validate input
+    if (typeof coins !== 'number' || coins < 0) {
+      return res.status(400).json({ error: 'Invalid coins value' });
+    }
+
+    const updatedUser = await User.findOneAndUpdate(
+      { userId: userId },
+      { $inc: { coins: coins } },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error('Error updating coins:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Endpoint to redeem and deduct coins
+router.patch('/:userId/coins/redeem', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { coins } = req.body;
+
+    // Validate input
+    if (typeof coins !== 'number' || coins < 0) {
+      return res.status(400).json({ error: 'Invalid coins value' });
+    }
+
+    const updatedUser = await User.findOneAndUpdate(
+      { userId: userId },
+      { $inc: { coins: -coins } },  // Subtract coins here
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error('Error updating coins:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 
 //deletes user by id
 router.delete("/:id", async (req, res) => {
@@ -193,5 +253,6 @@ router.put("/:id", async (req, res) => {
       .json({ message: "Error updating user", error: err.message });
   }
 });
+
 
 module.exports = router;

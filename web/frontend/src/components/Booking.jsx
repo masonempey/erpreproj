@@ -19,12 +19,9 @@ const STEPS = {
 };
 
 export default function BookingPopUp({ isOpen, onClose }) {
-  const { user } = useUser(); // get current user from UserContext
-
-  // Constants to manage current step and form data
-  // useState is a hook that lets you add a state to a functional component
-  // currentStep behaves like a variable (but the useState is what lets us keep track of it in the background), setCurrentStep is a setter, 
-  const [currentStep, setCurrentStep] = useState(STEPS.SERVICES); // Sets STEPS.SERVICES as the initial value of currentStep
+  const { user } = useUser();
+  const [currentStep, setCurrentStep] = useState(STEPS.SERVICES);
+  const [isReload, setIsReload] = useState(false);
   const [formData, setFormData] = useState({
     service: "",
     barber: "",
@@ -117,7 +114,31 @@ export default function BookingPopUp({ isOpen, onClose }) {
     }
   };
 
-  // Create an appointment based on the form data
+
+  const updateUserCoins = async () => {
+    if (!user) return;
+  
+    try {
+      const response = await fetch(`http://localhost:5000/api/users/${user.uid}/coins`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ coins: 10 }), // Increment by 10
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to update user coins");
+      }
+  
+      const result = await response.json();
+      console.log("User coins updated:", result);
+    } catch (error) {
+      console.error("Error updating user coins:", error);
+    }
+  };
+  
+  
   const createAppointment = async () => {
     try {
       const barberId = await getBarberID(formData.barber);
@@ -141,7 +162,7 @@ export default function BookingPopUp({ isOpen, onClose }) {
               address: formData.address,
             },
       };
-
+      
       console.log("Sending appointment data:", appointmentData);
 
       const response = await fetch("http://localhost:5000/api/appointments", {
@@ -159,6 +180,7 @@ export default function BookingPopUp({ isOpen, onClose }) {
 
       const result = await response.json();
       console.log("Appointment created:", result);
+      await updateUserCoins();
     } catch (error) {
       console.error("Error creating appointment:", error);
     }
@@ -216,10 +238,18 @@ export default function BookingPopUp({ isOpen, onClose }) {
       <div className={`${styles.bookingPopUp} ${isOpen ? styles.visible : ""}`}>
         <div className={styles.bookingNav}>
           <h2>{setTitle(currentStep)}</h2>
-          <button className={styles.closeButton} onClick={onClose}>
-            ×
-          </button>
-          {currentStep !== STEPS.SERVICES && (
+            <button
+              className={styles.closeButton}
+              onClick={() => {
+                if (currentStep === STEPS.CONFIRMATION) {
+                  window.location.reload();
+                }
+                onClose();
+              }}
+            >
+              ×
+            </button>
+          {currentStep !== STEPS.SERVICES && currentStep !== STEPS.CONFIRMATION &&(
             <button
               className={styles.backButton}
               onClick={() => setCurrentStep((prev) => prev - 1)}
