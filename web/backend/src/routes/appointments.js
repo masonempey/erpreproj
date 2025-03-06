@@ -51,7 +51,6 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ message: "Service not found" });
     }
 
-    // COPILOT REFERENCE: Prompt: use the data and time and combine them to create 1 total date time object
     const dateTime = new Date(date);
     const [timeHour, timeMinute] = time.split(/[: ]/);
     let hour = parseInt(timeHour);
@@ -63,7 +62,6 @@ router.post("/", async (req, res) => {
     dateTime.setUTCHours(hour);
     dateTime.setUTCMinutes(parseInt(timeMinute));
 
-    // Create a new appointment object
     const newAppointment = new Appointment({
       customerName,
       barberName,
@@ -107,6 +105,12 @@ router.post("/", async (req, res) => {
     } catch (emailErr) {
       console.error("Error sending confirmation email:", emailErr);
     }
+
+    // Send response back to the frontend
+    res.status(201).json({
+      message: "Appointment created successfully",
+      appointment: appointmentCreated,
+    });
   } catch (err) {
     console.error("Error creating appointment:", err);
     res
