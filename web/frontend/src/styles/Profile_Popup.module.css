@@ -118,7 +118,18 @@
     border-radius: 10px;
     line-height: 1.5rem;
   }
-
+  .DropDownInventory{
+    flex: 0 2 100rem;
+    justify-content: flex-end;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.05);
+    background-color: rgb(255, 255, 255);
+    padding: 5px;
+    font-weight: 500;
+    border: 1px solid rgb(229, 229, 229);
+    margin-top: 20px;
+    max-width: 100rem;
+    
+  }
   .Close{
     display: flex;
     gap: 1rem;

@@ -7,6 +7,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Image from "next/image";
 import { Button } from '@mui/material';
+
 function createData(name, data) {
   return { name,data };
 }
@@ -17,10 +18,16 @@ const Icons = {
 const rowsSpend = [
     createData('10$ Coupon', { points: 100, icon: Icons.coins }),
     createData('Free Beard Trim', { points: 120, icon: Icons.coins }),
-    createData('Free Haircut', { points: 200, icon: Icons.coins }),
     createData('Free Hair Products', { points: 150, icon: Icons.coins }),
+    createData('Free Haircut', { points: 200, icon: Icons.coins }),
 ];
-export default function SpendTable() {
+export default function SpendTable({coins, onSpend}) {
+    const handleRedeem = (points) => {
+        if (window.confirm(`Are you sure you want to redeem ${points} coins?`)) {
+            onSpend(points);
+            window.location.reload();
+        }
+      };
     return (
         <div style={{display: "flex", width:"50rem", gap: "10px"}}>
             
@@ -55,7 +62,8 @@ export default function SpendTable() {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={() => handleRedeem(row.name)}
+                                disabled={coins < row.data.points}
+                                onClick={() => handleRedeem(row.data.points)} // Still in progress
                             >
                                 Redeem
                             </Button>
