@@ -202,6 +202,8 @@ router.patch('/:userId/coins/redeem', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+
 //deletes user by id
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;

@@ -16,16 +16,15 @@ const Icons = {
 };
 
 const rowsSpend = [
-    createData('10$ Coupon', { points: 100, icon: Icons.coins }),
+    createData('Free Haircut (below 50$)', { points: 100, icon: Icons.coins }),
     createData('Free Beard Trim', { points: 120, icon: Icons.coins }),
     createData('Free Hair Products', { points: 150, icon: Icons.coins }),
-    createData('Free Haircut', { points: 200, icon: Icons.coins }),
+    createData('100$ haircuts discount', { points: 200, icon: Icons.coins }),
 ];
 export default function SpendTable({coins, onSpend}) {
-    const handleRedeem = (points) => {
+    const handleRedeem = (points, rewardName) => {
         if (window.confirm(`Are you sure you want to redeem ${points} coins?`)) {
-            onSpend(points);
-            window.location.reload();
+            onSpend(points, rewardName);
         }
       };
     return (
@@ -63,7 +62,7 @@ export default function SpendTable({coins, onSpend}) {
                                 variant="contained"
                                 color="primary"
                                 disabled={coins < row.data.points}
-                                onClick={() => handleRedeem(row.data.points)} // Still in progress
+                                onClick={() => handleRedeem(row.data.points, row.name)} // Still in progress
                             >
                                 Redeem
                             </Button>
