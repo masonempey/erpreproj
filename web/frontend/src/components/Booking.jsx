@@ -124,6 +124,7 @@ export default function BookingPopUp({ isOpen, onClose }) {
 
       const appointmentData = {
         customerName: formData.fullName,
+        email: formData.email,
         barberName: formData.barber,
         date: formData.date,
         time: formData.time,
