@@ -38,7 +38,7 @@ const barberRoutes = require("./routes/barbers");
 const serviceRoutes = require("./routes/services");
 const stripeRoutes = require("./routes/stripe");
 const reviewRoutes = require("./routes/reviews");
-const emailRoutes = require("./routes/email");
+const emailRoutes = require("./routes/email").router;
 
 // Use Routes
 app.use("/api/appointments", appointmentRoutes);

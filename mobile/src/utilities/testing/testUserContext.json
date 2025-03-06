@@ -1,0 +1,27 @@
+{
+    "user": {
+      "barber_id": "B003",
+      "barber_name": "Mike Johnson",
+      "services_offered": [
+        {
+          "service_id": "S007",
+          "service_name": "Buzz Cut",
+          "price": 20,
+          "duration_minutes": 20
+        },
+        {
+          "service_id": "S008",
+          "service_name": "Classic Haircut",
+          "price": 28,
+          "duration_minutes": 35
+        },
+        {
+          "service_id": "S009",
+          "service_name": "Scalp Treatment",
+          "price": 40,
+          "duration_minutes": 45
+        }
+      ]
+    },
+    "isAuthenticated": true
+}

@@ -1,0 +1,86 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image: linear-gradient(
+      rgba(53, 40, 31, 0.25),
+      rgba(53, 40, 31, 0.25)
+    ),
+    url("/images/landing_background.png");
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  min-height: 100vh;
+  justify-content: flex-start;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 30vh;
+}
+
+.welcome {
+  color: #fafafa;
+  text-align: center;
+  Margin: 10rem;
+  width : 100%;
+}
+
+.view {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  background-color: #fafafa;
+}
+
+.appointmentHeader {
+  font-size: 2rem;
+  color: #35281f;
+  margin: 0;
+}
+
+.appointments {
+  display: flex;
+  flex-direction: column;
+  align-items: top;
+  height: 70%;
+  justify-content: flex-start;
+  background-color: #fafafa;
+}
+
+.appointment {
+  padding: 1rem;
+  font-size: 1.2rem;
+}
+
+/* To fit the calendar only */
+@media (max-width: 1280px) { 
+  .view {
+      flex-direction: column;
+  }
+
+  .calendar {
+    margin-top: 10rem;
+  }
+}
+
+@media (max-width: 768px) { 
+  .view {
+      flex-direction: column;
+  }
+
+  .calendar {
+    margin-top: 10rem;
+  }
+}
+
+/* Mobile / Small Screens */
+@media (max-width: 768px) { 
+  .calendar {
+    margin-top: 4rem;
+  }
+}
+

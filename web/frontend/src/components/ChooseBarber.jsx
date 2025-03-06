@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import styles from "../styles/Barber.module.css";
 import Image from "next/image";
 
+// Hard-coded for now, but we will later get the images from the database
 const barberImages = {
   Anthony: "/images/barbers/Anthony.png",
   Carl: "/images/barbers/Carl.png",
@@ -13,6 +14,7 @@ const barberImages = {
 export default function ChooseBarber({ onBarberSelect }) {
   const [barbers, setBarbers] = useState([]);
 
+  // useEffect hook runs the fetchBarbers function when the component is mounted/rendered. That's when we fetch the barbers from the database.
   useEffect(() => {
     // Fetch barbers from the API
     const fetchBarbers = async () => {

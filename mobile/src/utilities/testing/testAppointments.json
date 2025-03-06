@@ -1,63 +1,72 @@
 [
-    {
-      "id": 1,
-      "customer_name": "John Doe",
-      "haircut_type": "Fade Cut",
-      "date": "2025-01-29T10:00:00-07:00"
-    },
-    {
-      "id": 2,
-      "customer_name": "Jane Smith",
-      "haircut_type": "Layered Cut",
-      "date": "2025-01-29T12:00:00-07:00"
-    },
-    {
-      "id": 3,
-      "customer_name": "Emily Johnson",
-      "haircut_type": "Buzz Cut",
-      "date": "2025-01-29T14:00:00-07:00"
-    },
-    {
-      "id": 4,
-      "customer_name": "Michael Brown",
-      "haircut_type": "Crew Cut",
-      "date": "2025-01-29T16:00:00-07:00"
-    },
-    {
-      "id": 5,
-      "customer_name": "Sarah Wilson",
-      "haircut_type": "Bob Cut",
-      "date": "2025-01-29T18:00:00-07:00"
-    },
-    {
-      "id": 6,
-      "customer_name": "Chris Evans",
-      "haircut_type": "Pompadour",
-      "date": "2025-01-28T11:00:00-07:00"
-    },
-    {
-      "id": 7,
-      "customer_name": "Emma Watson",
-      "haircut_type": "Pixie Cut",
-      "date": "2025-01-30T15:00:00-07:00"
-    },
-    {
-      "id": 8,
-      "customer_name": "Robert Downey",
-      "haircut_type": "Undercut",
-      "date": "2025-01-31T09:00:00-07:00"
-    },
-    {
-      "id": 9,
-      "customer_name": "Natalie Portman",
-      "haircut_type": "Shag Cut",
-      "date": "2025-02-01T13:00:00-07:00"
-    },
-    {
-      "id": 10,
-      "customer_name": "Chris Hemsworth",
-      "haircut_type": "Taper Cut",
-      "date": "2025-02-02T17:00:00-07:00"
-    }
-  ]
-  
+  {
+    "id": 1,
+    "customer_name": "John Doe",
+    "haircut_type": "Fade Cut",
+    "barber_name": "Emily Davis",
+    "date": "2025-03-09T10:00:00-07:00"
+  },
+  {
+    "id": 2,
+    "customer_name": "Jane Smith",
+    "haircut_type": "Layered Cut",
+    "barber_name": "Jane Smith",
+    "date": "2025-03-09T12:00:00-07:00"
+  },
+  {
+    "id": 3,
+    "customer_name": "Emily Johnson",
+    "haircut_type": "Buzz Cut",
+    "barber_name": "Mike Johnson",
+    "date": "2025-03-10T14:00:00-07:00"
+  },
+  {
+    "id": 4,
+    "customer_name": "Michael Brown",
+    "haircut_type": "Crew Cut",
+    "barber_name": "Robert Brown",
+    "date": "2025-03-12T16:00:00-07:00"
+  },
+  {
+    "id": 5,
+    "customer_name": "Sarah Wilson",
+    "haircut_type": "Bob Cut",
+    "barber_name": "John Doe",
+    "date": "2025-03-20T18:00:00-07:00"
+  },
+  {
+    "id": 6,
+    "customer_name": "Chris Evans",
+    "haircut_type": "Pompadour",
+    "barber_name": "Robert Brown",
+    "date": "2025-03-25T11:00:00-07:00"
+  },
+  {
+    "id": 7,
+    "customer_name": "Emma Watson",
+    "haircut_type": "Pixie Cut",
+    "barber_name": "Emily Davis",
+    "date": "2025-03-27T15:00:00-07:00"
+  },
+  {
+    "id": 8,
+    "customer_name": "Robert Downey",
+    "haircut_type": "Undercut",
+    "barber_name": "Mike Johnson",
+    "date": "2025-03-28T09:00:00-07:00"
+  },
+  {
+    "id": 9,
+    "customer_name": "Natalie Portman",
+    "haircut_type": "Shag Cut",
+    "barber_name": "Jane Smith",
+    "date": "2025-04-01T13:00:00-07:00"
+  },
+  {
+    "id": 10,
+    "customer_name": "Chris Hemsworth",
+    "haircut_type": "Taper Cut",
+    "barber_name": "Emily Davis",
+    "date": "2025-04-02T17:00:00-07:00"
+  }
+]
