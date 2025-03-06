@@ -4,7 +4,7 @@ const Appointment = require("../models/appointmentModel");
 const User = require("../models/userModel");
 const Service = require("../models/serviceModel");
 const logger = require("../middleware/logger");
-const mongoose = require("mongoose");
+const { sendConfirmationEmail, sendNewsletter } = require("../routes/email");
 
 ///Setup middleware to use the logger function for my routes
 router.use(logger);
@@ -29,6 +29,7 @@ router.post("/", async (req, res) => {
   try {
     const {
       customerName,
+      email,
       barberName,
       date,
       time,
@@ -75,33 +76,42 @@ router.post("/", async (req, res) => {
 
     const appointmentCreated = await newAppointment.save();
 
-    try {
-      await User.findOneAndUpdate(
-        { userId: userId },
-        { $push: { appointments: appointmentCreated._id } },
-        { new: true, useFindAndModify: false }
-      );
-    } catch (err) {
-      console.error("Error finding user to insert appointment:", err);
-      res
-        .status(500)
-        .send(
-          "Error occurred while attempting to create an appointment for the user"
+    if (userId) {
+      try {
+        await User.findOneAndUpdate(
+          { userId: userId },
+          { $push: { appointments: appointmentCreated._id } },
+          { new: true, useFindAndModify: false }
         );
+      } catch (err) {
+        console.error("Error finding user to insert appointment:", err);
+      }
     }
 
-    res.status(200).json({
-      message: "Appointment created",
-      appointment: appointmentCreated,
-    });
-    console.log("Appointment created for", customerName || guestDetails.name);
+    try {
+      const confirmationAppointment = {
+        customerName: customerName,
+        email: email,
+        barberName: barberName,
+        date: dateTime,
+        serviceType: serviceType,
+        guestDetails: guestDetails,
+      };
+      await sendConfirmationEmail(confirmationAppointment);
+      const newsLetterData = {
+        recipientEmail: email,
+        customerName: customerName,
+      };
+      await sendNewsletter(newsLetterData);
+      console.log("Confirmation email sent successfully");
+    } catch (emailErr) {
+      console.error("Error sending confirmation email:", emailErr);
+    }
   } catch (err) {
     console.error("Error creating appointment:", err);
     res
       .status(500)
-      .send(
-        "Error occurred while attempting to create an appointment for the user"
-      );
+      .send("Error occurred while attempting to create an appointment");
   }
 });
 

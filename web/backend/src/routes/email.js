@@ -1,49 +1,69 @@
 const express = require("express");
 const router = express.Router();
 const sendEmail = require("../config/email");
-const appointmentReminderTemplate = require("../templates/appointmentReminder");
-const appointmentCancellationTemplate = require("../templates/appointmentCancellation");
 
-// Send appointment reminder
-router.post("/send-reminder", async (req, res) => {
-  const { appointment } = req.body;
+// Template IDs from SendGrid
+const TEMPLATE_IDS = {
+  // REMINDER: 'd-your-reminder-template-id',
+  // CANCELLATION: 'd-your-cancellation-template-id',
+  NEWSLETTER: "d-8c503fbf151a4314a3d6cd1d0281b463",
+  CONFIRMATION: "d-a9b9d1ebc67b40b982ca1c0f229943c0",
+};
 
-  try {
-    //Take the appointment object, pass it into the reminder template to create the emailContent object
-    const emailContent = appointmentReminderTemplate(appointment);
-    //Send the email using the emailContent and appointment object
-    await sendEmail({
-      to: appointment.email,
-      subject: emailContent.subject,
-      html: emailContent.html,
-    });
+const sendConfirmationEmail = async (appointment) => {
+  console.log("APPOINTMENT INFO: ", appointment);
 
-    res.status(200).send("Reminder email sent successfully");
-  } catch (err) {
-    console.error("Error sending reminder email:", err);
-    res.status(500).send("Error sending reminder email");
+  // Check if email exists directly or in guestDetails
+  const recipientEmail =
+    appointment.email ||
+    (appointment.guestDetails && appointment.guestDetails.email);
+
+  if (!recipientEmail) {
+    throw new Error("No recipient email address provided");
   }
-});
 
-// Send appointment cancellation
-router.post("/send-cancellation", async (req, res) => {
-  const { appointment } = req.body;
+  // Get the date as a Date object
+  const appointmentDate = new Date(appointment.date);
 
-  try {
-    //Take the appointment object, pass it into the cancellation template to create the emailContent object
-    const emailContent = appointmentCancellationTemplate(appointment);
-    //Send the email using the emailContent object
-    await sendEmail({
-      to: appointment.email,
-      subject: emailContent.subject,
-      html: emailContent.html,
-    });
+  return await sendEmail({
+    to: recipientEmail,
+    templateId: TEMPLATE_IDS.CONFIRMATION,
+    dynamicTemplateData: {
+      customerName:
+        appointment.customerName ||
+        (appointment.guestDetails && appointment.guestDetails.name),
+      appointmentDate: appointmentDate.toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      }),
+      appointmentTime: appointmentDate.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      barberName: appointment.barberName,
+      serviceType:
+        appointment.serviceType ||
+        (appointment.services && appointment.services.length > 0
+          ? appointment.services[0]
+          : ""),
+    },
+  });
+};
 
-    res.status(200).send("Cancellation email sent successfully");
-  } catch (err) {
-    console.error("Error sending cancellation email:", err);
-    res.status(500).send("Error sending cancellation email");
-  }
-});
+const sendNewsletter = async (newsLetterData) => {
+  return await sendEmail({
+    to: newsLetterData.recipientEmail,
+    templateId: TEMPLATE_IDS.NEWSLETTER,
+    dynamicTemplateData: {
+      customerName: newsLetterData.customerName,
+    },
+  });
+};
 
-module.exports = router;
+module.exports = {
+  router,
+  sendConfirmationEmail,
+  sendNewsletter,
+};
