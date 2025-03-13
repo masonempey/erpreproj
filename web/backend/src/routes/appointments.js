@@ -5,10 +5,10 @@ const User = require("../models/userModel");
 const Service = require("../models/serviceModel");
 const logger = require("../middleware/logger");
 const { sendConfirmationEmail, sendNewsletter } = require("../routes/email");
-
+ 
 ///Setup middleware to use the logger function for my routes
 router.use(logger);
-
+ 
 // Get All Appointments
 router.get("/", async (req, res) => {
   try {
@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
       .send("Error occurred while attempting to find all appointments");
   }
 });
-
+ 
 // Create new appointment
 router.post("/", async (req, res) => {
   try {
@@ -38,19 +38,20 @@ router.post("/", async (req, res) => {
       serviceType,
       guestDetails,
     } = req.body;
-
+ 
     console.log("Request payload:", req.body);
-
+ 
     if (!barberName || !date || !time || !barberId || !serviceType) {
       console.log("Missing required fields");
       return res.status(400).json({ message: "All fields are required" });
     }
-
+ 
     const service = await Service.findOne({ serviceName: serviceType });
     if (!service) {
       return res.status(400).json({ message: "Service not found" });
     }
-
+ 
+    // COPILOT REFERENCE: Prompt: use the data and time and combine them to create 1 total date time object
     const dateTime = new Date(date);
     const [timeHour, timeMinute] = time.split(/[: ]/);
     let hour = parseInt(timeHour);
@@ -61,7 +62,8 @@ router.post("/", async (req, res) => {
     }
     dateTime.setUTCHours(hour);
     dateTime.setUTCMinutes(parseInt(timeMinute));
-
+ 
+    // Create a new appointment object
     const newAppointment = new Appointment({
       customerName,
       barberName,
@@ -71,9 +73,9 @@ router.post("/", async (req, res) => {
       services: [service._id],
       guestDetails,
     });
-
+ 
     const appointmentCreated = await newAppointment.save();
-
+ 
     if (userId) {
       try {
         await User.findOneAndUpdate(
@@ -85,7 +87,7 @@ router.post("/", async (req, res) => {
         console.error("Error finding user to insert appointment:", err);
       }
     }
-
+ 
     try {
       const confirmationAppointment = {
         customerName: customerName,
@@ -105,12 +107,6 @@ router.post("/", async (req, res) => {
     } catch (emailErr) {
       console.error("Error sending confirmation email:", emailErr);
     }
-
-    // Send response back to the frontend
-    res.status(201).json({
-      message: "Appointment created successfully",
-      appointment: appointmentCreated,
-    });
   } catch (err) {
     console.error("Error creating appointment:", err);
     res
@@ -118,32 +114,36 @@ router.post("/", async (req, res) => {
       .send("Error occurred while attempting to create an appointment");
   }
 });
-
-// Fetch user appointments by userId
-router.get("/:userId/appointments", async (req, res) => {
+ 
+// Get Appointments under a specific user
+router.get("/users/:userId/appointments", async (req, res) => {
   const { userId } = req.params;
+  console.log(`Fetching appointments for user ID: ${userId}`);
   try {
-    // Find the user by userId
-    const userFound = (await User.findOne({ userId: userId })).populate('appointments');
-
-    if (userFound) {
-      // Return the user's appointments
-      res.status(200).json(userFound.appointments);
-    } else {
-      res.status(404).json({ message: `User with userId ${userId} not found` });
+    // Reference: GPT 4o, used insight on searching for the appointments that have the correct userId
+    const appointments = await Appointment.find({ userId: userId });
+    console.log(`Appointments found: ${appointments.length}`);
+    // If the appointments under the user is 0 (No appointments)
+    if (appointments.length === 0) {
+      return res.status(404).send("No appointments found for this user");
     }
+    res.status(200).json(appointments);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching user appointments", error: err.message });
+    console.error("Error fetching appointments:", err);
+    res
+      .status(500)
+      .send(
+        "Error occurred while attempting to find appointments for the user"
+      );
   }
 });
-
-
+ 
 // Get Appointments under a specific barber -- Simon -- Mason Assisted
 router.get("/barbers/:barberId", async (req, res) => {
   const { barberId } = req.params;
   console.log(`Fetching appointments for barber ID: ${barberId}`);
   console.log(`Barber ID: ${barberId}`);
-
+ 
   try {
     const appointments = await Appointment.find({ barberId: barberId });
     console.log(`Appointments found: ${appointments.length}`);
@@ -161,7 +161,7 @@ router.get("/barbers/:barberId", async (req, res) => {
       );
   }
 });
-
+ 
 // Delete Appointment by ID
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
@@ -180,7 +180,7 @@ router.delete("/:id", async (req, res) => {
       .send("Error occurred while attempting to delete appointment");
   }
 });
-
+ 
 // Update Appointment by ID
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
@@ -193,7 +193,7 @@ router.put("/:id", async (req, res) => {
     barberId,
     serviceType,
   } = req.body;
-
+ 
   // Checks for at least one field in the body
   if (
     !customerName &&
@@ -208,7 +208,7 @@ router.put("/:id", async (req, res) => {
       .status(400)
       .json({ message: "At least one field is required to update" });
   }
-
+ 
   try {
     const updatedAppointment = await Appointment.findByIdAndUpdate(
       id,
@@ -226,11 +226,11 @@ router.put("/:id", async (req, res) => {
       },
       { new: true, useFindAndModify: false }
     );
-
+ 
     if (!updatedAppointment) {
       return res.status(404).json({ message: "Appointment not found" });
     }
-
+ 
     res.status(200).json({
       message: "Appointment updated successfully",
       appointment: updatedAppointment,
@@ -241,5 +241,5 @@ router.put("/:id", async (req, res) => {
       .json({ message: "Error updating appointment", error: err.message });
   }
 });
-
+ 
 module.exports = router;

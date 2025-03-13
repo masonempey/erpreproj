@@ -1,7 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
 import Navbar from "./navBar";
-import AdminNavbar from "./AdminBar";
 import Footer from "./footer";
 import styles from "../styles/Layout.module.css";
 
@@ -13,9 +12,8 @@ const Layout = ({ children }) => {
   return (
     <div className={styles.layout}>
       {!isLoginPage && !isAdmin && <Navbar />}
-      {isAdmin && <AdminNavbar />}
       <main className={styles.main}>{children}</main>
-      <Footer />
+      {!isLoginPage && !isAdmin && <Footer />}
     </div>
   );
 };

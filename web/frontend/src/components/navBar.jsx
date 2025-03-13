@@ -16,7 +16,6 @@ const Navbar = () => {
     setIsProfileOpen(!isProfileOpen);
   };
 
-
   return (
     <nav className={styles.navbar} aria-label="Main Navigation">
       <div className={styles.navbarLeft}>

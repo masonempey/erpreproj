@@ -1,0 +1,46 @@
+.container {
+  width: 100%;
+  height: 70%;
+  margin: 0;
+}
+
+.periodTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.timeSlot {
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 1rem;
+  border: 0.1rem solid #ccc;
+  border-radius: 0.5rem;
+  height: 10vh;
+  width: 10vw;
+  background-color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.timeSlot:hover {
+  background-color: #f0f0f0;
+}
+
+.timeSlot.active{
+  background-color: #e6853b;
+  color: white;
+}
+
+.timeSlot.inactive {
+  background-color: #f0f0f0;
+  color: #ccc;
+  cursor: default;
+}
