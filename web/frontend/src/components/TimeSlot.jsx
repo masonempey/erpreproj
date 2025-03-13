@@ -29,7 +29,6 @@ export default function TimeSlot({appointmentsThisDay, handleViewAppointment}) {
   };
 
   let isMatch = false;
-  let appointmentFound = {};
 
   const formatTime = (dateString) => {
     return new Date(dateString).toLocaleTimeString("en-US", {

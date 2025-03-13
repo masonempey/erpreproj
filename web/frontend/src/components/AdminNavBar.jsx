@@ -33,19 +33,22 @@ const AdminNavBar = ({handleChangeView, selectedView, tutorialDisplay, handleTut
     <div className={styles.layoutContainer}>
       <div className={styles.header}>
         <h1>Erpre B&S</h1>
-        {!isTutorial ? (<h1>Welcome George!</h1> ) : (<button className={styles.exitTutorial} onClick={() => handleChangeView("dashboard")}>Exit Tutorial!</button>)}
+        {!isTutorial ? (<h1>Welcome George!</h1> ) : (<button className={styles.exitTutorial} onClick={(e) => handleChangeView("dashboard", handleTutorialDisplay(e, null, false))}>Exit Tutorial!</button>)}
         {isTutorial ? ( 
           <ul className={styles.profile}>
             <li> 
-            <IconButton onClick={() => handleTutorialDisplay("Tutorial")}>
+            <IconButton onClick={(e) => handleTutorialDisplay(e, "Tutorial")}>
               <HelpOutlineIcon sx={{ fontSize: "2.5rem"}}/>
             </IconButton>
             </li>
           <li> 
-            <IconButton onClick={() => handleTutorialDisplay("ViewNotifications")}>
+            <IconButton onClick={(e) => handleTutorialDisplay(e, "ViewNotifications")}>
               <NotificationsIcon sx={{ fontSize: "2.5rem"}}/>
             </IconButton>
           </li> 
+          <li>
+            <ProfilePopup user={user} onClose={toggleProfilePopup} sx={{ fontSize: "2.5rem" }}/>
+          </li>
         </ul>
         ) : ( 
         <ul className={styles.profile}>
@@ -71,35 +74,35 @@ const AdminNavBar = ({handleChangeView, selectedView, tutorialDisplay, handleTut
           <ul className={styles.navLinks}>
             <li>
               <Tooltip title="Dashboard">
-                <IconButton onClick={() => handleTutorialDisplay("dashboard")}>
+                <IconButton onClick={(e) => handleTutorialDisplay(e, "dashboard", true)}>
                   <HomeIcon sx={{ fontSize: "4.5rem", color: isDashboard ? "#e6853b" : ""}}/>
                 </IconButton>
               </Tooltip>
             </li>
             <li>
               <Tooltip title="Set Time Available Slots">
-                <IconButton onClick={() => handleTutorialDisplay("TimeSlots")}>
+                <IconButton onClick={(e) => handleTutorialDisplay(e, "TimeSlots")}>
                   <MoreTimeIcon sx={{ fontSize: "4.5rem" }}/>
                 </IconButton>
               </Tooltip>
             </li>
             <li>
               <Tooltip title="Change Available Services">
-                <IconButton onClick={() => handleTutorialDisplay("notifications")}>
+                <IconButton onClick={(e) => handleTutorialDisplay(e, "notifications")}>
                   <ContentCutIcon sx={{ fontSize: "4.5rem" }}/>
                 </IconButton>
               </Tooltip>
             </li>
             <li>
               <Tooltip title="View Personal Analytics">
-                <IconButton onClick={() => handleTutorialDisplay("reports")}>
+                <IconButton onClick={(e) => handleTutorialDisplay(e, "reports")}>
                   <AssessmentIcon sx={{ fontSize: "4.5rem" }}/>
                 </IconButton>
               </Tooltip>
             </li>
             <li>
               <Tooltip title="Edit Profile">
-                <IconButton onClick={() => handleTutorialDisplay("Edit Profile")}>
+                <IconButton onClick={(e) => handleTutorialDisplay(e, "Edit Profile")}>
                   <ManageAccountsIcon sx={{ fontSize: "4.5rem" }}/>
                 </IconButton>
               </Tooltip>

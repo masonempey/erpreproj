@@ -122,23 +122,38 @@ export default function Admin() {
 
   const handleViewAppointment = (appointment) => {
     setSelectedAppointment(appointment);
+    if (isTutorial) {
+      handleTutorialDisplay(null, "View Appointment Details");
+    }
   };
 
   const handleSetSelectedDate = (date) => {
     setSelectedDate(date);
+    if (isTutorial) {
+      handleTutorialDisplay(null, "Calendar");
+    }
   };
 
-  const handleTutorialDisplay = (display, visible = true) => {
-    setTutorialDisplay(display);
+  const handleTutorialDisplay = (e, display, visible = true) => {
+    const screenWidth = window.innerWidth;
+    const tutorialWidth = 500;
 
-    const mouseX = position.x;
-    const mouseY = position.y;
+    if (e == null) {
+      e = { clientX: screenWidth / 2, clientY: 300 };
     
-      // Set modal position based on mouse click
-      setTutorialPosition({ x: `${mouseX}px`, y: `${mouseY}px` });
+    } else {
+      if (e.clientX + tutorialWidth > screenWidth) {
+        e.clientX = screenWidth - 300;
+      }
 
-      // Show the modal after clicking
-      ToggleTutorialVisibility(visible);
+      if (e.clientX < 250) {
+        e.clientX = 300;
+      }
+    }
+
+    setTutorialDisplay(display);
+    setTutorialPosition({ x: `${e.clientX}px`, y: `${e.clientY}px` });
+    ToggleTutorialVisibility(visible);
   };
 
   const formatTime = (dateString) => {
@@ -212,13 +227,12 @@ export default function Admin() {
         </section>  
       </div>
       {isTutorial && (      
-        <>     
+        <div>   
          <div className={styles.flashlightOverlay} style={{ "--x": position.x, "--y": position.y }}/>
-         <TutorialDisplay tutorialDisplay={tutorialDisplay} handleTutorialDisplay={handleTutorialDisplay}/>
          {isTutorialVisible && (
-           <TutorialDisplay tutorialDisplay={tutorialDisplay} tutorialPosition={tutorialPosition}/>
+           <TutorialDisplay tutorialDisplay={tutorialDisplay} tutorialPosition={tutorialPosition} isTutorialVisible={isTutorialVisible} handleTutorialDisplay={handleTutorialDisplay}/>
          )}
-        </>
+        </div>
       )}
     </main>
   );

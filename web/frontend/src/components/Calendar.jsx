@@ -5,7 +5,7 @@ import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 import Badge from "@mui/material/Badge";
 import dayjs from "dayjs";
 
-export default function Calendar( {handleSetSelectedDate, selectedDate, appointmentDays}) {
+export default function Calendar( {handleSetSelectedDate, selectedDate, appointmentDays} ) {
   return (
     <div>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
