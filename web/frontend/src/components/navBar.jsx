@@ -26,6 +26,9 @@ const Navbar = () => {
       <div className={styles.navbarCenter}>
         <ul className={styles.navLinks}>
           <li>
+            <a href="/admin">Admin</a>
+          </li>
+          <li>
             <a href="#home">Home</a>
           </li>
           <li>

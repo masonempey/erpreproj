@@ -118,6 +118,10 @@ export default function Admin() {
 
   const handleChangeView = (view) => {
     setSelectedView(view);
+
+    if (view === "Tutorial") {
+      handleTutorialDisplay(null, "You have clicked the button to view the tutorial! You can view the tutorial at any time by clicking this button!");
+    }
   };
 
   const handleViewAppointment = (appointment) => {
