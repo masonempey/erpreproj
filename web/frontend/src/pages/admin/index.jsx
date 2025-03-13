@@ -123,23 +123,26 @@ export default function Admin() {
   const handleViewAppointment = (appointment) => {
     setSelectedAppointment(appointment);
     if (isTutorial) {
-      handleTutorialDisplay(null, "View Appointment Details");
+      handleTutorialDisplay(null, "View your customers appointment details here! You can view their contact information and the service they are scheduled for!");
     }
   };
 
   const handleSetSelectedDate = (date) => {
     setSelectedDate(date);
     if (isTutorial) {
-      handleTutorialDisplay(null, "Calendar");
+      handleTutorialDisplay(null, "You have clicked on the calendar! Here you can view your"
+        + "appointments for the selected date! Click on a highlighted appointment to view more details!");
     }
   };
 
   const handleTutorialDisplay = (e, display, visible = true) => {
     const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
     const tutorialWidth = 500;
+    const tutorialHeight = 300;
 
     if (e == null) {
-      e = { clientX: screenWidth / 2, clientY: 300 };
+      e = { clientX: screenWidth / 2, clientY: (screenHeight / 2) - 150 };
     
     } else {
       if (e.clientX + tutorialWidth > screenWidth) {
@@ -148,6 +151,14 @@ export default function Admin() {
 
       if (e.clientX < 250) {
         e.clientX = 300;
+      }
+
+      if (e.clientY < 150) {
+        e.clientY = 200;
+      } 
+
+      if (e.clientY + tutorialHeight > screenHeight) {
+        e.clientY = screenHeight - 200;
       }
     }
 

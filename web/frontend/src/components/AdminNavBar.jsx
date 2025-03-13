@@ -29,6 +29,14 @@ const AdminNavBar = ({handleChangeView, selectedView, tutorialDisplay, handleTut
   const isDashboard = selectedView == "Dashboard";
   const isTutorial = selectedView == "Tutorial";
 
+  const dashBoardMessage = "This is the Dashboard page!. Here you can view your upcoming appointments, review appointment details and or cancel them!";
+  const timeSlotsMessage = "This is the Set Time Slot's page! Here you can conveniently modify time slots for future appointments at your leisure!";
+  const servicesMessage = "This is the Change Available Services page! Here you can modify the services you offer to your clients!";
+  const analyticsMessage = "This is the View Personal Analytics page! Here you can view your financial analytics and track your earnings!";
+  const editProfileMessage = "This is the Edit Profile page! Here you can modify your personal information and update your profile picture!";
+  const tutorialMessage = "This is the button you just clicked! You can use this button to view the tutorial at any time!";
+  const notificationsMessage = "This is the Notifications button! Check here to view your notifications at any time!";
+
   return (
     <div className={styles.layoutContainer}>
       <div className={styles.header}>
@@ -37,12 +45,12 @@ const AdminNavBar = ({handleChangeView, selectedView, tutorialDisplay, handleTut
         {isTutorial ? ( 
           <ul className={styles.profile}>
             <li> 
-            <IconButton onClick={(e) => handleTutorialDisplay(e, "Tutorial")}>
+            <IconButton onClick={(e) => handleTutorialDisplay(e, tutorialMessage)}>
               <HelpOutlineIcon sx={{ fontSize: "2.5rem"}}/>
             </IconButton>
             </li>
           <li> 
-            <IconButton onClick={(e) => handleTutorialDisplay(e, "ViewNotifications")}>
+            <IconButton onClick={(e) => handleTutorialDisplay(e, notificationsMessage)}>
               <NotificationsIcon sx={{ fontSize: "2.5rem"}}/>
             </IconButton>
           </li> 
@@ -74,35 +82,35 @@ const AdminNavBar = ({handleChangeView, selectedView, tutorialDisplay, handleTut
           <ul className={styles.navLinks}>
             <li>
               <Tooltip title="Dashboard">
-                <IconButton onClick={(e) => handleTutorialDisplay(e, "dashboard", true)}>
+                <IconButton onClick={(e) => handleTutorialDisplay(e, dashBoardMessage)}>
                   <HomeIcon sx={{ fontSize: "4.5rem", color: isDashboard ? "#e6853b" : ""}}/>
                 </IconButton>
               </Tooltip>
             </li>
             <li>
               <Tooltip title="Set Time Available Slots">
-                <IconButton onClick={(e) => handleTutorialDisplay(e, "TimeSlots")}>
+                <IconButton onClick={(e) => handleTutorialDisplay(e, timeSlotsMessage)}>
                   <MoreTimeIcon sx={{ fontSize: "4.5rem" }}/>
                 </IconButton>
               </Tooltip>
             </li>
             <li>
               <Tooltip title="Change Available Services">
-                <IconButton onClick={(e) => handleTutorialDisplay(e, "notifications")}>
+                <IconButton onClick={(e) => handleTutorialDisplay(e, servicesMessage)}>
                   <ContentCutIcon sx={{ fontSize: "4.5rem" }}/>
                 </IconButton>
               </Tooltip>
             </li>
             <li>
               <Tooltip title="View Personal Analytics">
-                <IconButton onClick={(e) => handleTutorialDisplay(e, "reports")}>
+                <IconButton onClick={(e) => handleTutorialDisplay(e, analyticsMessage)}>
                   <AssessmentIcon sx={{ fontSize: "4.5rem" }}/>
                 </IconButton>
               </Tooltip>
             </li>
             <li>
               <Tooltip title="Edit Profile">
-                <IconButton onClick={(e) => handleTutorialDisplay(e, "Edit Profile")}>
+                <IconButton onClick={(e) => handleTutorialDisplay(e, editProfileMessage)}>
                   <ManageAccountsIcon sx={{ fontSize: "4.5rem" }}/>
                 </IconButton>
               </Tooltip>
