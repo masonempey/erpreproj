@@ -2,16 +2,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: linear-gradient(
-      rgba(53, 40, 31, 0.25),
-      rgba(53, 40, 31, 0.25)
-    ),
-    url("/images/landing_background.png");
-  background-size: cover;
-  background-position: center;
-  width: 100%;
+  background-color: #b8b6b6;
+  width: 100vw;
   min-height: 100vh;
-  justify-content: flex-start;
 }
 
 .header {
@@ -19,11 +12,16 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 30vh;
+  height: 10vh;
+  width: 100vw; 
+  position: fixed;
+  top: 0;
+  z-index: 999;
+  background-color: brown;
 }
 
 .welcome {
-  color: #fafafa;
+  color: #b8b6b6;
   text-align: center;
   Margin: 10rem;
   width : 100%;
@@ -32,8 +30,12 @@
 .view {
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
-  background-color: #fafafa;
+  justify-content: space-around;
+  background-color: #b8b6b6;
+  width: 80vw;
+  left: 5vw;
+  height: 88vh;
+  top: 12vh;
 }
 
 .appointmentHeader {
@@ -46,14 +48,70 @@
   display: flex;
   flex-direction: column;
   align-items: top;
-  height: 70%;
+  height: 75%;
   justify-content: flex-start;
   background-color: #fafafa;
+  width: 60%;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
 .appointment {
   padding: 1rem;
   font-size: 1.2rem;
+}
+
+.appointmentDetails {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  padding: 20px;
+  text-align: left;
+}
+
+.appointmentButtons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.appointmentHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.appointmentInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.appointmentDetails h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.appointmentDetails p {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  color: #555;
+}
+
+.appointmentDetails p span {
+  font-weight: bold;
+  color: #333;
+}
+
+.appointmentDetails .appointmentDate {
+  font-style: italic;
+  color: #888;
 }
 
 /* To fit the calendar only */
@@ -83,4 +141,31 @@
     margin-top: 4rem;
   }
 }
+
+/* Testing Tutorial CSS */
+
+/* Full-screen overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flashlightOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none; /* So it doesn't interfere with clicks */
+  background: radial-gradient(circle 200px at var(--x, 50%) var(--y, 50%), rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 0.3) 40%);
+  z-index: 9998; /* Ensure it's above everything */
+  transition: background 0.05s ease-out; /* Smooth transition for movement */
+}
+
 

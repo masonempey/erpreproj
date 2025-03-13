@@ -5,7 +5,7 @@ import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 import Badge from "@mui/material/Badge";
 import dayjs from "dayjs";
 
-export default function Calendar( {handleSetSelectedDate, selectedDate, appointmentDays}) {
+export default function Calendar( {handleSetSelectedDate, selectedDate, appointmentDays} ) {
   return (
     <div>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -37,20 +37,23 @@ export default function Calendar( {handleSetSelectedDate, selectedDate, appointm
                   }
 
                   return (
-                    <Badge overlap="circular" variant={appointmentsThisMonth ? "dot" : ""}   
+                    <Badge overlap="circular" variant={appointmentsThisMonth && !isPast ? "dot" : ""}   
                     sx=
                       {{
                         "& .MuiBadge-badge": {  
-                          backgroundColor: "#FF5733", // red-orange
+                          backgroundColor: "#e6853b", // red-orange
+                          width: 10,
+                          height: 10,
+                          borderRadius: "50%",
                         },  
                       }}
                     >
-                      <PickersDay {...other} day={day} sx={{color: getColor(), fontWeight: getFontWeight(), backgroundColor: ""}} />
+                      <PickersDay {...other} day={day} sx={{color: getColor(), fontWeight: getFontWeight()}} />
                     </Badge>
                   );
                 },
               }}
-              sx= {{backgroundColor: "#fafafa", color: "#000", scale: { xs: 1.3, md: 1.5, lg: 1.8 }, borderRadius: 2, boxShadow: 24, m: 5}}
+              sx= {{backgroundColor: "#fafafa", color: "#000", scale: { xs: 1.3, md: 1.5, lg: 1.8 }, borderRadius: 2, boxShadow: 24, m: 15, mr: 25}}
             />
       </LocalizationProvider>
     </div>
