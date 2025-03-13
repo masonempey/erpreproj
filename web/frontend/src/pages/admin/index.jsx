@@ -130,7 +130,7 @@ export default function Admin() {
   const handleSetSelectedDate = (date) => {
     setSelectedDate(date);
     if (isTutorial) {
-      handleTutorialDisplay(null, "You have clicked on the calendar! Here you can view your"
+      handleTutorialDisplay(null, "You have clicked on the calendar! Here you can view your "
         + "appointments for the selected date! Click on a highlighted appointment to view more details!");
     }
   };
