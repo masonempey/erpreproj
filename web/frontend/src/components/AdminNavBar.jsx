@@ -41,7 +41,7 @@ const AdminNavBar = ({handleChangeView, selectedView, tutorialDisplay, handleTut
     <div className={styles.layoutContainer}>
       <div className={styles.header}>
         <h1>Erpre B&S</h1>
-        {!isTutorial ? (<h1>Welcome George!</h1> ) : (<button className={styles.exitTutorial} onClick={(e) => handleChangeView("dashboard", handleTutorialDisplay(e, null, false))}>Exit Tutorial!</button>)}
+        {!isTutorial ? (<h1>Welcome George!</h1> ) : (<button className={styles.exitTutorial} onClick={(e) => {handleChangeView("dashboard"); handleTutorialDisplay(e, null, false);}}>Exit Tutorial!</button>)}
         {isTutorial ? ( 
           <ul className={styles.profile}>
             <li> 
