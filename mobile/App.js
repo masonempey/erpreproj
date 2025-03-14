@@ -1,22 +1,17 @@
-import { StyleSheet} from 'react-native';
 import ParentNav from './src/routing/parentNav';
 import { NavigationContainer } from '@react-navigation/native';
+import { StatusBar } from 'react-native';
 
 export default function App() {
   
   // Move NavigationContainer to the root of the app for authentication process and prevent potential issues
   return (
-    <NavigationContainer>
-      <ParentNav/>
-    </NavigationContainer>
+    <>
+      <StatusBar barStyle="dark-content" hidden={true} />
+      <NavigationContainer>
+        <ParentNav />
+      </NavigationContainer>
+    </>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
