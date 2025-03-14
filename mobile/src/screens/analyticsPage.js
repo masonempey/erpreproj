@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { View, Text, Button, Dimensions } from "react-native";
 import testPastAppointments from "../utilities/testing/pastAppointments.json";
@@ -14,7 +16,10 @@ export default function AnalyticsPage({ route }) {
   const [dateRange, setDateRange] = useState("Month");
   const [filteredType, setFilteredType] = useState("NumApp");
   const [applicableData, setApplicableData] = useState([]);
-  const [chartData, setChartData] = useState({ labels: [], datasets: [{ data: [] }] });
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [{ data: [] }],
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -24,11 +29,13 @@ export default function AnalyticsPage({ route }) {
     setPastAppointments(sortedAppointments);
     setApplicableData(sortedAppointments);
 
-    const sortedBarbers = [...testBarbers].sort((a, b) => a.barber_name.localeCompare(b.barber_name));
+    const sortedBarbers = [...testBarbers].sort((a, b) =>
+      a.barber_name.localeCompare(b.barber_name)
+    );
 
     const formattedBarbers = [
       { label: "All Barbers", value: "All" },
-      ...sortedBarbers.map(barber => ({
+      ...sortedBarbers.map((barber) => ({
         label: barber.barber_name,
         value: barber.barber_id,
       })),
@@ -43,7 +50,9 @@ export default function AnalyticsPage({ route }) {
     let filteredAppointments = [...pastAppointments];
 
     if (selectedBarber !== "All") {
-      const selectedBarberName = barbers.find((b) => b.barber_id === selectedBarber)?.barber_name;
+      const selectedBarberName = barbers.find(
+        (b) => b.barber_id === selectedBarber
+      )?.barber_name;
       filteredAppointments = filteredAppointments.filter(
         (appointment) => appointment.barber_name === selectedBarberName
       );
@@ -65,8 +74,13 @@ export default function AnalyticsPage({ route }) {
     let data = [];
 
     if (dateRange === "Month") {
-      const days = daysInMonth(currentDate.getFullYear(), currentDate.getMonth());
-      labels = Array.from({ length: days }, (_, i) => (i + 1) % 5 === 0 ? (i + 1).toString() : "");
+      const days = daysInMonth(
+        currentDate.getFullYear(),
+        currentDate.getMonth()
+      );
+      labels = Array.from({ length: days }, (_, i) =>
+        (i + 1) % 5 === 0 ? (i + 1).toString() : ""
+      );
       data = Array(days).fill(0);
 
       applicableData.forEach((appointment) => {
@@ -88,20 +102,26 @@ export default function AnalyticsPage({ route }) {
 
       applicableData.forEach((appointment) => {
         const appointmentDate = new Date(appointment.date);
-        const monthDiff = (currentDate.getFullYear() - appointmentDate.getFullYear()) * 12 + (currentDate.getMonth() - appointmentDate.getMonth());
+        const monthDiff =
+          (currentDate.getFullYear() - appointmentDate.getFullYear()) * 12 +
+          (currentDate.getMonth() - appointmentDate.getMonth());
         if (monthDiff >= 0 && monthDiff < 12) {
           data[11 - monthDiff] += 1;
         }
       });
     } else if (dateRange === "All Time") {
       // Handle "All Time" filter (last 4 years)
-      const years = Array.from({ length: 4 }, (_, i) => currentDate.getFullYear() - (3 - i));
-      labels = years.map(year => year.toString());
+      const years = Array.from(
+        { length: 4 },
+        (_, i) => currentDate.getFullYear() - (3 - i)
+      );
+      labels = years.map((year) => year.toString());
       data = Array(4).fill(0);
 
       applicableData.forEach((appointment) => {
         const appointmentDate = new Date(appointment.date);
-        const yearDiff = currentDate.getFullYear() - appointmentDate.getFullYear();
+        const yearDiff =
+          currentDate.getFullYear() - appointmentDate.getFullYear();
         if (yearDiff >= 0 && yearDiff < 4) {
           data[3 - yearDiff] += 1;
         }
@@ -132,16 +152,18 @@ export default function AnalyticsPage({ route }) {
       let includeReview = false;
 
       if (dateRange === "Month") {
-        includeReview = (
+        includeReview =
           appointmentDate.getMonth() === currentDate.getMonth() &&
-          appointmentDate.getFullYear() === currentDate.getFullYear()
-        );
+          appointmentDate.getFullYear() === currentDate.getFullYear();
       } else if (dateRange === "Year") {
-        const monthDiff = (currentDate.getFullYear() - appointmentDate.getFullYear()) * 12 + (currentDate.getMonth() - appointmentDate.getMonth());
-        includeReview = (monthDiff >= 0 && monthDiff < 12);
+        const monthDiff =
+          (currentDate.getFullYear() - appointmentDate.getFullYear()) * 12 +
+          (currentDate.getMonth() - appointmentDate.getMonth());
+        includeReview = monthDiff >= 0 && monthDiff < 12;
       } else if (dateRange === "All Time") {
-        const yearDiff = currentDate.getFullYear() - appointmentDate.getFullYear();
-        includeReview = (yearDiff >= 0 && yearDiff < 4);
+        const yearDiff =
+          currentDate.getFullYear() - appointmentDate.getFullYear();
+        includeReview = yearDiff >= 0 && yearDiff < 4;
       }
 
       if (includeReview && appointment.star_rating) {
@@ -158,7 +180,8 @@ export default function AnalyticsPage({ route }) {
     return Object.entries(reviewCounts).map(([label, count]) => ({
       name: label,
       population: count,
-      color: label === "Positive" ? "green" : label === "Neutral" ? "orange" : "red",
+      color:
+        label === "Positive" ? "green" : label === "Neutral" ? "orange" : "red",
       legendFontColor: "#7F7F7F",
       legendFontSize: 15,
     }));
@@ -173,14 +196,14 @@ export default function AnalyticsPage({ route }) {
       <Dropdown
         data={barberList}
         value={selectedBarber}
-        onChange={item => {
+        onChange={(item) => {
           setSelectedBarber(item.value);
           console.log(item.value);
         }}
         labelField="label"
         valueField="value"
         style={{ width: "100%", height: 50 }}
-        textStyle={{ color: 'black' }}
+        textStyle={{ color: "black" }}
       />
 
       <View>
@@ -190,7 +213,10 @@ export default function AnalyticsPage({ route }) {
       </View>
 
       <View>
-        <Button title="# Appointments" onPress={() => setFilteredType("NumApp")} />
+        <Button
+          title="# Appointments"
+          onPress={() => setFilteredType("NumApp")}
+        />
         <Button title="Reviews" onPress={() => setFilteredType("Reviews")} />
       </View>
 
