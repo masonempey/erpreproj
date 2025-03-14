@@ -1,52 +1,61 @@
-// app/api/users/googleregister/route.js
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/database/mongodb";
-import User from "@/lib/database/models/userModel";
-import Role from "@/lib/database/models/roleModel";
+import UserService from "@/lib/services/userService";
+import admin from "@/lib/firebase/admin";
 
-// POST - register Google user
 export async function POST(request) {
   try {
-    await connectDB();
-    const { email, uid, name, phoneNumber } = await request.json();
+    const { email, uid } = await request.json();
 
-    if (!email || !uid || !name) {
+    // Verify the token
+    const token = request.headers.get("Authorization")?.split("Bearer ")[1];
+    if (!token) {
+      return NextResponse.json({ error: "No token provided" }, { status: 401 });
+    }
+
+    try {
+      // Verify token using the auth instance
+      await admin.auth().verifyIdToken(token);
+    } catch (authError) {
+      console.error("Token verification failed:", authError);
       return NextResponse.json(
-        { message: "All fields are required" },
+        { error: "Invalid or expired token" },
+        { status: 401 }
+      );
+    }
+
+    if (!email || !uid) {
+      return NextResponse.json(
+        { error: "Email and UID are required" },
         { status: 400 }
       );
     }
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await UserService.getUserByEmail(email);
     if (existingUser) {
-      return NextResponse.json(
-        { message: "User already exists" },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        message: "User already exists",
+        user: existingUser,
+      });
     }
 
-    // Create new user in MongoDB
-    const defaultRole = await Role.findOne({ roleType: "Customer" });
-    const newUser = new User({
-      userId: uid,
-      email,
-      name,
-      coins: 0,
-      lastLogin: new Date(),
-      roleId: defaultRole ? defaultRole._id : null,
-      phoneNumber: phoneNumber || "",
-    });
+    // Create new user with default role
+    const roleId = await UserService.getDefaultRoleId();
+    const newUser = await UserService.createUser(uid, email);
 
-    await newUser.save();
-    return NextResponse.json({
-      message: "User successfully registered",
-      user: newUser,
-    });
-  } catch (err) {
-    console.error("Error in googleregister route:", err);
     return NextResponse.json(
-      { message: "Error Creating User", error: err.message },
+      {
+        message: "User created successfully",
+        user: newUser,
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Error in /api/users/googleregister:", error);
+    return NextResponse.json(
+      {
+        error: error.message || "Internal server error",
+      },
       { status: 500 }
     );
   }

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { signOut } from "firebase/auth";
-import { auth } from "../../lib/firebase/config";
+import { auth } from "../../lib/firebase/client";
 import {
   Avatar,
   Button,

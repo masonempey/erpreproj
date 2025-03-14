@@ -8,7 +8,17 @@ import ProfilePopup from "./ProfilePopup";
 import styles from "../styles/Navbar.module.css";
 
 const Navbar = () => {
-  const { user } = useUser();
+  const { user, loading } = useUser();
+
+  if (loading) {
+    return (
+      <nav className={styles.navbar}>
+        <div>Loading...</div>
+      </nav>
+    );
+  }
+
+  console.log("user: ", user);
 
   return (
     <nav className={styles.navbar} aria-label="Main Navigation">
