@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import UserService from "@/lib/services/userService";
+import { getUserById } from "@/lib/services/userService";
 
 export async function POST(request) {
   try {
@@ -12,7 +12,7 @@ export async function POST(request) {
       );
     }
 
-    const user = await UserService.getUserById(uid);
+    const user = await getUserById(uid);
     return NextResponse.json({ exists: !!user });
   } catch (error) {
     console.error("Error checking user:", error);

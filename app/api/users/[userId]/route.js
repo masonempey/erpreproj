@@ -1,6 +1,6 @@
 // app/api/users/[userId]/route.js
 import { NextResponse } from "next/server";
-import { getUserById, deleteUserById } from "@/lib/services/userService";
+import { getUserById } from "@/lib/services/userService";
 
 // GET user by userId
 export async function GET(request, { params }) {

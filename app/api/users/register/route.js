@@ -1,5 +1,5 @@
 // app/api/users/register/route.js
-import UserService from "@/lib/services/userService";
+import { getUserByEmail } from "@/lib/services/userService";
 
 export async function POST(request) {
   try {
@@ -12,7 +12,7 @@ export async function POST(request) {
       );
     }
 
-    const existingUser = await UserService.getUserByEmail(email);
+    const existingUser = await getUserByEmail(email);
     if (existingUser) {
       return new Response(JSON.stringify({ message: "User already exists" }), {
         status: 400,

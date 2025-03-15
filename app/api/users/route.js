@@ -1,8 +1,5 @@
 // app/api/users/route.js
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/database/mongodb";
-import User from "@/lib/database/models/userModel";
-import Role from "@/lib/database/models/roleModel";
 
 // GET all users
 export async function GET() {

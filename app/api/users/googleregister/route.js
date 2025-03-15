@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import UserService from "@/lib/services/userService";
+import {
+  getUserByEmail,
+  getDefaultRoleId,
+  createUser,
+} from "@/lib/services/userService";
 import admin from "@/lib/firebase/admin";
 
 export async function POST(request) {
@@ -31,7 +35,7 @@ export async function POST(request) {
     }
 
     // Check if user already exists
-    const existingUser = await UserService.getUserByEmail(email);
+    const existingUser = await getUserByEmail(email);
     if (existingUser) {
       return NextResponse.json({
         message: "User already exists",
@@ -40,8 +44,8 @@ export async function POST(request) {
     }
 
     // Create new user with default role
-    const roleId = await UserService.getDefaultRoleId();
-    const newUser = await UserService.createUser(uid, email);
+    const roleId = await getDefaultRoleId();
+    const newUser = await createUser(uid, email);
 
     return NextResponse.json(
       {

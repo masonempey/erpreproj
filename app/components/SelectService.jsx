@@ -32,9 +32,9 @@ export default function SelectService({ onServiceSelect }) {
           className={styles.serviceCard}
           onClick={() => onServiceSelect(service.serviceName)}
         >
-          <div className={styles.serviceName}>{service.serviceName}</div>
+          <div className={styles.serviceName}>{service.service_name}</div>
           <div className={styles.serviceTime}>45 min</div>
-          <div className={styles.servicePrice}>$50</div>
+          <div className={styles.servicePrice}>${service.price}</div>
         </div>
       ))}
     </div>

@@ -1,54 +1,93 @@
-// // app/api/barbers/route.js
-// import { NextResponse } from "next/server";
-// import { v4 as uuidv4 } from "uuid";
-// import connectDB from "@/lib/database/mongodb";
-// import Barber from "@/lib/database/models/barberModel";
+// app/api/barbers/route.js
 
-// // GET all barbers
-// export async function GET() {
-//   try {
-//     await connectDB();
-//     const barbers = await Barber.find();
-//     return NextResponse.json(barbers);
-//   } catch (err) {
-//     return NextResponse.json(
-//       { message: "Cannot find barbers", error: err.message },
-//       { status: 500 }
-//     );
-//   }
-// }
+import { NextResponse } from "next/server";
+import {
+  getAllBarbers,
+  createBarber,
+  updateBarber,
+  deleteBarber,
+} from "@/lib/services/barberService";
 
-// // POST - create new barber
-// export async function POST(request) {
-//   try {
-//     await connectDB();
-//     const { name, email } = await request.json();
+// GET all barbers
+export async function GET() {
+  try {
+    const barbers = await getAllBarbers();
+    return NextResponse.json(barbers);
+  } catch (err) {
+    console.error("Barber service error:", err);
+    return NextResponse.json({ message: err.message }, { status: 500 });
+  }
+}
 
-//     if (!name || !email) {
-//       return NextResponse.json(
-//         { message: "All fields are required" },
-//         { status: 400 }
-//       );
-//     }
+// POST - create a new barber
+export async function POST(request) {
+  try {
+    const { barberId, name, email } = await request.json();
+    if (!barberId || !name || !email) {
+      return NextResponse.json(
+        { message: "All fields are required" },
+        { status: 400 }
+      );
+    }
+    const newBarber = await createBarber(barberId, name, email);
+    return NextResponse.json(
+      { message: "Barber created", barber: newBarber },
+      { status: 201 }
+    );
+  } catch (err) {
+    console.error("Barber service error:", err);
+    return NextResponse.json({ message: err.message }, { status: 500 });
+  }
+}
 
-//     const newBarber = new Barber({
-//       barberId: uuidv4(),
-//       name,
-//       email,
-//     });
+// PUT - update a barber
+export async function PUT(request) {
+  try {
+    const { id, barberId, name, email } = await request.json();
+    if (!id || !barberId || !name || !email) {
+      return NextResponse.json(
+        { message: "All fields are required" },
+        { status: 400 }
+      );
+    }
+    const updatedBarber = await updateBarber(id, barberId, name, email);
+    if (!updatedBarber) {
+      return NextResponse.json(
+        { message: "Barber not found" },
+        { status: 404 }
+      );
+    }
+    return NextResponse.json({
+      message: "Barber updated",
+      barber: updatedBarber,
+    });
+  } catch (err) {
+    console.error("Barber service error:", err);
+    return NextResponse.json({ message: err.message }, { status: 500 });
+  }
+}
 
-//     const savedBarber = await newBarber.save();
-//     return NextResponse.json(
-//       {
-//         message: "Barber created",
-//         barber: savedBarber,
-//       },
-//       { status: 201 }
-//     );
-//   } catch (err) {
-//     return NextResponse.json(
-//       { message: "Error creating barber", error: err.message },
-//       { status: 500 }
-//     );
-//   }
-// }
+// DELETE - delete a barber
+export async function DELETE(request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = Number(searchParams.get("id"));
+    if (!id) {
+      return NextResponse.json(
+        { message: "Barber ID is required" },
+        { status: 400 }
+      );
+    }
+    const deletedBarber = await deleteBarber(id);
+    if (!deletedBarber) {
+      return NextResponse.json(
+        { message: "Barber not found" },
+        { status: 404 }
+      );
+    }
+    return NextResponse.json({ message: "Barber deleted successfully" });
+  } catch (err) {
+    console.error("Barber service error:", err);
+    return NextResponse.json({ message: err.message }, { status: 500 });
+  }
+}
