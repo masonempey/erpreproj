@@ -23,10 +23,13 @@ const STEPS = {
 export default function BookingPopUp({ isOpen, onClose }) {
   const { user } = useUser();
   const [currentStep, setCurrentStep] = useState(STEPS.SERVICES);
-  const [isReload, setIsReload] = useState(false);
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const [paymentError, setPaymentError] = useState(null);
   const [formData, setFormData] = useState({
     service: "",
+    serviceId: "",
     barber: "",
+    barberId: "",
     date: "",
     time: "",
     fullName: "",
@@ -38,7 +41,6 @@ export default function BookingPopUp({ isOpen, onClose }) {
   });
 
   // Update the form data whenever user info changes
-  // Tracks user changes via [user] in the dependency array
   useEffect(() => {
     if (user) {
       setFormData((prev) => ({
@@ -69,16 +71,23 @@ export default function BookingPopUp({ isOpen, onClose }) {
     }
   };
 
-  // When the user selects a service, update the form data and switch the step to barbers.
-  const handleServiceSelect = (service) => {
-    setFormData((prev) => ({ ...prev, service }));
-    setCurrentStep(STEPS.BARBERS);
+  const handleBarberSelect = (name, id) => {
+    setFormData((prev) => ({
+      ...prev,
+      barber: name,
+      barberId: id,
+    }));
+    setCurrentStep(STEPS.DATETIME);
   };
 
-  // When the user selects a barber, update the form data and switch the step to datetime.
-  const handleBarberSelect = (barber) => {
-    setFormData((prev) => ({ ...prev, barber }));
-    setCurrentStep(STEPS.DATETIME);
+  // Fix the handleServiceSelect function - it needs to accept name and id parameters
+  const handleServiceSelect = (serviceName, serviceId) => {
+    setFormData((prev) => ({
+      ...prev,
+      service: serviceName,
+      serviceId: serviceId,
+    }));
+    setCurrentStep(STEPS.BARBERS);
   };
 
   // When the user selects a date and time, update the form data and switch the step to info.
@@ -96,51 +105,45 @@ export default function BookingPopUp({ isOpen, onClose }) {
   // When the user successfully completes payment, update the form data and create an appointment.
   const handlePaymentSuccess = async (paymentMethod) => {
     setFormData((prev) => ({ ...prev, paymentMethod }));
-    await createAppointment();
-    setCurrentStep(STEPS.CONFIRMATION);
-  };
+    setPaymentProcessing(true);
 
-  // Fetch the barber ID based on the barber name
-  const getBarberID = async (barberName) => {
-    try {
-      const response = await fetch(`/api/barbers/${barberName}`);
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
-      return data.barberId;
-    } catch (error) {
-      console.error("Error fetching barber ID:", error);
+    const { success, error } = await createAppointment();
+
+    setPaymentProcessing(false);
+
+    if (success) {
+      setCurrentStep(STEPS.CONFIRMATION);
+    } else {
+      setPaymentError(`Failed to create appointment: ${error}`);
     }
   };
 
-  const updateUserCoins = async () => {
-    if (!user) return;
+  // const updateUserCoins = async () => {
+  //   if (!user) return;
 
-    try {
-      const response = await fetch(`/api/users/${user.uid}/coins`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ coins: 10 }), // Increment by 10
-      });
+  //   try {
+  //     const response = await fetch(`/api/users/${user.uid}/coins`, {
+  //       method: "PATCH",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ coins: 10 }), // Increment by 10
+  //     });
 
-      if (!response.ok) {
-        throw new Error("Failed to update user coins");
-      }
+  //     if (!response.ok) {
+  //       throw new Error("Failed to update user coins");
+  //     }
 
-      const result = await response.json();
-      console.log("User coins updated:", result);
-    } catch (error) {
-      console.error("Error updating user coins:", error);
-    }
-  };
+  //     const result = await response.json();
+  //     console.log("User coins updated:", result);
+  //   } catch (error) {
+  //     console.error("Error updating user coins:", error);
+  //   }
+  // };
 
   const createAppointment = async () => {
     try {
-      const barberId = await getBarberID(formData.barber);
-
+      console.log("Creating appointment with data:", formData);
       const appointmentData = {
         customerName: formData.fullName,
         email: formData.email,
@@ -148,9 +151,8 @@ export default function BookingPopUp({ isOpen, onClose }) {
         date: formData.date,
         time: formData.time,
         userId: user ? user.uid : null,
-        barberId: barberId,
-        serviceType: formData.service,
-        // If user is logged in, use their details, otherwise use the details entered in the form
+        barberId: formData.barberId,
+        serviceType: formData.serviceId,
         guestDetails: user
           ? null
           : {
@@ -168,24 +170,25 @@ export default function BookingPopUp({ isOpen, onClose }) {
         headers: {
           "Content-Type": "application/json",
         },
-        // Send the appointment data as the request body
         body: JSON.stringify(appointmentData),
       });
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        const errorData = await response.text();
+        throw new Error(`Server error: ${response.status} - ${errorData}`);
       }
 
       const result = await response.json();
       console.log("Appointment created:", result);
-      await updateUserCoins();
+      // await updateUserCoins();
+      return { success: true, result };
     } catch (error) {
       console.error("Error creating appointment:", error);
+      return { success: false, error: error.message };
     }
   };
 
   const renderStep = () => {
-    // Check what the current step is, then render it, pass a function to handle the user's selection and current form data.
     switch (currentStep) {
       case STEPS.SERVICES:
         return (
@@ -223,7 +226,13 @@ export default function BookingPopUp({ isOpen, onClose }) {
           />
         );
       case STEPS.PAYMENT:
-        return <PaymentForm onSuccess={handlePaymentSuccess} />;
+        return (
+          <PaymentForm
+            onSuccess={handlePaymentSuccess}
+            isProcessing={paymentProcessing}
+            serverError={paymentError}
+          />
+        );
       case STEPS.CONFIRMATION:
         return <Confirmation bookingData={formData} />;
       default:

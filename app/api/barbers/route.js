@@ -6,7 +6,7 @@ import {
   createBarber,
   updateBarber,
   deleteBarber,
-} from "@/lib/services/barberService";
+} from "../../..//lib/services/barberService";
 
 // GET all barbers
 export async function GET() {

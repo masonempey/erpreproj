@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { Box, TextField, Button, Typography } from "@mui/material";
+import { Box, TextField, Button, Typography, Alert } from "@mui/material";
 
-export default function PaymentForm({ onSuccess }) {
+export default function PaymentForm({ onSuccess, isProcessing, serverError }) {
   const stripe = useStripe();
   const elements = useElements();
-  const [error, setError] = useState("");
+  const [cardError, setCardError] = useState(""); // Renamed to avoid collision with prop
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [postalCode, setPostalCode] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    // Don't process if already processing from parent
+    if (isProcessing) return;
+
     setLoading(true);
-    setError("");
+    setCardError("");
 
     if (!stripe || !elements) {
       return;
@@ -31,7 +34,7 @@ export default function PaymentForm({ onSuccess }) {
       });
 
       if (error) {
-        setError(error.message);
+        setCardError(error.message);
         return;
       }
 
@@ -39,7 +42,7 @@ export default function PaymentForm({ onSuccess }) {
       setSuccess(true);
       onSuccess();
     } catch (err) {
-      setError("Card validation failed. Please try again.");
+      setCardError("Card validation failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -59,6 +62,9 @@ export default function PaymentForm({ onSuccess }) {
     hidePostalCode: true,
   };
 
+  // Display either server error or card validation error
+  const displayedError = serverError || cardError;
+
   return (
     <Box
       component="form"
@@ -76,6 +82,12 @@ export default function PaymentForm({ onSuccess }) {
       <Typography variant="body1" sx={{ color: "#666", mb: 2 }}>
         You will only be charged in case of a no-show or late cancellation.
       </Typography>
+
+      {displayedError && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {displayedError}
+        </Alert>
+      )}
 
       <Box
         sx={{
@@ -104,8 +116,7 @@ export default function PaymentForm({ onSuccess }) {
         onChange={(e) => setPostalCode(e.target.value)}
         required
         fullWidth
-        error={!!error}
-        helperText={error}
+        error={!!cardError}
         sx={{
           "& .MuiOutlinedInput-root": {
             "&.Mui-focused fieldset": {
@@ -121,7 +132,7 @@ export default function PaymentForm({ onSuccess }) {
       <Button
         type="submit"
         variant="contained"
-        disabled={!stripe || loading}
+        disabled={!stripe || loading || isProcessing}
         sx={{
           mt: 2,
           backgroundColor: "#35281f",
@@ -132,10 +143,10 @@ export default function PaymentForm({ onSuccess }) {
           },
         }}
       >
-        {loading ? "Processing..." : "Submit Payment Details"}
+        {loading || isProcessing ? "Processing..." : "Submit Payment Details"}
       </Button>
 
-      {success && (
+      {success && !serverError && (
         <Typography color="success" sx={{ mt: 2 }}>
           Payment details saved successfully!
         </Typography>
