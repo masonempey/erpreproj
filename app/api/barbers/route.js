@@ -1,12 +1,6 @@
 // app/api/barbers/route.js
-
 import { NextResponse } from "next/server";
-import {
-  getAllBarbers,
-  createBarber,
-  updateBarber,
-  deleteBarber,
-} from "../../..//lib/services/barberService";
+import { getAllBarbers, createBarber, updateBarber, deleteBarber } from "@/lib/services/barberService";
 
 // GET all barbers
 export async function GET() {
@@ -15,7 +9,10 @@ export async function GET() {
     return NextResponse.json(barbers);
   } catch (err) {
     console.error("Barber service error:", err);
-    return NextResponse.json({ message: err.message }, { status: 500 });
+    return NextResponse.json(
+      { message: "Error fetching barbers", error: err.message },
+      { status: 500 }
+    );
   }
 }
 
@@ -36,7 +33,10 @@ export async function POST(request) {
     );
   } catch (err) {
     console.error("Barber service error:", err);
-    return NextResponse.json({ message: err.message }, { status: 500 });
+    return NextResponse.json(
+      { message: "Error creating barber", error: err.message },
+      { status: 500 }
+    );
   }
 }
 
@@ -63,7 +63,10 @@ export async function PUT(request) {
     });
   } catch (err) {
     console.error("Barber service error:", err);
-    return NextResponse.json({ message: err.message }, { status: 500 });
+    return NextResponse.json(
+      { message: "Error updating barber", error: err.message },
+      { status: 500 }
+    );
   }
 }
 
@@ -88,6 +91,9 @@ export async function DELETE(request) {
     return NextResponse.json({ message: "Barber deleted successfully" });
   } catch (err) {
     console.error("Barber service error:", err);
-    return NextResponse.json({ message: err.message }, { status: 500 });
+    return NextResponse.json(
+      { message: "Error deleting barber", error: err.message },
+      { status: 500 }
+    );
   }
 }

@@ -1,16 +1,16 @@
 // app/api/services/[serviceId]/route.js
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/database/mongodb";
-import Service from "@/lib/database/models/serviceModel";
+import { deleteService, updateService } from "@/lib/services/serviceService";
 
 // DELETE service by id
 export async function DELETE(request, { params }) {
   try {
-    await connectDB();
     const { serviceId } = params;
-    const service = await Service.findByIdAndDelete(serviceId);
+    const id = Number(serviceId); // Convert to number to match database id type
 
-    if (service) {
+    const deletedService = await deleteService(id);
+
+    if (deletedService) {
       return NextResponse.json({ message: "Service Deleted" });
     } else {
       return NextResponse.json(
@@ -31,8 +31,8 @@ export async function DELETE(request, { params }) {
 // UPDATE service by id
 export async function PUT(request, { params }) {
   try {
-    await connectDB();
     const { serviceId } = params;
+    const id = Number(serviceId); // Convert to number to match database id type
     const { serviceName, description, price } = await request.json();
 
     // Checks for at least one field in the body
@@ -43,17 +43,7 @@ export async function PUT(request, { params }) {
       );
     }
 
-    const updatedService = await Service.findByIdAndUpdate(
-      serviceId,
-      {
-        $set: {
-          serviceName,
-          description,
-          price,
-        },
-      },
-      { new: true }
-    );
+    const updatedService = await updateService(id, serviceName, description, price);
 
     if (updatedService) {
       return NextResponse.json({

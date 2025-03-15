@@ -1,15 +1,13 @@
-// app/api/barbers/[name]/route.js
+// app/api/barbers/byName/[name]/route.js
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/database/mongodb";
-import Barber from "@/lib/database/models/barberModel";
+import { getBarberByName } from "@/lib/services/barberService";
 
 // GET barber by name
 export async function GET(request, { params }) {
   try {
-    await connectDB();
     const { name } = params;
 
-    const foundBarber = await Barber.findOne({ name: name });
+    const foundBarber = await getBarberByName(name);
     if (foundBarber) {
       return NextResponse.json(foundBarber);
     } else {

@@ -1,10 +1,6 @@
+// app/api/services/route.js
 import { NextResponse } from "next/server";
-import {
-  getAllServices,
-  createService,
-  updateService,
-  deleteService,
-} from "@/lib/services/serviceService";
+import { getAllServices, createService, updateService, deleteService } from "@/lib/services/serviceService";
 
 // GET all services
 export async function GET() {
@@ -63,7 +59,7 @@ export async function PUT(request) {
     }
 
     const updatedService = await updateService(
-      id,
+      Number(id), // Convert to number to match database id type
       serviceName,
       description,
       price
@@ -102,7 +98,7 @@ export async function DELETE(request) {
       );
     }
 
-    const deletedService = await deleteService(id);
+    const deletedService = await deleteService(Number(id)); // Convert to number
 
     if (!deletedService) {
       return NextResponse.json(
