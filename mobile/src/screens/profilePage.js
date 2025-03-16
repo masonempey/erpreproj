@@ -1,10 +1,20 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, StyleSheet, ScrollView, SafeAreaView } from "react-native";
-import testBarbers from "../utilities/testing/testBarbers.json"; 
-import fakeUserContext from "../utilities/testing/testUserContext.json"
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+} from "react-native";
+import testBarbers from "../utilities/testing/testBarbers.json";
+import fakeUserContext from "../utilities/testing/testUserContext.json";
 export default function ProfilePage({ route }) {
-  const { barberId } = route.params || {}; // Get the barber ID from the route 
-  const loggedInBarberId = fakeUserContext?.user?.barber_id || null; 
+  const { barberId } = route.params || {}; // Get the barber ID from the route
+  const loggedInBarberId = fakeUserContext?.user?.barber_id || null;
   const [barber, setBarber] = useState(null);
   const [isEditable, setIsEditable] = useState(false);
   const [bio, setBio] = useState("");
@@ -12,7 +22,9 @@ export default function ProfilePage({ route }) {
 
   useEffect(() => {
     const barberData = testBarbers || [];
-    const selectedBarber = barberData.find((b) => b.barber_id === (barberId || loggedInBarberId));
+    const selectedBarber = barberData.find(
+      (b) => b.barber_id === (barberId || loggedInBarberId)
+    );
     if (selectedBarber) {
       setBarber(selectedBarber);
       setBio(selectedBarber.bio || "");
@@ -36,7 +48,7 @@ export default function ProfilePage({ route }) {
   // Handle adding a new service
   const handleAddService = () => {
     const newService = {
-      service_id: `S${services.length + 1}`, 
+      service_id: `S${services.length + 1}`,
       service_name: "",
       price: 0,
       duration_minutes: 0,
@@ -87,24 +99,37 @@ export default function ProfilePage({ route }) {
                 <TextInput
                   style={styles.input}
                   value={service.service_name}
-                  onChangeText={(text) => handleUpdateService(index, "service_name", text)}
+                  onChangeText={(text) =>
+                    handleUpdateService(index, "service_name", text)
+                  }
                   placeholder="Service Name"
                 />
                 <TextInput
                   style={styles.input}
                   value={service.price.toString()}
-                  onChangeText={(text) => handleUpdateService(index, "price", parseFloat(text))}
+                  onChangeText={(text) =>
+                    handleUpdateService(index, "price", parseFloat(text))
+                  }
                   placeholder="Price"
                   keyboardType="numeric"
                 />
                 <TextInput
                   style={styles.input}
                   value={service.duration_minutes.toString()}
-                  onChangeText={(text) => handleUpdateService(index, "duration_minutes", parseInt(text))}
+                  onChangeText={(text) =>
+                    handleUpdateService(
+                      index,
+                      "duration_minutes",
+                      parseInt(text)
+                    )
+                  }
                   placeholder="Duration (minutes)"
                   keyboardType="numeric"
                 />
-                <Button title="Delete" onPress={() => handleDeleteService(index)} />
+                <Button
+                  title="Delete"
+                  onPress={() => handleDeleteService(index)}
+                />
               </>
             ) : (
               <>
@@ -120,9 +145,7 @@ export default function ProfilePage({ route }) {
           <Button title="Add Service" onPress={handleAddService} />
         )}
 
-        {isEditable && (
-          <Button title="Save Changes" onPress={handleSave} />
-        )}
+        {isEditable && <Button title="Save Changes" onPress={handleSave} />}
       </ScrollView>
     </SafeAreaView>
   );

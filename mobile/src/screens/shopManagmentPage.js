@@ -1,9 +1,11 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { View, Button } from "react-native";
-import testBarbers from "../utilities/testing/testBarbers.json"; 
-import testInformation from "../utilities/testing/testShopInformation.json"; 
-import ShopPortal from "../component/shopManagmentComponents/shopPortal"; 
-import BarberPortal from "../component/shopManagmentComponents/barberPortal"; 
+import testBarbers from "../utilities/testing/testBarbers.json";
+import testInformation from "../utilities/testing/testShopInformation.json";
+import ShopPortal from "../component/shopManagmentComponents/shopPortal";
+import BarberPortal from "../component/shopManagmentComponents/barberPortal";
 
 export default function ShopManagmentPage({ navigation }) {
   const [barbers, setBarbers] = useState([]);

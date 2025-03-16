@@ -1,0 +1,174 @@
+.paymentContainer {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Card Preview Section */
+.cardPreview {
+  perspective: 1000px;
+  margin-bottom: 2.5rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.cardWrapper {
+  position: relative;
+  width: 320px;
+  height: 200px;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(53, 40, 31, 0.2);
+  transition: all 0.3s ease;
+}
+
+.cardFront {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #35281f, #5d4c40);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #fafafa;
+  backface-visibility: hidden;
+}
+
+.cardNumber {
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  margin-top: 2.5rem;
+  font-family: "Courier New", monospace;
+  text-align: center;
+}
+
+.cardDetails {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-top: 2rem;
+}
+
+.cardName,
+.cardExpiry {
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+/* Form Section */
+.paymentForm {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  padding: 1rem;
+  border: 1px solid rgba(53, 40, 31, 0.2);
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+}
+
+.formGroup:focus-within {
+  border-color: #35281f;
+  box-shadow: 0 0 0 1px rgba(53, 40, 31, 0.2);
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  gap: 1rem;
+}
+
+.buttonGroup button {
+  flex: 1;
+  padding: 0.75rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.buttonGroup button:first-child {
+  border: 1px solid #35281f;
+  color: #35281f;
+  background-color: transparent;
+}
+
+.buttonGroup button:first-child:hover {
+  background-color: rgba(53, 40, 31, 0.05);
+}
+
+.buttonGroup button:last-child {
+  background-color: #35281f;
+  color: #fafafa;
+}
+
+.buttonGroup button:last-child:hover {
+  background-color: #4a3c32;
+}
+
+.buttonGroup button:last-child:disabled {
+  background-color: rgba(53, 40, 31, 0.4);
+  cursor: not-allowed;
+}
+
+/* Helper function to format card number with spaces */
+@keyframes cardInputFocus {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.formGroup:focus-within + .cardPreview .card {
+  animation: cardInputFocus 0.3s ease;
+  box-shadow: 0 12px 30px rgba(53, 40, 31, 0.3);
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+  .paymentContainer {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  .cardPreview {
+    flex: 1;
+    margin-bottom: 0;
+  }
+
+  .paymentForm {
+    flex: 1;
+  }
+}
+
+@media (max-width: 767px) {
+  .cardWrapper {
+    width: 280px;
+    height: 175px;
+  }
+
+  .cardNumber {
+    font-size: 1.2rem;
+  }
+}
