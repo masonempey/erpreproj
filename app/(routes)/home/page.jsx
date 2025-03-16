@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import landingStyles from "../../styles/Landing.module.css";
 import reviewStyles from "../../styles/Reviews.module.css";
 import newsletterStyles from "../../styles/Newsletter.module.css";
-import Booking from "../../components/Booking";
+import BookingPopUp from "../../components/Booking";
 import Button from "@mui/material/Button";
 import CustomerReviewCard from "../../components/customerReviewCard";
 import Pagination from "@mui/material/Pagination";
@@ -63,9 +63,7 @@ export default function Home() {
           Book Now
         </Button>
       </header>
-      <Booking isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <h2>Book Appointment</h2>
-      </Booking>
+      <BookingPopUp isOpen={isOpen} onClose={() => setIsOpen(false)} />
       <section
         id="reviews"
         className={`${landingStyles.section} ${reviewStyles.reviews}`}

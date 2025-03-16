@@ -1,17 +1,32 @@
 import React, { useState } from "react";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Alert from "@mui/material/Alert";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Alert,
+  Stack,
+  Grid,
+  Paper,
+  InputAdornment,
+} from "@mui/material";
+import { Person, Email, Phone, Home, LocationOn } from "@mui/icons-material";
+import { useBooking } from "../../context/BookingContext";
 
-export default function PersonalInfo({ onNext, initialData }) {
+export default function PersonalInfo() {
+  const { state, dispatch } = useBooking();
+
+  // Access personalInfo from state with fallback to empty object
+  const personalInfo = state.personalInfo || {};
+
   const [formData, setFormData] = useState({
-    fullName: initialData.fullName || "",
-    email: initialData.email || "",
-    address: initialData.address || "",
-    phone: initialData.phone || "",
-    postalCode: initialData.postalCode || "",
+    fullName: personalInfo.fullName || "",
+    email: personalInfo.email || "",
+    address: personalInfo.address || "",
+    phone: personalInfo.phone || "",
+    postalCode: personalInfo.postalCode || "",
   });
+
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -22,121 +37,174 @@ export default function PersonalInfo({ onNext, initialData }) {
     }));
   };
 
-  const handleNext = (e) => {
-    e.preventDefault();
-    const missingFields = [];
-    if (!formData.fullName) {
-      missingFields.push("Full Name");
-    }
-    if (!formData.email) {
-      missingFields.push("Email");
-    }
-    if (!formData.phone) {
-      missingFields.push("Phone Number");
-    }
-
-    if (missingFields.length > 0) {
-      setError(`Please fill in ${missingFields.join(", ")}`);
+  const handleSubmit = () => {
+    // Basic validation
+    if (!formData.fullName || !formData.email || !formData.phone) {
+      setError("Please fill in all required fields");
       return;
     }
-    setError("");
-    onNext(formData);
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    // Phone validation
+    const phoneRegex = /^\d{10,}$/;
+    if (!phoneRegex.test(formData.phone.replace(/\D/g, ""))) {
+      setError("Please enter a valid phone number");
+      return;
+    }
+
+    // Submit data to context
+    dispatch({
+      type: "UPDATE_PERSONAL_INFO",
+      payload: formData,
+    });
   };
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleNext}
+    <Paper
+      elevation={0}
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        width: "100%",
-        maxWidth: "400px",
-        margin: "0 auto",
-        padding: "2rem",
+        maxWidth: 600,
+        mx: "auto",
+        p: { xs: 2, sm: 3 },
+        borderRadius: 2,
+        backgroundColor: "transparent",
       }}
-      noValidate
-      autoComplete="off"
     >
+      <Typography
+        variant="h5"
+        component="h2"
+        align="center"
+        gutterBottom
+        sx={{ color: "#35281f", mb: 3 }}
+      >
+        Your Information
+      </Typography>
+
       {error && (
-        <Alert
-          severity="error"
-          sx={{
-            mb: 2,
-            backgroundColor: "rgba(53, 40, 31, 0.1)",
-            color: "#35281f",
-          }}
-        >
+        <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError("")}>
           {error}
         </Alert>
       )}
-      <TextField
-        id="fullName"
-        name="fullName"
-        label="Full Name"
-        variant="outlined"
-        value={formData.fullName}
-        onChange={handleChange}
-        required
-        fullWidth
-      />
-      <TextField
-        id="email"
-        name="email"
-        label="Email"
-        variant="outlined"
-        type="email"
-        value={formData.email}
-        onChange={handleChange}
-        required
-        fullWidth
-      />
-      <TextField
-        id="address"
-        name="address"
-        label="Address"
-        variant="outlined"
-        value={formData.address}
-        onChange={handleChange}
-        required
-        fullWidth
-      />
-      <TextField
-        id="phone"
-        name="phone"
-        label="Phone Number"
-        variant="outlined"
-        value={formData.phone}
-        onChange={handleChange}
-        required
-        fullWidth
-      />
-      <TextField
-        id="postalCode"
-        name="postalCode"
-        label="Postal Code"
-        variant="outlined"
-        value={formData.postalCode}
-        onChange={handleChange}
-        required
-        fullWidth
-      />
-      <Button
-        type="submit"
-        variant="contained"
-        sx={{
-          marginTop: "2rem",
-          backgroundColor: "#35281f",
-          color: "#fafafa",
-          "&:hover": {
-            backgroundColor: "#fafafa",
-            color: "#35281f",
-          },
-        }}
-      >
-        Next
-      </Button>
-    </Box>
+
+      <Stack spacing={2.5}>
+        <TextField
+          fullWidth
+          label="Full Name"
+          name="fullName"
+          value={formData.fullName}
+          onChange={handleChange}
+          required
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Person sx={{ color: "#35281f" }} />
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Email sx={{ color: "#35281f" }} />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Phone Number"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Phone sx={{ color: "#35281f" }} />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+        </Grid>
+
+        <TextField
+          fullWidth
+          label="Address"
+          name="address"
+          value={formData.address}
+          onChange={handleChange}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Home sx={{ color: "#35281f" }} />
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <TextField
+          label="Postal Code"
+          name="postalCode"
+          value={formData.postalCode}
+          onChange={handleChange}
+          sx={{ width: { xs: "100%", sm: "200px" } }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <LocationOn sx={{ color: "#35281f" }} />
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            mt: 4,
+            pt: 2,
+            borderTop: "1px solid rgba(53, 40, 31, 0.1)",
+          }}
+        >
+          <Button
+            variant="contained"
+            onClick={handleSubmit}
+            size="large"
+            sx={{
+              minWidth: 160,
+              backgroundColor: "#35281f",
+              color: "#fafafa",
+              py: 1.5,
+              "&:hover": {
+                backgroundColor: "#4a3c32",
+              },
+            }}
+          >
+            Continue
+          </Button>
+        </Box>
+      </Stack>
+    </Paper>
   );
 }

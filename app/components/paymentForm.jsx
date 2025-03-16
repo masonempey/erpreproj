@@ -1,24 +1,39 @@
 import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { Box, TextField, Button, Typography, Alert } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Alert,
+  Paper,
+  Grid,
+  Divider,
+  Stack,
+  CircularProgress,
+} from "@mui/material";
+import { useBooking } from "../../context/BookingContext";
+import { useUser } from "../../context/UserContext";
 
-export default function PaymentForm({ onSuccess, isProcessing, serverError }) {
+export default function PaymentForm() {
   const stripe = useStripe();
   const elements = useElements();
-  const [cardError, setCardError] = useState(""); // Renamed to avoid collision with prop
+  const [cardError, setCardError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [postalCode, setPostalCode] = useState("");
+  const { state, dispatch, createAppointment } = useBooking();
+  const { user } = useUser();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Don't process if already processing from parent
-    if (isProcessing) return;
+    if (loading) return;
 
     setLoading(true);
     setCardError("");
 
     if (!stripe || !elements) {
+      setLoading(false);
       return;
     }
 
@@ -35,122 +50,190 @@ export default function PaymentForm({ onSuccess, isProcessing, serverError }) {
 
       if (error) {
         setCardError(error.message);
+        setLoading(false);
         return;
       }
 
-      // If card is valid, proceed to next step
-      setSuccess(true);
-      onSuccess();
+      try {
+        const appointmentResult = await createAppointment();
+        console.log("Appointment created:", appointmentResult);
+
+        // Handle success - move to confirmation step
+        dispatch({
+          type: "BOOKING_SUCCESS",
+          payload: appointmentResult.appointment,
+        });
+      } catch (err) {
+        console.error("Booking error:", err);
+        setCardError(err.message || "Failed to create appointment");
+      }
     } catch (err) {
-      setCardError("Card validation failed. Please try again.");
+      setCardError(err.message || "Payment processing failed");
     } finally {
       setLoading(false);
     }
   };
 
-  const cardElementOptions = {
-    style: {
-      base: {
-        fontSize: "16px",
-        fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
-        color: "#35281f",
-        "::placeholder": {
-          color: "rgba(53, 40, 31, 0.5)",
-        },
-      },
-    },
-    hidePostalCode: true,
+  const onBack = () => {
+    dispatch({ type: "GO_BACK" });
   };
 
-  // Display either server error or card validation error
-  const displayedError = serverError || cardError;
-
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit}
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 3,
-        width: "100%",
-        maxWidth: "400px",
-        margin: "0 auto",
-        padding: "2rem",
-      }}
+    <Grid
+      container
+      spacing={3}
+      sx={{ maxWidth: 800, mx: "auto", mt: 2, px: 2 }}
     >
-      <Typography variant="body1" sx={{ color: "#666", mb: 2 }}>
-        You will only be charged in case of a no-show or late cancellation.
-      </Typography>
+      <Grid item xs={12} md={5}>
+        <Paper
+          elevation={3}
+          sx={{
+            p: 0,
+            borderRadius: 2,
+            overflow: "hidden",
+            background: "linear-gradient(145deg, #35281f 0%, #5d4c40 100%)",
+            height: "220px",
+            color: "white",
+            position: "relative",
+            transform: "perspective(1000px) rotateY(0deg)",
+            transition: "transform 0.6s ease",
+            mb: { xs: 3, md: 0 },
+          }}
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              p: 3,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
+          >
+            <Box>
+              <Typography variant="overline" sx={{ opacity: 0.7 }}>
+                Payment Details
+              </Typography>
+            </Box>
 
-      {displayedError && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {displayedError}
-        </Alert>
-      )}
+            <Box sx={{ my: 2 }}>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontFamily: "'Courier New', monospace",
+                  letterSpacing: 2,
+                }}
+              >
+                •••• •••• •••• ••••
+              </Typography>
+            </Box>
 
-      <Box
-        sx={{
-          p: 2,
-          border: "1px solid rgba(53, 40, 31, 0.2)",
-          borderRadius: 1,
-          mb: 2,
-          "& .StripeElement": {
-            padding: "10px",
-            backgroundColor: "white",
-          },
-          "& .StripeElement--focus": {
-            borderColor: "#35281f",
-            boxShadow: "0 0 0 2px rgba(53, 40, 31, 0.2)",
-          },
-        }}
-      >
-        <CardElement options={cardElementOptions} />
-      </Box>
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography variant="body2" sx={{ textTransform: "uppercase" }}>
+                {user?.displayName || "Card Holder"}
+              </Typography>
+              <Typography variant="body2">MM/YY</Typography>
+            </Box>
+          </Box>
+        </Paper>
+      </Grid>
 
-      <TextField
-        id="postalCode"
-        label="Postal Code"
-        variant="outlined"
-        value={postalCode}
-        onChange={(e) => setPostalCode(e.target.value)}
-        required
-        fullWidth
-        error={!!cardError}
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            "&.Mui-focused fieldset": {
-              borderColor: "#35281f",
-            },
-          },
-          "& label.Mui-focused": {
-            color: "#35281f",
-          },
-        }}
-      />
+      <Grid item xs={12} md={7}>
+        <Stack spacing={3}>
+          <Typography variant="h6" color="primary.main">
+            Payment Information
+          </Typography>
 
-      <Button
-        type="submit"
-        variant="contained"
-        disabled={!stripe || loading || isProcessing}
-        sx={{
-          mt: 2,
-          backgroundColor: "#35281f",
-          color: "#fafafa",
-          "&:hover": {
-            backgroundColor: "#fafafa",
-            color: "#35281f",
-          },
-        }}
-      >
-        {loading || isProcessing ? "Processing..." : "Submit Payment Details"}
-      </Button>
+          <Paper
+            elevation={0}
+            variant="outlined"
+            sx={{
+              p: 2,
+              borderColor: cardError ? "error.main" : "divider",
+              transition: "border-color 0.3s ease",
+            }}
+          >
+            <CardElement
+              options={{
+                style: {
+                  base: {
+                    fontSize: "16px",
+                    color: "#424770",
+                    "::placeholder": {
+                      color: "#aab7c4",
+                    },
+                  },
+                  invalid: {
+                    color: "#9e2146",
+                  },
+                },
+                hidePostalCode: true,
+              }}
+            />
+          </Paper>
 
-      {success && !serverError && (
-        <Typography color="success" sx={{ mt: 2 }}>
-          Payment details saved successfully!
-        </Typography>
-      )}
-    </Box>
+          <TextField
+            label="Postal Code"
+            value={postalCode}
+            onChange={(e) => setPostalCode(e.target.value)}
+            fullWidth
+            variant="outlined"
+            size="medium"
+          />
+
+          {cardError && (
+            <Alert severity="error" variant="filled" sx={{ mt: 2 }}>
+              {cardError}
+            </Alert>
+          )}
+
+          <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
+            <Typography variant="body1">
+              Amount: ${state.service?.price || "0.00"}
+            </Typography>
+          </Box>
+
+          <Divider sx={{ my: 1 }} />
+
+          <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+            <Button
+              variant="outlined"
+              onClick={onBack}
+              sx={{
+                flex: 1,
+                borderColor: "#35281f",
+                color: "#35281f",
+                "&:hover": {
+                  borderColor: "#35281f",
+                  backgroundColor: "rgba(53, 40, 31, 0.04)",
+                },
+              }}
+            >
+              Back
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleSubmit}
+              disabled={loading || !stripe || !elements}
+              sx={{
+                flex: 2,
+                backgroundColor: "#35281f",
+                "&:hover": {
+                  backgroundColor: "#4a3c32",
+                },
+              }}
+              startIcon={
+                loading && <CircularProgress size={20} color="inherit" />
+              }
+            >
+              {loading ? "Processing..." : "Pay & Confirm"}
+            </Button>
+          </Stack>
+        </Stack>
+      </Grid>
+    </Grid>
   );
 }

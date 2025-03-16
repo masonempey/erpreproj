@@ -1,8 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import styles from "../styles/Barber.module.css";
-import Image from "next/image";
+import { useBooking } from "../../context/BookingContext";
+import {
+  Box,
+  Grid,
+  Card,
+  CardContent,
+  CardActionArea,
+  Typography,
+  Avatar,
+  Chip,
+  CircularProgress,
+  Alert,
+  Skeleton,
+} from "@mui/material";
+import { FiberManualRecord as StatusIcon } from "@mui/icons-material";
 
 // Hard-coded for now, but we will later get the images from the database
 const barberImages = {
@@ -13,14 +26,14 @@ const barberImages = {
   Rogin: "/images/barbers/Rogin.png",
 };
 
-export default function ChooseBarber({ onBarberSelect }) {
+export default function ChooseBarber() {
+  const { state, dispatch } = useBooking();
   const [barbers, setBarbers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // useEffect hook runs the fetchBarbers function when the component is mounted/rendered
   useEffect(() => {
-    // Fetch barbers from the API
+    // Fetch barbers
     const fetchBarbers = async () => {
       try {
         setLoading(true);
@@ -29,7 +42,7 @@ export default function ChooseBarber({ onBarberSelect }) {
           throw new Error(`Network response was not ok: ${response.status}`);
         }
         const data = await response.json();
-        console.log("Barbers data:", data); // Debug log
+        console.log("Barbers data:", data);
         setBarbers(data);
       } catch (error) {
         console.error("Error fetching barbers:", error);
@@ -42,36 +55,125 @@ export default function ChooseBarber({ onBarberSelect }) {
     fetchBarbers();
   }, []);
 
-  if (loading) return <div>Loading barbers...</div>;
-  if (error) return <div>{error}</div>;
-  if (!barbers || barbers.length === 0) return <div>No barbers available</div>;
-
   const handleBarberSelect = (name, id) => {
     console.log(`Selected barber: ${name} with ID: ${id}`);
-    onBarberSelect(name, id);
+    dispatch({
+      type: "SELECT_BARBER",
+      payload: { name: name, id: id },
+    });
   };
 
+  if (loading)
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "40vh",
+        }}
+      >
+        <CircularProgress size={60} sx={{ color: "#35281f" }} />
+      </Box>
+    );
+
+  if (error)
+    return (
+      <Alert severity="error" sx={{ m: 2 }}>
+        {error}
+      </Alert>
+    );
+
+  if (!barbers || barbers.length === 0)
+    return (
+      <Alert severity="info" sx={{ m: 2 }}>
+        No barbers available
+      </Alert>
+    );
+
   return (
-    <div className={styles.barbers}>
-      <div className={styles.barbersContainer}>
+    <Box sx={{ px: 2, py: 1, maxHeight: "65vh", overflow: "auto" }}>
+      <Grid container spacing={3}>
         {barbers.map((barber) => (
-          <div
-            key={barber.barber_id}
-            className={styles.barberCard}
-            onClick={() => handleBarberSelect(barber.name, barber.barber_id)}
-          >
-            <Image
-              src={barberImages[barber.name] || "/images/default-avatar.png"}
-              alt={barber.name}
-              width={120}
-              height={120}
-              className={styles.barberImage}
-            />
-            <div className={styles.barberName}>{barber.name}</div>
-            <div className={styles.barberAvailability}>Available Now</div>
-          </div>
+          <Grid item xs={12} sm={6} md={4} key={barber.id}>
+            <Card
+              raised={state.barberId === barber.barber_id}
+              onClick={() => handleBarberSelect(barber.name, barber.barber_id)}
+              sx={{
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                transform:
+                  state.barberId === barber.barber_id
+                    ? "translateY(-5px)"
+                    : "none",
+                border:
+                  state.barberId === barber.barber_id
+                    ? "2px solid #35281f"
+                    : "none",
+                backgroundColor:
+                  state.barberId === barber.barber_id
+                    ? "rgba(53, 40, 31, 0.05)"
+                    : "white",
+                "&:hover": {
+                  transform: "translateY(-5px)",
+                  boxShadow: "0 8px 16px rgba(53, 40, 31, 0.15)",
+                },
+              }}
+            >
+              <CardActionArea>
+                <Box
+                  sx={{
+                    pt: 3,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Avatar
+                    src={barberImages[barber.name]}
+                    alt={barber.name}
+                    sx={{
+                      width: 100,
+                      height: 100,
+                      border: "3px solid #f0f0f0",
+                    }}
+                  />
+                </Box>
+
+                <CardContent sx={{ textAlign: "center" }}>
+                  <Typography variant="h6" component="h3" gutterBottom>
+                    {barber.name}
+                  </Typography>
+
+                  <Chip
+                    icon={
+                      <StatusIcon
+                        fontSize="small"
+                        sx={{
+                          color: barber.isAvailable ? "#4CAF50" : "#FFA000",
+                          "& .MuiChip-icon": { marginLeft: 0 },
+                        }}
+                      />
+                    }
+                    label={
+                      barber.isAvailable ? "Available" : "Limited Availability"
+                    }
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                      backgroundColor: barber.isAvailable
+                        ? "rgba(76, 175, 80, 0.1)"
+                        : "rgba(255, 160, 0, 0.1)",
+                      borderColor: barber.isAvailable ? "#4CAF50" : "#FFA000",
+                      color: barber.isAvailable ? "#1B5E20" : "#E65100",
+                    }}
+                  />
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
         ))}
-      </div>
-    </div>
+      </Grid>
+    </Box>
   );
 }
