@@ -1,5 +1,6 @@
 // app/api/users/register/route.js
-import { getUserByEmail } from "@/lib/services/userService";
+import { getUserByEmail, getDefaultRoleId, createUser } from "@/lib/services/userService";
+import adminInstance from "@/lib/firebase/admin";
 
 export async function POST(request) {
   try {
@@ -12,6 +13,13 @@ export async function POST(request) {
       );
     }
 
+    if (phoneNumber && !/^\d{10,15}$/.test(phoneNumber)) {
+      return new Response(
+        JSON.stringify({ message: "Invalid phone number" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
     const existingUser = await getUserByEmail(email);
     if (existingUser) {
       return new Response(JSON.stringify({ message: "User already exists" }), {
@@ -20,14 +28,24 @@ export async function POST(request) {
       });
     }
 
-    const firebaseUser = await admin.auth().createUser({ email, password });
-    const firebaseUID = firebaseUser.uid;
-    const roleId = await UserService.getDefaultRoleId();
-    const newUser = await UserService.createUser(
+    let firebaseUID;
+    try {
+      const firebaseUser = await adminInstance.auth().createUser({ email, password });
+      firebaseUID = firebaseUser.uid;
+    } catch (err) {
+      console.error("Firebase error:", err);
+      return new Response(
+        JSON.stringify({ message: "Failed to create Firebase user", error: err.message }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    
+    const roleId = await getDefaultRoleId();
+    const newUser = await createUser(
       firebaseUID,
       email,
       roleId,
-      phoneNumber
+      phoneNumber || null
     );
 
     return new Response(

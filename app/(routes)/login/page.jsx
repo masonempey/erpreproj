@@ -28,6 +28,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignUp = async () => {
+    setError("");
     if (!email || !password) {
       setError("Email and password are required");
       return;
@@ -40,7 +41,7 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, phoneNumber}),
       });
 
       const data = await res.json();
@@ -48,7 +49,11 @@ const Login = () => {
         throw new Error(data.message || "Registration failed");
       }
 
-      await signInWithEmailAndPassword(auth, email, password);
+      alert("Registration successful! Please log in.");
+      setEmail("");
+      setPassword("");
+      setPhoneNumber("");
+
     } catch (error) {
       console.error("Signup error:", error);
       setError(error.message);
