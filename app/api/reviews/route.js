@@ -2,7 +2,6 @@
 import { NextResponse } from "next/server";
 import { fetchReviewsFromGoogle, saveReviews } from "@/lib/services/reviewsService";
 
-// GET reviews from Google Places API and save to database
 export async function GET() {
   try {
     // Fetch reviews from Google Places
@@ -10,10 +9,10 @@ export async function GET() {
 
     // Map Google reviews to our schema
     const reviewsToSave = googleResponse.map(review => ({
-      reviewId: review.author_name + "_" + review.time, // Generate a unique reviewId (improve this if needed)
+      reviewId: review.author_name + "_" + review.time, // Generate a unique reviewId
       reviewDate: new Date(review.time * 1000), // Convert UNIX timestamp to Date
       review: review.text || "No review text",
-      userId: review.author_name || "anonymous", // Map author_name to userId (adjust as needed)
+      userId: null, // Set to null since these aren't registered users
     }));
 
     // Save reviews to the database
