@@ -21,9 +21,17 @@ export default function Home() {
         const response = await fetch("/api/reviews");
         if (response.status === 200) {
           const reviewData = await response.json();
-
-          console.log(reviewData);
-          setReviews(reviewData.result?.reviews || []);
+          console.log("Fetched review data:", reviewData); // Debug log
+          // Map database reviews to the format expected by CustomerReviewCard
+          const mappedReviews = (reviewData.reviews || []).map(review => ({
+            author_name: review.user_id || "Anonymous", // Use user_id or "Anonymous"
+            profile_photo_url: "", // Not available in DB; set a default
+            text: review.review,
+            numsReviews: 0, // Not available in DB; set a default
+            rating: 5, // Not in DB; set a default or add to schema
+            relative_time_description: calculateRelativeTime(review.review_date), // Calculate from review_date
+          }));
+          setReviews(mappedReviews);
         } else {
           throw new Error("Network response is disrupted");
         }
@@ -33,6 +41,30 @@ export default function Home() {
     };
     fetchReviews();
   }, []);
+
+  // Helper function to calculate relative time (e.g., "3 months ago")
+  const calculateRelativeTime = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+
+    const intervals = [
+      { label: "year", seconds: 31536000 },
+      { label: "month", seconds: 2592000 },
+      { label: "week", seconds: 604800 },
+      { label: "day", seconds: 86400 },
+      { label: "hour", seconds: 3600 },
+      { label: "minute", seconds: 60 },
+    ];
+
+    for (const interval of intervals) {
+      const count = Math.floor(diffInSeconds / interval.seconds);
+      if (count >= 1) {
+        return `${count} ${interval.label}${count > 1 ? "s" : ""} ago`;
+      }
+    }
+    return "just now";
+  };
 
   return (
     <main className={landingStyles.main}>
@@ -75,17 +107,21 @@ export default function Home() {
 
         <hr></hr>
         <div id="cardsWrapper" className={reviewStyles.cardsWrapper}>
-          {reviews.map((data) => (
-            <CustomerReviewCard
-              key={data.author_name}
-              cusName={data.author_name}
-              image={data.profile_photo_url}
-              review={data.text}
-              numsReviews={data.numsReviews}
-              stars={data.rating}
-              time={data.relative_time_description}
-            />
-          ))}
+          {reviews.length > 0 ? (
+            reviews.map((data) => (
+              <CustomerReviewCard
+                key={data.author_name}
+                cusName={data.author_name}
+                image={data.profile_photo_url}
+                review={data.text}
+                numsReviews={data.numsReviews}
+                stars={data.rating}
+                time={data.relative_time_description}
+              />
+            ))
+          ) : (
+            <p>No reviews available.</p>
+          )}
         </div>
         <Stack
           spacing={2}
