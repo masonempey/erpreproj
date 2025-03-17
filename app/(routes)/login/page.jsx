@@ -126,8 +126,8 @@ const Login = () => {
       if (!res.ok) {
         throw new Error(data.message || "Google sign-in failed");
       }
-
-      router.push("/home");
+      router.replace("/home");
+      window.location.reload(); 
     } catch (error) {
       console.error("Google sign-in error:", error);
       setError(
