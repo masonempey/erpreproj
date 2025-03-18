@@ -42,7 +42,7 @@ const LogInPage = () => {
             
             const validateRes = await fetch(
                 // Cannot use localhost to fetch API from next js for expo
-                "http://10.0.0.163:3000/api/users/validate",
+                "http://10.243.57.121:3000/api/users/validate",
                 {
                     method: "POST",
                     headers: {

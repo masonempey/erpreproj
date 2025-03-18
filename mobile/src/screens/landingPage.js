@@ -17,7 +17,7 @@ function LandingPage() {
     const fetchBarberAppointments = async () => {
       try {
         const barberId = "barber2";
-        const response = await fetch(`http://10.0.0.163:3000/api/appointments/barbers/${barberId}`);
+        const response = await fetch(`http://10.243.57.121:3000/api/appointments/barbers/${barberId}`);
         const appointmentData = await response.json();
 
         console.log(appointmentData);
