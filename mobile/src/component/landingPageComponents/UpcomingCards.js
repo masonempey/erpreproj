@@ -4,15 +4,7 @@ import React from "react";
 import {View, Text, StyleSheet} from "react-native";
 
 export default function UpcomingViewCard({AppointmentInformation, backgroundColor}) {
-    /*
-        I had chat gpt generate me test json data to use before we could get our routes setup, 
-        it generated isodatetimes, in order to make these readable i used this article:
-        https://css-tricks.com/how-to-convert-a-date-string-into-a-human-readable-format/
-        you can do more to make it more readable or format the string exactly how you want, but
-        i just wanted to get it so that it was readable. first we turn the string value into a date 
-        object, then we can preform a toLocaleString on it (line 22)
-    */
-    var date = new Date(AppointmentInformation.date)
+    var date = new Date(AppointmentInformation.date);
     return (
         /*
             here we use our passed in color value and put it into the style,
@@ -23,13 +15,13 @@ export default function UpcomingViewCard({AppointmentInformation, backgroundColo
         */
         <View style={[styles.card, {backgroundColor}]}>
             <Text>
-                {date.toLocaleString()}
+                Date: {date.toLocaleString()}
             </Text>
             <Text>
-                {AppointmentInformation.customer_name}
+                name: {AppointmentInformation.guest_name}
             </Text>
             <Text>
-                {AppointmentInformation.haircut_type}
+                Phone number: {AppointmentInformation.guest_phone}
             </Text>
         </View>
     )

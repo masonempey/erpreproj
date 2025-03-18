@@ -1,33 +1,40 @@
-//using a flatlist component to create a scroll view of the items.
-//for this component, i took a lot of insparation from my groups mobile dev project in sem 3 since we built something very similar.
-
 import React from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { FlatList, StyleSheet, View, Text } from "react-native";
 import UpcomingViewCard from "./UpcomingCards";
 
-export default function UpcomingView({AppointmentData}) {
-    return(
-        <FlatList 
-            data={AppointmentData}
-            renderItem={({item, index}) => (
-                <UpcomingViewCard 
-                AppointmentInformation={item} 
-                backgroundColor={index % 2 === 0 ? '#f0f0f0' : '#ffffff'} 
-                
-                /* Got this background color idea from chat gpt, 
-                moduluses the index value by two two determine if it 
-                is odd or even and uses that to assign a background color */
-                
+export default function UpcomingView({ appointmentData}) {
+    return (
+        <FlatList
+            data={appointmentData}
+            renderItem={({ item, index }) => (
+                <UpcomingViewCard
+                    AppointmentInformation={item}
+                    backgroundColor={index % 2 === 0 ? "#f0f0f0" : "#ffffff"}
                 />
             )}
-            keyExtractor={item => item.id}
+            keyExtractor={(item, index) => item.id ? item.id.toString() : `index-${index}`}
             style={styles.list}
+            contentContainerStyle={appointmentData.length === 0 ? styles.emptyContainer : null}
+            ListEmptyComponent={() => (
+                <View style={styles.emptyContainer}>
+                    <Text style={styles.emptyText}>No upcoming appointments</Text>
+                </View>
+            )}
         />
     );
 }
 
 const styles = StyleSheet.create({
     list: {
+        paddingHorizontal: 16,
+    },
+    emptyContainer: {
+        justifyContent: "center",
+        alignItems: "center",
         height: 250,
-    }
+    },
+    emptyText: {
+        fontSize: 16,
+        color: "gray",
+    },
 });
