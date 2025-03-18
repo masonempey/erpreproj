@@ -1,19 +1,91 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, ImageBackground, Image, Pressable, Modal, TextInput } from "react-native";
+import {
+    StyleSheet,
+    Text,
+    View,
+    ImageBackground,
+    Image,
+    Pressable,
+    Modal,
+    TextInput,
+    ActivityIndicator,
+} from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { auth } from "../firebase/firebase-config";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 const LogInPage = () => {
     const backgroundImage = require("../../assets/landing_background.png");
     const logoImage = require("../../assets/logo.png");
     const [modalVisible, setModalVisible] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleLogin = async () => {
+        if (!email || !password) {
+            setError("Email and password are required");
+            return;
+        }
+
+        setIsLoading(true);
+        setError("");
+
+        try {
+            const userCredential = await signInWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
+            const idToken = await userCredential.user.getIdToken();
+            
+            const validateRes = await fetch(
+                "http://10.0.0.163:3000/api/users/validate",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${idToken}`,
+                    },
+                    body: JSON.stringify({ uid: userCredential.user.uid }),
+                }
+            );
+            
+
+            if (!validateRes.ok) {
+                const data = await validateRes.json();
+                throw new Error(data.error || "User validation failed");
+            }
+
+            
+        } catch (error) {
+            console.error("Login error:", error);
+            setError(
+                error.message?.includes("auth/")
+                    ? "Invalid email or password"
+                    : error.message
+            );
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <SafeAreaProvider>
             <View style={styles.container}>
-                <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.background}>
+                <ImageBackground
+                    source={backgroundImage}
+                    resizeMode="cover"
+                    style={styles.background}
+                >
                     <SafeAreaView style={styles.safeArea}>
-                        <Image source={logoImage} resizeMethod="auto" style={styles.logo}></Image>
-                        
+                        <Image
+                            source={logoImage}
+                            resizeMethod="auto"
+                            style={styles.logo}
+                        />
+
                         {/* Modal component */}
                         <Modal
                             animationType="fade"
@@ -31,29 +103,44 @@ const LogInPage = () => {
                                         <Text style={styles.closeText}>X</Text>
                                     </Pressable>
 
+                                    {/* Error Message */}
+                                    {error ? (
+                                        <Text style={styles.errorText}>{error}</Text>
+                                    ) : null}
+
                                     {/* Input Fields for Email and Password */}
                                     <View style={styles.inputContainer}>
                                         <TextInput
                                             style={styles.input}
+                                            value={email}
+                                            onChangeText={setEmail}
                                             placeholder="Email"
                                             placeholderTextColor="#999"
+                                            autoCapitalize="none"
+                                            keyboardType="email-address"
                                         />
                                         <TextInput
                                             style={styles.input}
                                             placeholder="Password"
-                                            secureTextEntry={true} // hides the password
+                                            value={password}
+                                            onChangeText={setPassword}
+                                            secureTextEntry={true}
                                             placeholderTextColor="#999"
+                                            autoCapitalize="none"
                                         />
                                     </View>
-                                    
+
                                     {/* Login Button */}
                                     <Pressable
                                         style={[styles.button, styles.buttonLogin]}
-                                        onPress={() => {
-                                            // Handle login action
-                                        }}
+                                        onPress={handleLogin}
+                                        disabled={isLoading}
                                     >
-                                        <Text style={styles.buttonLoginText}>Login</Text>
+                                        {isLoading ? (
+                                            <ActivityIndicator color="white" />
+                                        ) : (
+                                            <Text style={styles.buttonLoginText}>Login</Text>
+                                        )}
                                     </Pressable>
                                 </View>
                             </View>
@@ -82,7 +169,7 @@ const styles = StyleSheet.create({
         width: "100%",
         height: "100%",
         justifyContent: "center",
-        alignItems: "center", 
+        alignItems: "center",
     },
     safeArea: {
         flex: 1,
@@ -107,7 +194,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
     },
     buttonClose: {
-        position: 'absolute',
+        position: "absolute",
         top: 10,
         right: 10,
         width: 30,
@@ -148,7 +235,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 30,
         alignItems: "center",
-        position: 'relative', // Needed for absolute positioning of the close button
+        position: "relative",
     },
     inputContainer: {
         width: "100%",
@@ -163,6 +250,12 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#ccc",
         color: "#000",
+    },
+    errorText: {
+        color: "red",
+        fontSize: 14,
+        marginBottom: 10,
+        textAlign: "center",
     },
 });
 

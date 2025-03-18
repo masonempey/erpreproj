@@ -1,38 +1,49 @@
-import React from 'react';
+// ParentNav.js
+import React, { useContext } from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { AuthContext } from '../firebase/firebase-context';
 import LandingPage from '../screens/landingPage';
 import LogInPage from '../screens/logInPage';
 import SchedulingPage from '../screens/schedulePage';
 import AnalyticsPage from '../screens/analyticsPage';
 import ProfilePage from '../screens/profilePage';
 import ShopManagmentStack from './shopManagmentStack';
-import { View, Text } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { ActivityIndicator, View } from 'react-native';
 
-const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
-// Change the NavigationContainer to the root of the app for authentaication process and prevent potential issues
-// Ref: https://reactnavigation.org/docs/auth-flow information on how to set up the auth flow
-// Ref:https://reactnavigation.org/docs/navigation-container for more information on how to configure the navigation container
-
-function TabNavigator(){
+function TabNavigator() {
     return (
         <Tab.Navigator initialRouteName="Home">
             <Tab.Screen name="Home" component={LandingPage} />
             <Tab.Screen name="Schedule" component={SchedulingPage} />
             <Tab.Screen name="Managment" component={ShopManagmentStack} />
             <Tab.Screen name="Analytics" component={AnalyticsPage} />
-            <Tab.Screen name="Profile" component={ProfilePage} />            
+            <Tab.Screen name="Profile" component={ProfilePage} />
         </Tab.Navigator>
     );
-}    
+}
 
 function ParentNav() {
+    const { user, loading } = useContext(AuthContext);
+
+    if (loading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" />
+            </View>
+        );
+    }
+
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="LogIn" component={LogInPage} />
-            <Stack.Screen name="MainApp" component={TabNavigator} />
+            {user ? (
+                <Stack.Screen name="MainApp" component={TabNavigator} />
+            ) : (
+                <Stack.Screen name="LogIn" component={LogInPage} />
+            )}
         </Stack.Navigator>
     );
 }
