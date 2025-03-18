@@ -6,7 +6,8 @@
         {
           "domain": "dev-owtoc5eyyl18m5yw.us.auth0.com"
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "name": "Erpreproj-Mobile-App",
     "slug": "Erpreproj-Mobile-App",

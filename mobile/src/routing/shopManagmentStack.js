@@ -1,5 +1,4 @@
 import React from "react";
-import {View, Text} from 'react-native';
 import { createStackNavigator } from "@react-navigation/stack";
 import ShopManagmentPage from "../screens/shopManagmentPage";
 import AddBarberPage from "../screens/addBarberPage";
@@ -12,6 +11,7 @@ export default function ShopManagmentStack() {
             <Stack.Screen 
                 name="Shop Managment"
                 component={ShopManagmentPage}
+                options={{headerShown: false}}
             />
             <Stack.Screen 
                 name="Add Barber"

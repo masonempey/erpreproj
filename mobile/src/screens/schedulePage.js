@@ -14,18 +14,23 @@ export default function SchedulingPage({ selectedDate }) {
   const [date, setDate] = useState(new Date().toISOString());
 
   useEffect(() => {
-    const sortedAppointments = [...testAppointments].sort(
-      /*
-                refer to landing page
-                for notes on sorting.
-            */
-      (a, b) => new Date(a.date) - new Date(b.date)
-    );
-    setAppointments(sortedAppointments);
+    const fetchBarberAppointments = async () => {
+      try {
+        const barberId = "barber2";
+        const response = await fetch(`http://10.187.128.21:3000/api/appointments/barbers/${barberId}`);
+        const appointmentData = await response.json();
+
+        console.log(appointmentData);
+        setAppointments(appointmentData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
     if (selectedDate) {
       setDate(selectedDate);
     }
   }, [selectedDate]);
+
   useEffect(() => {
     if (date) {
       console.log("Selected date:", date);
