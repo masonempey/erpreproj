@@ -41,6 +41,7 @@ const LogInPage = () => {
             const idToken = await userCredential.user.getIdToken();
             
             const validateRes = await fetch(
+                // Cannot use localhost to fetch API from next js for expo
                 "http://10.0.0.163:3000/api/users/validate",
                 {
                     method: "POST",

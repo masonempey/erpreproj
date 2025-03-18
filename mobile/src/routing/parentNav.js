@@ -10,13 +10,14 @@ import AnalyticsPage from '../screens/analyticsPage';
 import ProfilePage from '../screens/profilePage';
 import ShopManagmentStack from './shopManagmentStack';
 import { ActivityIndicator, View } from 'react-native';
+import LogoutButton from '../component/loginPageComponents/logoutButton';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function TabNavigator() {
     return (
-        <Tab.Navigator initialRouteName="Home">
+        <Tab.Navigator initialRouteName="Home" screenOptions={{headerRight: () => <LogoutButton />}} >
             <Tab.Screen name="Home" component={LandingPage} />
             <Tab.Screen name="Schedule" component={SchedulingPage} />
             <Tab.Screen name="Managment" component={ShopManagmentStack} />
