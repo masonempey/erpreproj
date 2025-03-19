@@ -1,31 +1,59 @@
 // app/api/appointments/barbers/[barberId]/route.js
 import { NextResponse } from "next/server";
 import { getBarberById } from "@/lib/services/barberService";
-import { getAppointmentsFromBarber } from "@/lib/services/bookingService";
+import { getAppointmentsFromBarberOnOneDay } from "@/lib/services/bookingService";
+
 export async function GET(request, { params }) {
-  try {
-    const { barberId } = params;
-    console.log(`Fetching appointments for barber ID: ${barberId}`);
+    try {
+        const { barberId } = params;
+        const { searchParams } = new URL(request.url);
+        const date = searchParams.get("date");
 
-    const appointments = await getAppointmentsFromBarber(barberId);
-    console.log(`Appointments found: ${appointments.length}`);
+        // Validate barberId
+        if (!barberId || typeof barberId !== "string") {
+            return NextResponse.json(
+                { error: "barberId must be a non-empty string" },
+                { status: 400 }
+            );
+        }
 
-    if (appointments.length === 0) {
-      return NextResponse.json(
-        { message: "No appointments found for this barber" },
-        { status: 404 }
-      );
+        // Validate date
+        if (!date || isNaN(new Date(date).getTime())) {
+            return NextResponse.json(
+                { error: "date must be a valid date string" },
+                { status: 400 }
+            );
+        }
+
+        // Check if the barber exists
+        const barber = await getBarberById(barberId);
+        if (!barber) {
+            return NextResponse.json(
+                { error: "Barber not found" },
+                { status: 404 }
+            );
+        }
+
+        // Fetch appointments for the barber on the specified date
+        const appointments = await getAppointmentsFromBarberOnOneDay(barberId, new Date(date));
+        console.log(`Appointments found: ${appointments.length}`);
+
+        if (appointments.length === 0) {
+            return NextResponse.json(
+                { message: "No appointments found for this barber on the specified date" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json(appointments);
+    } catch (err) {
+        console.error("Error fetching appointments:", err);
+        return NextResponse.json(
+            {
+                error: "An error occurred while fetching appointments",
+                details: err.message,
+            },
+            { status: 500 }
+        );
     }
-
-    return NextResponse.json(appointments);
-  } catch (err) {
-    console.error("Error fetching appointments:", err);
-    return NextResponse.json(
-      {
-        error:
-          "Error occurred while attempting to find appointments for the barber",
-      },
-      { status: 500 }
-    );
-  }
 }

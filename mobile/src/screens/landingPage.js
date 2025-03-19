@@ -4,40 +4,52 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import LandingCalendar from "../component/landingPageComponents/Calander";
-import testAppointments from "../utilities/testing/testAppointments.json";
 import UpcomingView from "../component/landingPageComponents/UpcomingView";
 
 function LandingPage() {
   const [appointments, setAppointments] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
+  
+  const getCurrentDate = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Ensure 2 digits
+    const day = String(date.getDate()).padStart(2, "0"); // Ensure 2 digits
+    return `${year}-${month}-${day}`;
+  };
+  const handleDateSelect=(date)=>{
+    setSelectedDate(date)
+  }
 
-  // Using query so no need for sort function
-  useEffect(() => {
-    const fetchBarberAppointments = async () => {
-      try {
-        const barberId = "barber2";
-        const response = await fetch(`http://10.174.167.208:3000/api/appointments/barbers/${barberId}`);
-        const appointmentData = await response.json();
+  const fetchBarberAppointmentsForDate = async (date) => {
+    try {
+      const barberId = "barber2";
+      const response = await fetch(`http://10.174.167.208:3000/api/appointments/barbers/${barberId}?date=${date}`);
+      const appointmentData = await response.json();
 
-        console.log(appointmentData);
-        setAppointments(appointmentData);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+      console.log(appointmentData);
+      setAppointments(appointmentData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-    fetchBarberAppointments();
+  useEffect(()=>{
+    if (selectedDate){
+      fetchBarberAppointmentsForDate(selectedDate);
+    }
+  }, [selectedDate]);
 
-  }, []);
-
+  useEffect(()=>{
+    setSelectedDate(getCurrentDate());
+  },[])
   return (
     <View>
-      {/*
-                passing in our appointment list as props for our components.
-            */}
+      <LandingCalendar onDateSelect={handleDateSelect}/>
       <UpcomingView appointmentData={appointments} />
-      <LandingCalendar />
+      
     </View>
   );
 }

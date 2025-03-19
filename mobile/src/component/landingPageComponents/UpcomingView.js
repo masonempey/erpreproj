@@ -26,7 +26,7 @@ export default function UpcomingView({ appointmentData}) {
 
 const styles = StyleSheet.create({
     list: {
-        paddingHorizontal: 16,
+        paddingHorizontal: 14,
     },
     emptyContainer: {
         justifyContent: "center",
