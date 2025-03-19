@@ -53,7 +53,8 @@ const LogInPage = () => {
                 }
             );
             
-
+            setEmail("");
+            setPassword("");
             if (!validateRes.ok) {
                 const data = await validateRes.json();
                 throw new Error(data.error || "User validation failed");
