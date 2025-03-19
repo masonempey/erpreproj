@@ -8,6 +8,7 @@ function LandingCalendar() {
             <Calendar
                 horizontal={true}
                 pagingEnabled={true}
+                enableSwipeMonths={true}
                 // Set custom calendarWidth.
                 calendarWidth={320}
                 style={styles.calendar}
