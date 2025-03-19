@@ -6,14 +6,7 @@ import {View, Text, StyleSheet} from "react-native";
 export default function UpcomingViewCard({AppointmentInformation, backgroundColor}) {
     var date = new Date(AppointmentInformation.date);
     return (
-        /*
-            here we use our passed in color value and put it into the style,
-            since our variable is already named backgroundColor, it saves us 
-            a step, if it was named something like cardColor we would need to put
-            backgroundColor: cardColor in the curly brackets, this is because of JS
-            Object Shorthand which i thought was pretty neat.
-        */
-        <View style={[styles.card, {backgroundColor}]}>
+        <View style={[styles.card]}>
             <Text>
                 <Text style={styles.label}>Date: </Text>
                 {date.toLocaleString()}
@@ -32,9 +25,13 @@ export default function UpcomingViewCard({AppointmentInformation, backgroundColo
 
 const styles = StyleSheet.create({
     card: {
-        padding: 15,
+        padding: 10,
         borderWidth: 1,
+        borderColor: "#fcfcfc",
         marginVertical: 5,
+        borderRadius: 10,
+        backgroundColor: "#fff",
+        boxShadow: "0 0 3"
     },
     label: {
         fontWeight: "bold",
