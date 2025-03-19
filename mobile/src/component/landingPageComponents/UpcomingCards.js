@@ -15,13 +15,16 @@ export default function UpcomingViewCard({AppointmentInformation, backgroundColo
         */
         <View style={[styles.card, {backgroundColor}]}>
             <Text>
-                Date: {date.toLocaleString()}
+                <Text style={styles.label}>Date: </Text>
+                {date.toLocaleString()}
             </Text>
             <Text>
-                name: {AppointmentInformation.guest_name}
+                <Text style={styles.label}>Name: </Text>
+                {AppointmentInformation.guest_name}
             </Text>
             <Text>
-                Phone number: {AppointmentInformation.guest_phone}
+                <Text style={styles.label}>Phone Number: </Text>
+                {AppointmentInformation.guest_phone}
             </Text>
         </View>
     )
@@ -30,6 +33,10 @@ export default function UpcomingViewCard({AppointmentInformation, backgroundColo
 const styles = StyleSheet.create({
     card: {
         padding: 15,
+        borderWidth: 1,
         marginVertical: 5,
-    }
+    },
+    label: {
+        fontWeight: "bold",
+    },
 })
