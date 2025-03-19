@@ -25,13 +25,16 @@ export default function UpcomingViewCard({AppointmentInformation, backgroundColo
 
 const styles = StyleSheet.create({
     card: {
+        marginTop: 10,
         padding: 10,
-        borderWidth: 1,
-        borderColor: "#fcfcfc",
         marginVertical: 5,
         borderRadius: 10,
         backgroundColor: "#fff",
-        boxShadow: "0 0 3"
+        shadowColor: "rgb(0, 0, 0)",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 4
     },
     label: {
         fontWeight: "bold",

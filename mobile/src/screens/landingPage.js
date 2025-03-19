@@ -4,7 +4,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import LandingCalendar from "../component/landingPageComponents/Calander";
 import UpcomingView from "../component/landingPageComponents/UpcomingView";
 
@@ -26,7 +26,7 @@ function LandingPage() {
   const fetchBarberAppointmentsForDate = async (date) => {
     try {
       const barberId = "barber2";
-      const response = await fetch(`http://10.174.167.208:3000/api/appointments/barbers/${barberId}?date=${date}`);
+      const response = await fetch(`http://10.243.35.238:3000/api/appointments/barbers/${barberId}?date=${date}`);
       const appointmentData = await response.json();
 
       console.log(appointmentData);
@@ -49,7 +49,6 @@ function LandingPage() {
     <View>
       <LandingCalendar onDateSelect={handleDateSelect}/>
       <UpcomingView appointmentData={appointments} />
-      
     </View>
   );
 }
