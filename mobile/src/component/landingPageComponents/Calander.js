@@ -3,12 +3,21 @@ import { View, StyleSheet, Dimensions } from "react-native";
 import { Calendar } from "react-native-calendars";
 
 function LandingCalendar() {
+    const getCurrentDate=()=>{
+ 
+        var date = new Date().getDate() + 1;
+        var month = new Date().getMonth() + 1;
+        var year = new Date().getFullYear();
+
+        return year + '-' + month + '-' + date;
+  }
     return (
         <View style={styles.container}>
             <Calendar
                 horizontal={true}
                 pagingEnabled={true}
                 enableSwipeMonths={true}
+                minDate = {getCurrentDate()}
                 // Set custom calendarWidth.
                 calendarWidth={320}
                 style={styles.calendar}
@@ -19,7 +28,6 @@ function LandingCalendar() {
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: Dimensions.get('window').height * 0.1,
         marginTop: 100,
         backgroundColor: "#f8f9fa",
         padding: 10,
