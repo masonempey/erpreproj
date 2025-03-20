@@ -11,7 +11,7 @@ export default function UpcomingView({ appointmentData}) {
                 data={appointmentData}
                 renderItem={({ item }) => (
                     <UpcomingViewCard
-                        AppointmentInformation={item}
+                    appointmentInfo={item}
                     />
                 )}
                 keyExtractor={(item, index) => item.id ? item.id.toString() : `index-${index}`}
