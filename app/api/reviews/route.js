@@ -1,7 +1,8 @@
 // app/api/reviews/route.js
 import { NextResponse } from "next/server";
-import { fetchReviewsFromGoogle, saveReviews } from "@/lib/services/reviewsService";
+import { fetchReviewsFromGoogle, saveReviews, getAllReviews } from "@/lib/services/reviewsService";
 
+// GET reviews from Google Places API, save to database, and return all reviews
 export async function GET() {
   try {
     // Fetch reviews from Google Places
@@ -9,19 +10,24 @@ export async function GET() {
 
     // Map Google reviews to our schema
     const reviewsToSave = googleResponse.map(review => ({
-      reviewId: review.author_name + "_" + review.time, // Generate a unique reviewId
-      reviewDate: new Date(review.time * 1000), // Convert UNIX timestamp to Date
+      reviewId: review.author_name + "_" + review.time,
+      reviewDate: new Date(review.time * 1000),
       review: review.text || "No review text",
-      userId: null, // Set to null since these aren't registered users
+      userId: null,
+      rating: review.rating,
+      profilePhotoUrl: review.profile_photo_url,
     }));
 
     // Save reviews to the database
-    const savedReviews = await saveReviews(reviewsToSave);
+    await saveReviews(reviewsToSave);
 
-    // Return the saved reviews (or all fetched reviews if you prefer)
+    // Fetch all reviews from the database
+    const allReviews = await getAllReviews();
+
+    // Return the database reviews
     return NextResponse.json({
       message: "Reviews fetched and saved successfully",
-      reviews: savedReviews.length > 0 ? savedReviews : googleResponse,
+      reviews: allReviews,
     });
   } catch (error) {
     console.error(error.message);
