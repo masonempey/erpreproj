@@ -14,6 +14,9 @@ import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { auth } from "../firebase/firebase-config";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
+// this page is the login page for the app. 
+// It will be the first page the user sees when they open the app
+// and will allow them to login to their account.
 const LogInPage = () => {
     const backgroundImage = require("../../assets/landing_background.png");
     const logoImage = require("../../assets/logo.png");
@@ -23,26 +26,34 @@ const LogInPage = () => {
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
+    // Function to handle the login process
+    // This function will be called when the user clicks the login button on the login page.
     const handleLogin = async () => {
         if (!email || !password) {
             setError("Email and password are required");
             return;
         }
-
+        // Set loading state to true and clear any previous errors messages
         setIsLoading(true);
         setError("");
 
         try {
+            // Sign in the user with the provided email and password
+            // This function is imported from the firebase/auth module and is used to sign in the user with their email and password.
+            // This function returns a userCredential object which contains the user object and the idToken.
             const userCredential = await signInWithEmailAndPassword(
                 auth,
                 email,
                 password
             );
             const idToken = await userCredential.user.getIdToken();
-            
+
+            // Validate the user with the backend API.
+            // This function sends a POST request to the backend API to validate the user with the provided idToken.
+            // This function returns a response object which contains the validation result.
+            // If the validation fails, an error message is displayed to the user.
             const validateRes = await fetch(
-                // Cannot use localhost to fetch API from next js for expo
-                "http://10.243.57.121:3000/api/users/validate",
+                "http://10.243.42.17:3000/api/users/validate",
                 {
                     method: "POST",
                     headers: {
@@ -53,7 +64,10 @@ const LogInPage = () => {
                 }
             );
             
-
+            // Finally, clear the input fields and display any error messages.
+            // If the validation is successful, clear the email and the password.
+            setEmail("");
+            setPassword("");
             if (!validateRes.ok) {
                 const data = await validateRes.json();
                 throw new Error(data.error || "User validation failed");
@@ -61,7 +75,6 @@ const LogInPage = () => {
 
             
         } catch (error) {
-            console.error("Login error:", error);
             setError(
                 error.message?.includes("auth/")
                     ? "Invalid email or password"
@@ -87,7 +100,9 @@ const LogInPage = () => {
                             style={styles.logo}
                         />
 
-                        {/* Modal component */}
+                        {/* Modal component to view the modal display the login form
+                            when the user clicks the login button.   
+                        */}
                         <Modal
                             animationType="fade"
                             transparent={true}
