@@ -12,7 +12,7 @@ export default function UpcomingViewCard({appointmentInfo}) {
         Linking.openURL(phoneNumber).catch(err => console.error("Failed to open phone dialer:", err));
     };
 
-
+    
     return (
         <View style={[styles.card]}>
             <TouchableOpacity onPress={() => setModalVisible(true)}>
