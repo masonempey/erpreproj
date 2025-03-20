@@ -30,7 +30,6 @@ export default function UpcomingView({ appointmentData}) {
 
 const styles = StyleSheet.create({
     listContainer: {
-        flex: 1,
         padding: 14,
         marginVertical: 10,
         backgroundColor: "#f9f9f9",

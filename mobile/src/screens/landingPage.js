@@ -27,12 +27,16 @@ function LandingPage() {
     try {
       const barberId = "barber2";
       const response = await fetch(`http://10.243.35.238:3000/api/appointments/barbers/${barberId}?date=${date}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
       const appointmentData = await response.json();
-
-      console.log(appointmentData);
       setAppointments(appointmentData);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching appointments:", error);
+      setAppointments([]); // Clear appointments in case of error
     }
   };
 

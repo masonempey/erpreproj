@@ -3,7 +3,7 @@
 import React from "react";
 import {View, Text, StyleSheet} from "react-native";
 
-export default function UpcomingViewCard({AppointmentInformation, backgroundColor}) {
+export default function UpcomingViewCard({AppointmentInformation}) {
     var date = new Date(AppointmentInformation.date);
     return (
         <View style={[styles.card]}>
@@ -14,6 +14,7 @@ export default function UpcomingViewCard({AppointmentInformation, backgroundColo
             <Text>
                 <Text style={styles.label}>Name: </Text>
                 {AppointmentInformation.guest_name}
+                
             </Text>
             <Text>
                 <Text style={styles.label}>Phone Number: </Text>
