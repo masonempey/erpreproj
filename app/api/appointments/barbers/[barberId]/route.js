@@ -39,10 +39,7 @@ export async function GET(request, { params }) {
         console.log(`Appointments found: ${appointments.length}`);
 
         if (appointments.length === 0) {
-            return NextResponse.json(
-                { message: "No appointments found for this barber on the specified date" },
-                { status: 404 }
-            );
+            return NextResponse.json(appointments);
         }
 
         return NextResponse.json(appointments);
