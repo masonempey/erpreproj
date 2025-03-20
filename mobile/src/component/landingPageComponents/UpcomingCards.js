@@ -1,11 +1,18 @@
 //creating the cards or areas that we are going to be using to display the appointment information in
 //for the barber page within the flat list.
 import React from "react";
-import { View, Text, StyleSheet, Modal, TouchableOpacity, Button } from "react-native";
+import { View, Text, StyleSheet, Modal, TouchableOpacity, Button, Linking } from "react-native";
+import PhoneFilled from "react-native-vector-icons/AntDesign";
 
 export default function UpcomingViewCard({appointmentInfo}) {
     var date = new Date(appointmentInfo.date);
     const [modalVisible, setModalVisible] = React.useState(false);
+    const handleCall = () => {
+        const phoneNumber = `tel:${appointmentInfo.guest_phone}`;
+        Linking.openURL(phoneNumber).catch(err => console.error("Failed to open phone dialer:", err));
+    };
+
+
     return (
         <View style={[styles.card]}>
             <TouchableOpacity onPress={() => setModalVisible(true)}>
@@ -21,6 +28,7 @@ export default function UpcomingViewCard({appointmentInfo}) {
                     <Text>
                         <Text style={styles.label}>Phone Number: </Text>
                         {appointmentInfo.guest_phone}
+
                     </Text>
                 </View>
             </TouchableOpacity>
@@ -51,10 +59,19 @@ export default function UpcomingViewCard({appointmentInfo}) {
                             {appointmentInfo.guest_email}
                         </Text>
                         <View style={styles.divider}></View>
-                        <Text>
-                            <Text style={styles.label}>Phone Number: </Text>
-                            {appointmentInfo.guest_phone}
-                        </Text>
+
+                        <View style={styles.phoneContainer}>
+                            <Text>
+                                <Text style={styles.label}>Phone Number: </Text>
+                                {appointmentInfo.guest_phone}
+                            </Text>
+                            <TouchableOpacity onPress={handleCall} style={styles.callButton}>
+                                <Text style={styles.callButtonText}>
+                                    <PhoneFilled name="phone" size={20} color="black"/>
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                        
                         <View style={styles.divider}></View>
                         <Text>
                             <Text style={styles.label}>Status: </Text>
@@ -75,6 +92,17 @@ export default function UpcomingViewCard({appointmentInfo}) {
 }
 
 const styles = StyleSheet.create({
+    phoneContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+   
+    },
+
+    callButtonText: {
+        color: "#fff",
+        fontWeight: "bold",
+    },
     divider: {
         height: 1,
         backgroundColor: "#b3b3b3",
