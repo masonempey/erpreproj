@@ -4,6 +4,7 @@ import { Calendar } from "react-native-calendars";
 
 function LandingCalendar({onDateSelect}) {
     // Function to get the current date in YYYY-MM-DD format
+    // reference: https://stackoverflow.com/questions/37271356/how-to-get-the-current-date-in-reactnative
     const getCurrentDate = () => {
         const date = new Date();
         const year = date.getFullYear();
@@ -13,9 +14,15 @@ function LandingCalendar({onDateSelect}) {
     };
 
     // State to store the selected date
+    // Initialize the selected date with the current date
     const [selectedDate, setSelectedDate] = useState(getCurrentDate());
 
     // Function to handle date selection
+    // This function is called when the user selects a date on the calendar
+    // It sets the selected date to the date selected by the user and calls the onDateSelect function
+    // to pass the selected date to the parent component
+    // The function takes the selected date as an argument
+    // dateString is the date selected by the user in the format YYYY-MM-DD
     const handleDayPress = (day) => {
         setSelectedDate(day.dateString);
         onDateSelect(day.dateString); 

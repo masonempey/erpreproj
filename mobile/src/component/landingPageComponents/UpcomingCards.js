@@ -4,15 +4,30 @@ import React from "react";
 import { View, Text, StyleSheet, Modal, TouchableOpacity, Button, Linking } from "react-native";
 import PhoneFilled from "react-native-vector-icons/AntDesign";
 
+
+// UpcomingViewCard component to display the upcoming appointment details
+// This component displays the details of the upcoming appointment in a card format
+// It uses the TouchableOpacity component from react-native to make the card clickable
+// The TouchableOpacity component takes the appointmentInfo as a prop which
+//  is an object containing the appointment details
+// reference: https://reactnative.dev/docs/touchableopacity
+// The component also uses the Modal component from react-native to display the appointment details
+// in a modal when the card is clicked
+// Reference: https://reactnative.dev/docs/modal
+// Reference: https://reactnative.dev/docs/linking
 export default function UpcomingViewCard({appointmentInfo}) {
+
+    // Convert the date string to a Date object for better formatting and manipulation 
     var date = new Date(appointmentInfo.date);
     const [modalVisible, setModalVisible] = React.useState(false);
+
+    // Function to handle the phone call when the phone icon is clicked
+    // reference: https://reactnative.dev/docs/linking
     const handleCall = () => {
         const phoneNumber = `tel:${appointmentInfo.guest_phone}`;
         Linking.openURL(phoneNumber).catch(err => console.error("Failed to open phone dialer:", err));
     };
 
-    
     return (
         <View style={[styles.card]}>
             <TouchableOpacity onPress={() => setModalVisible(true)}>
