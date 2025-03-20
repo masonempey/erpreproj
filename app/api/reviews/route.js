@@ -9,6 +9,10 @@ export async function GET() {
     const googleResponse = await fetchReviewsFromGoogle();
 
     // Map Google reviews to our schema
+
+    // Map transforms each review in googleResponse into a new object with fields matching the database schema
+    // googleResponse.map iterates over the array, and for each review, creates an object with reviewId, reviewDate, etc.
+    // googleResponse is the array being iterated over.
     const reviewsToSave = googleResponse.map(review => ({
       reviewId: review.author_name + "_" + review.time,
       reviewDate: new Date(review.time * 1000),
