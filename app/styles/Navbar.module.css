@@ -13,7 +13,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: transparent;
+  background: #fafafa;
   padding: 1rem 2rem;
   width: 100vw;
   top: 0;
@@ -26,15 +26,18 @@
   font-style: normal;
   transform: none;
   position: fixed;
+  box-shadow: 0 2px 8px rgba(95, 64, 44, 0.1);
+  border-bottom: 1px solid rgba(95, 64, 44, 0.08);
 }
 
 .navbarLeft .logo {
   font-weight: bold;
   text-decoration: none;
-  color: #fafafa;
+  color: #5f402c;
   font-family: "Oleo Script";
   font-weight: bold;
   font-size: 2rem;
+  text-shadow: none;
 }
 
 .navbarCenter {
@@ -45,7 +48,7 @@
 
 .navLinks {
   display: flex;
-  gap: 6rem;
+  gap: 10rem;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -53,13 +56,13 @@
 
 .navLinks li a {
   text-decoration: none;
-  color: #fafafa !important;
+  color: #0c0c0c !important;
   position: relative;
   transition: all 0.3s ease;
 }
 
 .navLinks li a:hover {
-  color: #453529 !important;
+  color: #5f402c !important;
 }
 
 .navLinks li a::before {
@@ -69,7 +72,7 @@
   height: 2px;
   bottom: -2px;
   left: 0;
-  background-color: #453529;
+  background-color: #5f402c;
   visibility: hidden;
   transform: scaleX(0);
   transition: all 0.3s ease-in-out;
@@ -81,21 +84,14 @@
   width: 100%;
 }
 
-.navLinks li a:hover {
-  color: #fafafa;
-}
-
 .navbarRight {
   display: flex;
   align-items: center;
 }
 
-
 /* Mobile / Small Screens */
-@media (max-width: 768px) { 
-    /* Could display links with hamburger menu */
-    .navbarCenter {
-        display: none;
-    }
+@media (max-width: 768px) {
+  .navbarCenter {
+    display: none;
+  }
 }
-

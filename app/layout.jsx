@@ -12,12 +12,17 @@ import { UserProvider } from "../context/UserContext";
 import Navbar from "./components/navBar";
 import Footer from "./components/footer";
 import styles from "./styles/Layout.module.css";
+import { usePathname } from "next/navigation";
 
 const stripePromise = loadStripe(
   "pk_test_51QjouOGELRRPocWM4KhjA6LdjU98BVpTMcCkU5bTCR7L5mZtrGKZ1j09K9PKOmZHz9e1tnazI4KxIZarGPD2ibZx00EkHBFctr"
 );
 
 export default function RootLayout({ children }) {
+  const pathname = usePathname();
+  const isAdminRoute = pathname?.startsWith("/admin");
+  const isLoginRoute = pathname?.startsWith("/login");
+
   return (
     <html lang="en">
       <body>
@@ -28,9 +33,13 @@ export default function RootLayout({ children }) {
               <ShopProvider>
                 <BookingProvider>
                   <div className={styles.layout}>
-                    <Navbar />
-                    <main className={styles.main}>{children}</main>
-                    <Footer />
+                    {!isAdminRoute && !isLoginRoute && <Navbar />}
+                    <main
+                      className={isAdminRoute ? styles.adminMain : styles.main}
+                    >
+                      {children}
+                    </main>
+                    {!isAdminRoute && !isLoginRoute && <Footer />}
                   </div>
                 </BookingProvider>
               </ShopProvider>
