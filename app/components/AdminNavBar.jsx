@@ -4,9 +4,7 @@ import ProfilePopup from "./ProfilePopup";
 import styles from "../styles/AdminNavBar.module.css";
 import HomeIcon from "@mui/icons-material/Home";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-import AddAlertIcon from "@mui/icons-material/AddAlert";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import LogoutIcon from "@mui/icons-material/Logout";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import MoreTimeIcon from "@mui/icons-material/MoreTime";
 import IconButton from "@mui/material/IconButton";
@@ -17,7 +15,6 @@ import Tooltip from "@mui/material/Tooltip";
 const AdminNavBar = ({
   handleChangeView,
   selectedView,
-  tutorialDisplay,
   handleTutorialDisplay,
 }) => {
   const { user, loading } = useUser();

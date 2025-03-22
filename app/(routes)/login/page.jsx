@@ -41,7 +41,7 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, phoneNumber}),
+        body: JSON.stringify({ email, password, phoneNumber }),
       });
 
       const data = await res.json();
@@ -53,7 +53,6 @@ const Login = () => {
       setEmail("");
       setPassword("");
       setPhoneNumber("");
-
     } catch (error) {
       console.error("Signup error:", error);
       setError(error.message);
@@ -91,7 +90,8 @@ const Login = () => {
         throw new Error(data.message || "User validation failed");
       }
 
-      router.push("/home");
+      await router.push("/");
+      window.location.href = "/";
     } catch (error) {
       console.error("Login error:", error);
       setError(
@@ -126,8 +126,8 @@ const Login = () => {
       if (!res.ok) {
         throw new Error(data.message || "Google sign-in failed");
       }
-      router.replace("/home");
-      window.location.reload(); 
+      await router.push("/");
+      window.location.href = "/";
     } catch (error) {
       console.error("Google sign-in error:", error);
       setError(

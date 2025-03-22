@@ -1,78 +1,91 @@
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 import Image from "next/image";
-import { Button } from '@mui/material';
+import { Button } from "@mui/material";
 
 function createData(name, data) {
-  return { name,data };
+  return { name, data };
 }
 const Icons = {
-    coins: "/images/hairstyle.png",
+  coins: "/images/hairstyle.png",
 };
 
 const rowsSpend = [
-    createData('Free Haircut (below 50$)', { points: 100, icon: Icons.coins }),
-    createData('Free Beard Trim', { points: 120, icon: Icons.coins }),
-    createData('Free Hair Products', { points: 150, icon: Icons.coins }),
-    createData('100$ haircuts discount', { points: 200, icon: Icons.coins }),
+  createData("Free Haircut (below 50$)", { points: 100, icon: Icons.coins }),
+  createData("Free Beard Trim", { points: 120, icon: Icons.coins }),
+  createData("Free Hair Products", { points: 150, icon: Icons.coins }),
+  createData("100$ haircuts discount", { points: 200, icon: Icons.coins }),
 ];
-export default function SpendTable({coins, onSpend}) {
-    const handleRedeem = (points, rewardName) => {
-        if (window.confirm(`Are you sure you want to redeem ${points} coins?`)) {
-            onSpend(points, rewardName);
-        }
-      };
-    return (
-        <div style={{display: "flex", width:"50rem", gap: "10px"}}>
-            
-            <TableContainer 
-            component={Paper} 
-            sx={{ flexGrow: 0, flexShrink: 1, flexBasis: "50rem", marginLeft: "auto" }}
-            >
-            <h5 style={{display: "flex", justifyContent: "center", marginTop: "20px"}}>How to Spend your Barber Coins</h5>
-            <hr></hr>
-            <Table aria-label="simple table">
-                <TableHead>
-                <TableRow>
-                    <TableCell>Reward</TableCell>
-                    <TableCell align="right">Coins Redeem</TableCell>
-                </TableRow>
-                </TableHead>
-                <TableBody>
-                    {rowsSpend.map((row) => (
-                        <TableRow key={row.name}>
-                        <TableCell component="th" scope="row">{row.name}</TableCell>
-                        <TableCell align="right">
-                            {row.data.points} 
-                            <Image 
-                            src={row.data.icon} 
-                            width={20} 
-                            height={20} 
-                            alt="Coin Icon"
-                            style={{ marginLeft: "10px" }}
-                            />
-                        </TableCell>
-                        <TableCell align="right">
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                disabled={coins < row.data.points}
-                                onClick={() => handleRedeem(row.data.points, row.name)} // Still in progress
-                            >
-                                Redeem
-                            </Button>
-                        </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-            </TableContainer>
-        </div>
-    );
-  }
-  
+export default function SpendTable({ coins, onSpend }) {
+  const handleRedeem = (points, rewardName) => {
+    if (window.confirm(`Are you sure you want to redeem ${points} coins?`)) {
+      onSpend(points, rewardName);
+    }
+  };
+  return (
+    <div style={{ display: "flex", width: "50rem", gap: "10px" }}>
+      <TableContainer
+        component={Paper}
+        sx={{
+          flexGrow: 0,
+          flexShrink: 1,
+          flexBasis: "50rem",
+          marginLeft: "auto",
+        }}
+      >
+        <h5
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "20px",
+          }}
+        >
+          How to Spend your Barber Coins
+        </h5>
+        <hr></hr>
+        <Table aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Reward</TableCell>
+              <TableCell align="right">Coins Redeem</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rowsSpend.map((row) => (
+              <TableRow key={row.name}>
+                <TableCell component="th" scope="row">
+                  {row.name}
+                </TableCell>
+                <TableCell align="right">
+                  {row.data.points}
+                  <Image
+                    src={row.data.icon}
+                    width={20}
+                    height={20}
+                    alt="Coin Icon"
+                    style={{ marginLeft: "10px" }}
+                  />
+                </TableCell>
+                <TableCell align="right">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={coins < row.data.points}
+                    onClick={() => handleRedeem(row.data.points, row.name)} // Still in progress
+                  >
+                    Redeem
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
+  );
+}
