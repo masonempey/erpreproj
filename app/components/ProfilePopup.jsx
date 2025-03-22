@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 import Collapse from "@mui/material/Collapse";
 import styles from "../styles/Profile_Popup.module.css";
-import { deepOrange } from "@mui/material/colors";
 import Image from "next/image";
 import CloseIcon from "@mui/icons-material/Close";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
@@ -25,6 +24,7 @@ import EarnTable from "./TableOfRewards";
 import SpendTable from "./TableSpend";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import PersonIcon from "@mui/icons-material/Person";
 import CardHeader from "@mui/material/CardHeader";
 
 const Icons = {
@@ -105,9 +105,21 @@ const ProfilePopup = ({ user }) => {
   return (
     <>
       <Avatar
-        sx={{ bgcolor: deepOrange[500], cursor: "pointer" }}
+        sx={{
+          bgcolor: "#fafafa",
+          color: "#5F402C",
+          cursor: "pointer",
+          transition: "transform 0.2s ease",
+          border: "1px solid #E0E0E0",
+          "&:hover": {
+            transform: "scale(1.05)",
+            boxShadow: "0px 2px 4px rgba(95, 64, 44, 0.2)",
+          },
+        }}
         onClick={handleOpen}
-      />
+      >
+        <PersonIcon />
+      </Avatar>
 
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
         <DialogTitle>

@@ -5,7 +5,7 @@ import landingStyles from "../../styles/Landing.module.css";
 import reviewStyles from "../../styles/Reviews.module.css";
 import newsletterStyles from "../../styles/Newsletter.module.css";
 import BookingPopUp from "../../components/Booking";
-import Button from "@mui/material/Button";
+import { Button, Typography, Box, Container } from "@mui/material";
 import CustomerReviewCard from "../../components/customerReviewCard";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
@@ -21,15 +21,17 @@ export default function Home() {
         const response = await fetch("/api/reviews");
         if (response.status === 200) {
           const reviewData = await response.json();
-          console.log("Fetched review data:", reviewData); // Debug log
+          console.log("Fetched review data:", reviewData);
           // Map database reviews to the format expected by CustomerReviewCard
-          const mappedReviews = (reviewData.reviews || []).map(review => ({
+          const mappedReviews = (reviewData.reviews || []).map((review) => ({
             author_name: review.user_id || "Anonymous", // Use user_id or "Anonymous"
             profile_photo_url: "", // Not available in DB; set a default
             text: review.review,
             numsReviews: 0, // Not available in DB; set a default
             rating: 5, // Not in DB; set a default or add to schema
-            relative_time_description: calculateRelativeTime(review.review_date), // Calculate from review_date
+            relative_time_description: calculateRelativeTime(
+              review.review_date
+            ), // Calculate from review_date
           }));
           setReviews(mappedReviews);
         } else {
@@ -69,31 +71,74 @@ export default function Home() {
   return (
     <main className={landingStyles.main}>
       <header className={landingStyles.header}>
-        <div className={landingStyles.logo}>
-          <h1>erpre</h1>
-          <h1>Barber and Shop</h1>
+        <div className={landingStyles.headerOverlay}>
+          <Container
+            maxWidth="lg"
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Box className={landingStyles.logoContainer}>
+              <Typography
+                variant="h1"
+                className={landingStyles.logoText}
+                sx={{
+                  fontFamily: '"Oleo Script", cursive',
+                  fontSize: { xs: "5rem", md: "8rem" },
+                  color: "#fafafa",
+                  textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+                  mb: 0,
+                  lineHeight: 1.1,
+                }}
+              >
+                erpre
+              </Typography>
+              <Typography
+                variant="h2"
+                sx={{
+                  fontFamily: '"Oleo Script", cursive',
+                  fontSize: { xs: "3rem", md: "5rem" },
+                  color: "#fafafa",
+                  textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+                  mb: 4,
+                }}
+              >
+                Barber and Shop
+              </Typography>
+            </Box>
+
+            <Button
+              variant="contained"
+              size="large"
+              onClick={() => setIsOpen(true)}
+              sx={{
+                background: "#fafafa",
+                color: "#0C0C0C",
+                fontFamily: "Lato, sans-serif",
+                fontWeight: 800,
+                padding: "1rem 2.5rem",
+                fontSize: { xs: "1rem", md: "1.25rem" },
+                textTransform: "none",
+                borderRadius: "4px",
+                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
+                transition: "all 0.3s ease",
+                border: "2px solid transparent",
+                "&:hover": {
+                  backgroundColor: "#fafafa",
+                  color: "#0C0C0C",
+                  transform: "translateY(-2px)",
+                  boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.3)",
+                },
+              }}
+            >
+              Book Now
+            </Button>
+          </Container>
         </div>
-        <Button
-          variant="contained"
-          onClick={() => setIsOpen(true)}
-          sx={{
-            backgroundColor: "#FAFAFA",
-            color: "#35281f",
-            fontFamily: "Lato",
-            fontWeight: 800,
-            fontStyle: "normal",
-            padding: "1rem",
-            fontSize: "1.25rem",
-            marginBottom: "15rem",
-            textTransform: "none",
-            "&:hover": {
-              backgroundColor: "#35281f",
-              color: "#FAFAFA",
-            },
-          }}
-        >
-          Book Now
-        </Button>
       </header>
       <BookingPopUp isOpen={isOpen} onClose={() => setIsOpen(false)} />
       <section
