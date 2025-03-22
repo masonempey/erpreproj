@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import Calendar from "../../components/Calendar";
 import dayjs from "dayjs";
 import styles from "../../styles/Admin.module.css";
-import { useUser } from "../../../context/UserContext";
 import AdminNavBar from "../../components/AdminNavBar";
 import TimeSlot from "../../components/TimeSlot";
 import Avatar from "@mui/material/Avatar";
@@ -117,11 +116,46 @@ export default function Admin() {
     x: "50%",
     y: "50%",
   });
+  const [isMounted, setIsMounted] = useState(false); // Added for client-side check
+
+  // Set isMounted to true only on client-side
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Handle mouse movement only on client
+  useEffect(() => {
+    if (!isMounted) return; // Skip on server
+
+    const updateMousePosition = (e) => {
+      setPosition({ x: `${e.clientX}px`, y: `${e.clientY}px` });
+    };
+
+    window.addEventListener("mousemove", updateMousePosition);
+    return () => window.removeEventListener("mousemove", updateMousePosition);
+  }, [isMounted]);
+
+  // Handle tutorial toggle
+  useEffect(() => {
+    if (selectedView === "Tutorial") {
+      toggleTutorial(true);
+    } else {
+      toggleTutorial(false);
+    }
+  }, [selectedView]);
+
+  // Filter appointments by selected date
+  useEffect(() => {
+    const appointmentsSelected = appointments.filter((appointment) =>
+      dayjs(appointment.startTime).isSame(selectedDate, "day")
+    );
+    setAppointmentsThisDay(appointmentsSelected);
+    setSelectedAppointment(null);
+  }, [selectedDate]);
 
   const handleChangeView = (view) => {
     setSelectedView(view);
-
-    if (view === "Tutorial") {
+    if (view === "Tutorial" && isMounted) {
       handleTutorialDisplay(
         null,
         "You have clicked the button to view the tutorial! You can view the tutorial at any time by clicking this button!"
@@ -131,7 +165,7 @@ export default function Admin() {
 
   const handleViewAppointment = (appointment) => {
     setSelectedAppointment(appointment);
-    if (isTutorial) {
+    if (isTutorial && isMounted) {
       handleTutorialDisplay(
         null,
         "View your customers appointment details here! You can view their contact information and the service they are scheduled for!"
@@ -141,16 +175,17 @@ export default function Admin() {
 
   const handleSetSelectedDate = (date) => {
     setSelectedDate(date);
-    if (isTutorial) {
+    if (isTutorial && isMounted) {
       handleTutorialDisplay(
         null,
-        "You have clicked on the calendar! Here you can view your " +
-          "appointments for the selected date! Click on a highlighted appointment to view more details!"
+        "You have clicked on the calendar! Here you can view your appointments for the selected date! Click on a highlighted appointment to view more details!"
       );
     }
   };
 
   const handleTutorialDisplay = (e, display, visible = true) => {
+    if (!isMounted) return; // Skip on server
+
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
     const tutorialWidth = 500;
@@ -162,15 +197,12 @@ export default function Admin() {
       if (e.clientX + tutorialWidth > screenWidth) {
         e.clientX = screenWidth - 300;
       }
-
       if (e.clientX < 250) {
         e.clientX = 300;
       }
-
       if (e.clientY < 150) {
         e.clientY = 200;
       }
-
       if (e.clientY + tutorialHeight > screenHeight) {
         e.clientY = screenHeight - 200;
       }
@@ -189,35 +221,15 @@ export default function Admin() {
     });
   };
 
-  useEffect(() => {
-    if (selectedView === "Tutorial") {
-      toggleTutorial(true);
-    } else {
-      toggleTutorial(false);
-    }
-  }, [selectedView]);
-
-  useEffect(() => {
-    const appointmentsSelected = appointments.filter((appointment) =>
-      dayjs(appointment.startTime).isSame(selectedDate, "day")
-    );
-    setAppointmentsThisDay(appointmentsSelected);
-    setSelectedAppointment(null);
-  }, [selectedDate]);
-
-  useEffect(() => {
-    const updateMousePosition = (e) => {
-      setPosition({ x: `${e.clientX}px`, y: `${e.clientY}px` });
-    };
-
-    window.addEventListener("mousemove", updateMousePosition);
-    return () => window.removeEventListener("mousemove", updateMousePosition);
-  }, []);
-
   // Map appointments to dayjs objects for the calendar
   const appointmentDays = appointments.map((appointment) =>
     dayjs(appointment.startTime)
   );
+
+  // Render nothing on server-side during prerendering
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <main>
@@ -285,7 +297,7 @@ export default function Admin() {
                   </p>
                   <p>
                     <span>Email:</span>{" "}
-                    <a href={`$mailto:{selectedAppointment.email}`}>
+                    <a href={`mailto:${selectedAppointment.email}`}>
                       {selectedAppointment.email}
                     </a>
                   </p>
