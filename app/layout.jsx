@@ -6,6 +6,8 @@ import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../lib/theme";
 import CssBaseline from "@mui/material/CssBaseline";
 import "./styles/globals.css";
+import { BookingProvider } from "../context/BookingContext";
+import { ShopProvider } from "../context/ShopContext";
 import { UserProvider } from "../context/UserContext";
 import Navbar from "./components/navBar";
 import Footer from "./components/footer";
@@ -23,11 +25,15 @@ export default function RootLayout({ children }) {
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <UserProvider>
-              <div className={styles.layout}>
-                <Navbar />
-                <main className={styles.main}>{children}</main>
-                <Footer />
-              </div>
+              <ShopProvider>
+                <BookingProvider>
+                  <div className={styles.layout}>
+                    <Navbar />
+                    <main className={styles.main}>{children}</main>
+                    <Footer />
+                  </div>
+                </BookingProvider>
+              </ShopProvider>
             </UserProvider>
           </ThemeProvider>
         </Elements>
