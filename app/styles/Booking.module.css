@@ -20,6 +20,16 @@
   visibility: visible;
 }
 
+.bookingContainer header {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(53, 40, 31, 0.1);
+  margin-bottom: 1rem;
+}
+
 .bookingContainer {
   width: 85%;
   max-width: 1000px;
@@ -47,16 +57,24 @@
 
 .closeButton {
   position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
   background: transparent;
   border: none;
   font-size: 2rem;
   color: #35281f;
   cursor: pointer;
   transition: transform 0.2s ease;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
 }
 
 .closeButton:hover {
-  transform: scale(1.2);
+  background-color: rgba(53, 40, 31, 0.05);
+  transform: translateY(-50%) scale(1.1);
 }

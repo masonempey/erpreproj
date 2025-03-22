@@ -1,6 +1,35 @@
 // app/api/services/[serviceId]/route.js
 import { NextResponse } from "next/server";
-import { deleteService, updateService } from "@/lib/services/serviceService";
+import {
+  deleteService,
+  updateService,
+  getServiceById,
+} from "@/lib/services/serviceService";
+
+// GET service by id
+export async function GET(request, { params }) {
+  try {
+    const { serviceId } = params;
+    const id = Number(serviceId);
+
+    // Import and use the getServiceById function
+    const service = await getServiceById(id);
+
+    if (service) {
+      return NextResponse.json(service);
+    } else {
+      return NextResponse.json(
+        { message: `Service not found with id ${serviceId}` },
+        { status: 404 }
+      );
+    }
+  } catch (err) {
+    return NextResponse.json(
+      { message: "Error fetching service", error: err.message },
+      { status: 500 }
+    );
+  }
+}
 
 // DELETE service by id
 export async function DELETE(request, { params }) {
@@ -43,7 +72,12 @@ export async function PUT(request, { params }) {
       );
     }
 
-    const updatedService = await updateService(id, serviceName, description, price);
+    const updatedService = await updateService(
+      id,
+      serviceName,
+      description,
+      price
+    );
 
     if (updatedService) {
       return NextResponse.json({

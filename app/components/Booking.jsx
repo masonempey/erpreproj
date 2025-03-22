@@ -1,4 +1,3 @@
-// Booking.jsx
 "use client";
 
 import React from "react";
@@ -8,7 +7,6 @@ import BookingForm from "./BookingForm";
 import styles from "../styles/Booking.module.css";
 
 export default function BookingPopUp({ isOpen, onClose }) {
-  console.log("BookingPopUp rendered, isOpen:", isOpen);
   if (!isOpen) return null;
 
   return (

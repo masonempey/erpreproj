@@ -16,7 +16,7 @@ export default function ChooseDateTime() {
   const [time, setTime] = useState(null);
   const [view, setView] = useState("calendar");
   const [existingAppointments, setExistingAppointments] = useState([]);
-  const [selectedServiceDuration, setSelectedServiceDuration] = useState(45); // Default duration in minutes
+  const [selectedServiceDuration, setSelectedServiceDuration] = useState(45);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -26,11 +26,20 @@ export default function ChooseDateTime() {
       if (!state.serviceId) return;
 
       try {
-        const response = await fetch(`/api/services/${state.serviceId}`);
+        console.log(`Fetching service with ID: ${state.serviceId}`);
+        const response = await fetch(`/api/services/${state.serviceId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log(`Response status: ${response.status}`);
+
         if (!response.ok) {
           throw new Error(`Failed to fetch service: ${response.status}`);
         }
         const serviceData = await response.json();
+        console.log("Service data:", serviceData);
         setSelectedServiceDuration(serviceData.duration_minutes || 45);
       } catch (err) {
         console.error("Error fetching service duration:", err);
@@ -189,12 +198,16 @@ export default function ChooseDateTime() {
       const period = hours < 12 ? "AM" : "PM";
       const hour12 = hours % 12 || 12;
 
+      const uniqueId = currentTime.toISOString();
       const formattedTime = `${hour12}:${minutes
         .toString()
         .padStart(2, "0")} ${period}`;
-      slots.push(formattedTime);
 
-      // Move to next slot (use smaller intervals like 15 minutes for slot options)
+      slots.push({
+        id: uniqueId,
+        display: formattedTime,
+      });
+
       currentTime.setMinutes(currentTime.getMinutes() + 15);
     }
 
@@ -272,17 +285,17 @@ export default function ChooseDateTime() {
           <div className={styles.timeSlotsContainer}>
             {timeSlots.map((slot) => (
               <Button
-                key={slot}
-                variant={slot === time ? "contained" : "outlined"}
-                onClick={() => handleTimeSelect(slot)}
-                disabled={isTimeSlotBooked(slot)}
+                key={slot.id}
+                variant={slot.display === time ? "contained" : "outlined"}
+                onClick={() => handleTimeSelect(slot.display)}
+                disabled={isTimeSlotBooked(slot.display)}
                 className={styles.timeSlot}
                 sx={{
                   m: 0.5,
-                  opacity: isTimeSlotBooked(slot) ? 0.5 : 1,
+                  opacity: isTimeSlotBooked(slot.display) ? 0.5 : 1,
                 }}
               >
-                {slot}
+                {slot.display}
               </Button>
             ))}
           </div>
