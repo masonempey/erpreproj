@@ -1,19 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
-import Calendar from "../../components/Calendar";
-import dayjs from "dayjs";
-import styles from "../../styles/Admin.module.css";
-import { useUser } from "../../../context/UserContext";
-import AdminNavBar from "../../components/AdminNavBar";
-import TimeSlot from "../../components/TimeSlot";
-import Avatar from "@mui/material/Avatar";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
+import {useUser} from "../../../context/UserContext"
+import AdminNavBar from "@/app/components/AdminNavBar";
 
 export default function Admin() {
+  const { user, loading } = useUser();
+  const [upcoming, setUpcoming] = useState([null])
   return(
     <>
-      
+    <AdminNavBar />
+     <p></p>
     </>
   );
 }

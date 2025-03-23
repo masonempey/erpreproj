@@ -74,6 +74,18 @@ export const UserProvider = ({ children }) => {
 
     return () => unsubscribe();
   }, []);
+  
+  useEffect(() => {
+    const fetchRole = async () => {
+      try{
+        role = await fetch(`api/users/roles/${firebaseUser.uid}`);
+        console.log("setting role to: ", role)
+        setUser(...[user], {Role: role})
+      } catch(error) {
+        console.log("Error", error)
+      }
+    }
+  }, [user])
 
   return (
     <UserContext.Provider value={{ user, loading, logout, refreshUserData }}>
