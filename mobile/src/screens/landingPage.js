@@ -45,7 +45,7 @@ function LandingPage() {
       // to be able to get the barber ID
 
       const barberId = "barber2";
-      const response = await fetch(`http://10.243.42.17:3000/api/appointments/barbers/${barberId}?date=${date}`);
+      const response = await fetch(`http://10.0.0.163:3000/api/appointments/barbers/${barberId}?date=${date}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);

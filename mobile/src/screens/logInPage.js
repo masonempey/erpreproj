@@ -1,24 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     StyleSheet,
     Text,
     View,
-    ImageBackground,
     Image,
     Pressable,
     Modal,
     TextInput,
     ActivityIndicator,
+    Dimensions,
 } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { auth } from "../firebase/firebase-config";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { useVideoPlayer, VideoView } from "expo-video";
+import { LinearGradient } from "expo-linear-gradient"; // Import LinearGradient
 
-// this page is the login page for the app. 
-// It will be the first page the user sees when they open the app
-// and will allow them to login to their account.
 const LogInPage = () => {
-    const backgroundImage = require("../../assets/landing_background.png");
+    const video = require("../../assets/ErpreVid.mp4");
     const logoImage = require("../../assets/logo.png");
     const [modalVisible, setModalVisible] = useState(false);
     const [email, setEmail] = useState("");
@@ -26,21 +25,30 @@ const LogInPage = () => {
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
+    // Use the useVideoPlayer hook to control the video
+    const player = useVideoPlayer(video, (player) => {
+        player.loop = true; // Loop the video
+        player.play(); // Automatically play the video
+    });
+
+    // Get screen dimensions
+    const screenWidth = Dimensions.get("window").width;
+    const screenHeight = Dimensions.get("window").height;
+
+    // Calculate video height based on aspect ratio (9:16)
+    const videoAspectRatio = 9 / 16; // Portrait aspect ratio
+    const videoHeight = screenWidth / videoAspectRatio;
+
     // Function to handle the login process
-    // This function will be called when the user clicks the login button on the login page.
     const handleLogin = async () => {
         if (!email || !password) {
             setError("Email and password are required");
             return;
         }
-        // Set loading state to true and clear any previous errors messages
         setIsLoading(true);
         setError("");
 
         try {
-            // Sign in the user with the provided email and password
-            // This function is imported from the firebase/auth module and is used to sign in the user with their email and password.
-            // This function returns a userCredential object which contains the user object and the idToken.
             const userCredential = await signInWithEmailAndPassword(
                 auth,
                 email,
@@ -48,12 +56,8 @@ const LogInPage = () => {
             );
             const idToken = await userCredential.user.getIdToken();
 
-            // Validate the user with the backend API.
-            // This function sends a POST request to the backend API to validate the user with the provided idToken.
-            // This function returns a response object which contains the validation result.
-            // If the validation fails, an error message is displayed to the user.
             const validateRes = await fetch(
-                "http://10.243.42.17:3000/api/users/validate",
+                "http://10.0.0.163:3000/api/users/validate",
                 {
                     method: "POST",
                     headers: {
@@ -63,17 +67,13 @@ const LogInPage = () => {
                     body: JSON.stringify({ uid: userCredential.user.uid }),
                 }
             );
-            
-            // Finally, clear the input fields and display any error messages.
-            // If the validation is successful, clear the email and the password.
+
             setEmail("");
             setPassword("");
             if (!validateRes.ok) {
                 const data = await validateRes.json();
                 throw new Error(data.error || "User validation failed");
             }
-
-            
         } catch (error) {
             setError(
                 error.message?.includes("auth/")
@@ -88,89 +88,94 @@ const LogInPage = () => {
     return (
         <SafeAreaProvider>
             <View style={styles.container}>
-                <ImageBackground
-                    source={backgroundImage}
-                    resizeMode="cover"
-                    style={styles.background}
-                >
-                    <SafeAreaView style={styles.safeArea}>
-                        <Image
-                            source={logoImage}
-                            resizeMethod="auto"
-                            style={styles.logo}
-                        />
+                {/* Video Background */}
+                <View style={styles.videoContainer}>
+                    <VideoView
+                        player={player}
+                        resizeMode="cover"
+                        style={[
+                            styles.backgroundVideo,
+                            { height: videoHeight, top: (screenHeight - videoHeight) / 2 },
+                        ]}
+                    />
+                    {/* Gradient Overlay */}
+                    <LinearGradient
+                        colors={["rgba(36, 23, 6, 0.6)", "rgba(41, 25, 6, 0.8)"]}
+                        style={StyleSheet.absoluteFill} // Covers the entire screen
+                    />
+                </View>
+                {/* Login Components */}
+                <SafeAreaView style={styles.safeArea}>
+                    <Image
+                        source={logoImage}
+                        resizeMethod="auto"
+                        style={styles.logo}
+                    />
 
-                        {/* Modal component to view the modal display the login form
-                            when the user clicks the login button.   
-                        */}
-                        <Modal
-                            animationType="fade"
-                            transparent={true}
-                            visible={modalVisible}
-                            onRequestClose={() => setModalVisible(!modalVisible)}
-                        >
-                            <View style={styles.modalOverlay}>
-                                <View style={styles.modalView}>
-                                    {/* Close Button (X) */}
-                                    <Pressable
-                                        style={styles.buttonClose}
-                                        onPress={() => setModalVisible(false)}
-                                    >
-                                        <Text style={styles.closeText}>X</Text>
-                                    </Pressable>
+                    {/* Modal for Login Form */}
+                    <Modal
+                        animationType="fade"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={() => setModalVisible(!modalVisible)}
+                    >
+                        <View style={styles.modalOverlay}>
+                            <View style={styles.modalView}>
+                                <Pressable
+                                    style={styles.buttonClose}
+                                    onPress={() => setModalVisible(false)}
+                                >
+                                    <Text style={styles.closeText}>X</Text>
+                                </Pressable>
 
-                                    {/* Error Message */}
-                                    {error ? (
-                                        <Text style={styles.errorText}>{error}</Text>
-                                    ) : null}
+                                {error ? (
+                                    <Text style={styles.errorText}>{error}</Text>
+                                ) : null}
 
-                                    {/* Input Fields for Email and Password */}
-                                    <View style={styles.inputContainer}>
-                                        <TextInput
-                                            style={styles.input}
-                                            value={email}
-                                            onChangeText={setEmail}
-                                            placeholder="Email"
-                                            placeholderTextColor="#999"
-                                            autoCapitalize="none"
-                                            keyboardType="email-address"
-                                        />
-                                        <TextInput
-                                            style={styles.input}
-                                            placeholder="Password"
-                                            value={password}
-                                            onChangeText={setPassword}
-                                            secureTextEntry={true}
-                                            placeholderTextColor="#999"
-                                            autoCapitalize="none"
-                                        />
-                                    </View>
-
-                                    {/* Login Button */}
-                                    <Pressable
-                                        style={[styles.button, styles.buttonLogin]}
-                                        onPress={handleLogin}
-                                        disabled={isLoading}
-                                    >
-                                        {isLoading ? (
-                                            <ActivityIndicator color="white" />
-                                        ) : (
-                                            <Text style={styles.buttonLoginText}>Login</Text>
-                                        )}
-                                    </Pressable>
+                                <View style={styles.inputContainer}>
+                                    <TextInput
+                                        style={styles.input}
+                                        value={email}
+                                        onChangeText={setEmail}
+                                        placeholder="Email"
+                                        placeholderTextColor="#999"
+                                        autoCapitalize="none"
+                                        keyboardType="email-address"
+                                    />
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder="Password"
+                                        value={password}
+                                        onChangeText={setPassword}
+                                        secureTextEntry={true}
+                                        placeholderTextColor="#999"
+                                        autoCapitalize="none"
+                                    />
                                 </View>
-                            </View>
-                        </Modal>
 
-                        {/* Button to trigger modal */}
-                        <Pressable
-                            style={[styles.button, styles.buttonOpen]}
-                            onPress={() => setModalVisible(true)}
-                        >
-                            <Text style={styles.buttonTextOffModal}>Login</Text>
-                        </Pressable>
-                    </SafeAreaView>
-                </ImageBackground>
+                                <Pressable
+                                    style={[styles.button, styles.buttonLogin]}
+                                    onPress={handleLogin}
+                                    disabled={isLoading}
+                                >
+                                    {isLoading ? (
+                                        <ActivityIndicator color="white" />
+                                    ) : (
+                                        <Text style={styles.buttonLoginText}>Login</Text>
+                                    )}
+                                </Pressable>
+                            </View>
+                        </View>
+                    </Modal>
+
+                    {/* Button to trigger modal */}
+                    <Pressable
+                        style={[styles.button, styles.buttonOpen]}
+                        onPress={() => setModalVisible(true)}
+                    >
+                        <Text style={styles.buttonTextOffModal}>Login</Text>
+                    </Pressable>
+                </SafeAreaView>
             </View>
         </SafeAreaProvider>
     );
@@ -179,13 +184,22 @@ const LogInPage = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "#000", // Fallback background color
     },
-    background: {
+    videoContainer: {
         flex: 1,
-        width: "100%",
-        height: "100%",
-        justifyContent: "center",
-        alignItems: "center",
+        position: "absolute", // Position absolutely to cover the entire screen
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+    },
+    backgroundVideo: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
     },
     safeArea: {
         flex: 1,
