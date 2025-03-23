@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 import landingStyles from "../../styles/Landing.module.css";
 import reviewStyles from "../../styles/Reviews.module.css";
 import newsletterStyles from "../../styles/Newsletter.module.css";
-import BookingPopUp from "../../components/Booking";
-import { Button, Typography, Box, Container } from "@mui/material";
+import BookingPopUp from "../../components/Booking"; // From Main
+import { Button, Typography, Box, Container } from "@mui/material"; // From Main
 import CustomerReviewCard from "../../components/customerReviewCard";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
@@ -23,15 +23,14 @@ export default function Home() {
           const reviewData = await response.json();
           console.log("Fetched review data:", reviewData);
           // Map database reviews to the format expected by CustomerReviewCard
-          const mappedReviews = (reviewData.reviews || []).map((review) => ({
-            author_name: review.user_id || "Anonymous", // Use user_id or "Anonymous"
-            profile_photo_url: "", // Not available in DB; set a default
-            text: review.review,
-            numsReviews: 0, // Not available in DB; set a default
-            rating: 5, // Not in DB; set a default or add to schema
-            relative_time_description: calculateRelativeTime(
-              review.review_date
-            ), // Calculate from review_date
+          // reviewData.reviews contains the reviews fetched from the database
+          const mappedReviews = (reviewData.reviews || []).map(review => ({
+            author_name: review.author_name || "Anonymous", // Use the saved author_name from the database
+            profile_photo_url: review.profile_photo_url || "", // Use the saved profile picture URL from the database
+            text: review.review, // Map the review text
+            numsReviews: 0, // Not available in the database; set a default
+            rating: review.rating || 5, // Use the saved rating, default to 5 if missing
+            relative_time_description: calculateRelativeTime(review.review_date), // Calculate relative time from review_date
           }));
           setReviews(mappedReviews);
         } else {
@@ -140,7 +139,9 @@ export default function Home() {
           </Container>
         </div>
       </header>
-      <BookingPopUp isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <BookingPopUp isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <h2>Book Appointment</h2>
+      </BookingPopUp>
       <section
         id="reviews"
         className={`${landingStyles.section} ${reviewStyles.reviews}`}
