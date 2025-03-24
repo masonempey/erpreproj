@@ -4,18 +4,32 @@
 //this page, filtered for the day they clicked.
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
-import testAppointments from "../utilities/testing/testAppointments.json";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import AppointmentDayView from "../component/schedulePageComponents/appointmentList";
 
 export default function SchedulingPage({ route }) {
+  // Manage the state of appointments and loading status
   const [appointments, setAppointments] = useState([]);
-  // Get the current date from route params
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  // Get the current date from route params with fallback to today's date
   const date = route.params?.selectedDate || new Date().toISOString().split('T')[0];
 
+  // Function to fetch the barber appointments for the selected date
+  // This function fetches the barber appointments for the selected date from the server
+  // by passing the selected date as an argument.
+  // The function uses the fetch API to make a GET request to the server to fetch the appointments 
+  // for the selected date.
+  // The reason to use async/await is to make the function asynchronous and
+  // to wait for the response of the fetch request to be resolved and get the data
+  // from the server before proceeding further.
   const fetchBarberAppointmentsForDate = async (date) => {
     try {
+      setIsLoading(true);
+      setError(null);
+      
       // Using hardcoded barberId for now, will be replaced with the actual logged-in barber ID
       // since the barber table with the barber roles still need more configuration 
       // to be able to get the barber ID
@@ -25,27 +39,67 @@ export default function SchedulingPage({ route }) {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      
       const appointmentData = await response.json();
-
-      // Set the appointments state with the fetched appointment data
       setAppointments(appointmentData);
     } catch (error) {
       console.error("Error fetching appointments:", error);
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
-  // Update the title when date changes
+
+  // useEffect hook to fetch appointments whenever the date changes
+  // This is done by passing the date as a dependency to the useEffect hook.
   useEffect(() => {
     fetchBarberAppointmentsForDate(date);
   }, [date]);
 
+  // Render loading state
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" />
+        <Text>Loading appointments for {date}...</Text>
+      </View>
+    );
+  }
+
+  // Render error state
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.error}>Error: {error}</Text>
+        <Text>Could not load appointments for {date}</Text>
+      </View>
+    );
+  }
+
+  // Main render
   return (
-    <View>
-      <Text>Appointments for {date.substr(0, 10)}</Text>
+    <View style={styles.container}>
+      <Text style={styles.header}>Appointments for {date}</Text>
       <AppointmentDayView 
-        appointmentData={appointments}
-        date={date}
+        appointmentDetails={appointments}
+        selectedDate={date}
       />
     </View>
   );
-
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  header: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  error: {
+    color: 'red',
+    marginBottom: 8,
+  }
+});
