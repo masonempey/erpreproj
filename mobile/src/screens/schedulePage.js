@@ -9,68 +9,43 @@ import { View, Text, StyleSheet, Button } from "react-native";
 import testAppointments from "../utilities/testing/testAppointments.json";
 import AppointmentDayView from "../component/schedulePageComponents/appointmentList";
 
-export default function SchedulingPage({ selectedDate }) {
+export default function SchedulingPage({ route }) {
   const [appointments, setAppointments] = useState([]);
-  const [date, setDate] = useState(new Date().toISOString());
+  // Get the current date from route params
+  const date = route.params?.selectedDate || new Date().toISOString().split('T')[0];
 
-  useEffect(() => {
-    const fetchBarberAppointments = async () => {
-      try {
-        const barberId = "barber2";
-        const response = await fetch(`http://10.187.128.21:3000/api/appointments/barbers/${barberId}`);
-        const appointmentData = await response.json();
-
-        console.log(appointmentData);
-        setAppointments(appointmentData);
-      } catch (error) {
-        console.error(error);
+  const fetchBarberAppointmentsForDate = async (date) => {
+    try {
+      // Using hardcoded barberId for now, will be replaced with the actual logged-in barber ID
+      // since the barber table with the barber roles still need more configuration 
+      // to be able to get the barber ID
+      const barberId = "barber2";
+      const response = await fetch(`http://10.0.0.163:3000/api/appointments/barbers/${barberId}?date=${date}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    };
-    if (selectedDate) {
-      setDate(selectedDate);
-    }
-  }, [selectedDate]);
+      const appointmentData = await response.json();
 
-  useEffect(() => {
-    if (date) {
-      console.log("Selected date:", date);
+      // Set the appointments state with the fetched appointment data
+      setAppointments(appointmentData);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
     }
+  };
+  // Update the title when date changes
+  useEffect(() => {
+    fetchBarberAppointmentsForDate(date);
   }, [date]);
-  const handleDateIncrease = () => {
-    /* https://stackoverflow.com/questions/563406/how-to-add-days-to-date */
-    let newDate = new Date(date);
-    newDate.setDate(newDate.getDate() + 1);
-    setDate(newDate.toISOString());
-  };
-  const handleDateDecrese = () => {
-    let newDate = new Date(date);
-    newDate.setDate(newDate.getDate() - 1);
-    setDate(newDate.toISOString());
-  };
+
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Button title="Prev" onPress={handleDateDecrese} />
-        <Text>Day View For: {date.substr(0, 10)}</Text>
-        <Button title="Next" onPress={handleDateIncrease} />
-      </View>
-      <View>
-        <AppointmentDayView
-          appointmentDetails={appointments}
-          selectedDate={date}
-        />
-      </View>
+    <View>
+      <Text>Appointments for {date.substr(0, 10)}</Text>
+      <AppointmentDayView 
+        appointmentData={appointments}
+        date={date}
+      />
     </View>
   );
-}
 
-/* https://reactnative.dev/docs/button */
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-});
+};

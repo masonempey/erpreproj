@@ -19,7 +19,11 @@ function TabNavigator() {
     return (
         <Tab.Navigator initialRouteName="Home" screenOptions={{headerRight: () => <LogoutButton />}} >
             <Tab.Screen name="Home" component={LandingPage} />
-            <Tab.Screen name="Schedule" component={SchedulingPage} />
+            <Tab.Screen 
+                name="Schedule" 
+                component={SchedulingPage}
+                initialParams={{ selectedDate: new Date().toISOString().split('T')[0] }}
+            />
             <Tab.Screen name="Managment" component={ShopManagmentStack} />
             <Tab.Screen name="Analytics" component={AnalyticsPage} />
             <Tab.Screen name="Profile" component={ProfilePage} />
