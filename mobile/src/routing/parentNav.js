@@ -28,7 +28,7 @@ function TabNavigator() {
                         iconName = focused ? 'home' : 'home-outline';
                     } else if (route.name === 'Schedule') {
                         iconName = focused ? 'calendar' : 'calendar-outline';
-                    } else if (route.name === 'Managment') {
+                    } else if (route.name === 'Management') {
                         iconName = focused ? 'business' : 'business-outline';
                     } else if (route.name === 'Analytics') {
                         iconName = focused ? 'stats-chart' : 'stats-chart-outline';

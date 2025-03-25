@@ -1,8 +1,6 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import AddBarberPage from ".../screens/shopManagementPage";
-import { Ionicons } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native";
+import ShopManagementPage from "../screens/shopManagementPage";
 
 const Stack = createStackNavigator();
 
@@ -60,29 +58,7 @@ export default function ShopManagmentStack({ navigation }) {
           gestureEnabled: false // Disable swipe back on main screen
         }}
       />
-      <Stack.Screen
-        name="Add Barber"
-        component={AddBarberPage}
-        options={({ navigation }) => ({
-          title: "Add New Barber",
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{ marginLeft: 15 }}
-              onPress={() => navigation.goBack()}
-            >
-              <Ionicons name="arrow-back" size={24} color="#fff" />
-            </TouchableOpacity>
-          ),
-          headerRight: () => (
-            <TouchableOpacity
-              style={{ marginRight: 15 }}
-              onPress={() => navigation.navigate("Shop Management")}
-            >
-              <Ionicons name="close" size={24} color="#fff" />
-            </TouchableOpacity>
-          ),
-        })}
-      />
+     
     </Stack.Navigator>
   );
 }
