@@ -66,7 +66,7 @@ export default function ShopManagementPage({ navigation, route }) {
         ...updatedData,
         phone: updatedData.phone
       };
-
+  
       const response = await fetch("http://10.245.24.135:3000/api/shop", {
         method: 'PUT',
         headers: {
@@ -74,30 +74,34 @@ export default function ShopManagementPage({ navigation, route }) {
         },
         body: JSON.stringify(dataToSend),
       });
-
-      console.log("Update response:", response); // Debug log
-
+  
+      console.log("Update response:", response);
+  
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Server error:", errorData);
         throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
       }
-
+  
       const result = await response.json();
-      console.log("Update result:", result); // Debug log
+      console.log("Update result:", result);
       
+      // First update with the response data
       setShopInfo(prev => ({
         ...prev,
         ...result.updated,
-        ...result // Fallback to direct result
+        ...result
       }));
       
+      // Then refetch to ensure we have the latest data from server
+      await fetchShopInfo();
+      
       Alert.alert("Success", "Shop information updated successfully");
-      return true; // Indicate success to ShopPortal
+      return true;
     } catch (error) {
       console.error("Error updating shop information:", error);
       Alert.alert("Error", error.message || "Failed to update shop information");
-      return false; // Indicate failure to ShopPortal
+      return false;
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,4 @@
 "use client";
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 const ShopContext = createContext();
@@ -9,24 +8,52 @@ export function ShopProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchShopInfo = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch("/api/shop");
-        if (!response.ok) {
-          throw new Error(`Failed to fetch shop info: ${response.status}`);
-        }
-        const info = await response.json();
-        setShopInfo(info);
-      } catch (err) {
-        console.error("Failed to fetch shop info:", err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
+  const fetchShopInfo = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("http://10.245.24.135:3000/api/shop");
+      if (!response.ok) {
+        throw new Error(`Failed to fetch shop info: ${response.status}`);
       }
-    };
+      const info = await response.json();
+      setShopInfo(info);
+      setError(null);
+    } catch (err) {
+      console.error("Failed to fetch shop info:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const updateShopInfo = async (updatedData) => {
+    try {
+      setLoading(true);
+      const response = await fetch("http://10.245.24.135:3000/api/shop", {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update shop info: ${response.status}`);
+      }
+
+      const result = await response.json();
+      setShopInfo(result);
+      return true;
+    } catch (err) {
+      console.error("Failed to update shop info:", err);
+      setError(err.message);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchShopInfo();
   }, []);
 
@@ -80,12 +107,15 @@ export function ShopProvider({ children }) {
         shopInfo,
         loading,
         error,
+        fetchShopInfo,
+        updateShopInfo,
         isWithinBusinessHours,
       }}
     >
       {children}
     </ShopContext.Provider>
   );
+
 }
 
 export function useShop() {
