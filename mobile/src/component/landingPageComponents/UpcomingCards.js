@@ -105,6 +105,7 @@ export default function UpcomingViewCard({appointmentInfo}) {
                         </View>
                         
                         {/* Additional appointment details */}
+                        <View style={styles.divider} />
                         <DetailRow label="Status" value={appointmentInfo.status} />
                         <DetailRow label="Notes" value={appointmentInfo.notes || "No additional notes"} />
                         

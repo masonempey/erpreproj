@@ -187,11 +187,11 @@ const LogInPage = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#000", // Fallback background color
+        backgroundColor: "#000", 
     },
     videoContainer: {
         flex: 1,
-        position: "absolute", // Position absolutely to cover the entire screen
+        position: "absolute", 
         top: 0,
         left: 0,
         right: 0,
