@@ -8,7 +8,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import AppointmentDayView from "../component/schedulePageComponents/appointmentList";
 
-export default function SchedulingPage({ route }) {
+export default function SchedulingPage({ route }) { 
   // Manage the state of appointments and loading status
   const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

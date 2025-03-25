@@ -1,4 +1,3 @@
-// ParentNav.js
 import React, { useContext } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -11,13 +10,38 @@ import ProfilePage from '../screens/profilePage';
 import ShopManagmentStack from './shopManagmentStack';
 import { ActivityIndicator, View } from 'react-native';
 import LogoutButton from '../component/loginPageComponents/logoutButton';
+import Ionicons from 'react-native-vector-icons/Ionicons'; // Import icons library
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function TabNavigator() {
     return (
-        <Tab.Navigator initialRouteName="Home" screenOptions={{headerRight: () => <LogoutButton />}} >
+        <Tab.Navigator 
+            initialRouteName="Home" 
+            screenOptions={({ route }) => ({
+                headerRight: () => <LogoutButton />,
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
+
+                    if (route.name === 'Home') {
+                        iconName = focused ? 'home' : 'home-outline';
+                    } else if (route.name === 'Schedule') {
+                        iconName = focused ? 'calendar' : 'calendar-outline';
+                    } else if (route.name === 'Managment') {
+                        iconName = focused ? 'business' : 'business-outline';
+                    } else if (route.name === 'Analytics') {
+                        iconName = focused ? 'stats-chart' : 'stats-chart-outline';
+                    } else if (route.name === 'Profile') {
+                        iconName = focused ? 'person' : 'person-outline';
+                    }
+
+                    return <Ionicons name={iconName} size={size} color={color} />;
+                },
+                tabBarActiveTintColor: '#007AFF', 
+                tabBarInactiveTintColor: 'gray', 
+            })}
+        >
             <Tab.Screen name="Home" component={LandingPage} />
             <Tab.Screen 
                 name="Schedule" 
