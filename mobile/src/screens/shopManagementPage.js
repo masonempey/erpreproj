@@ -1,26 +1,17 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, TouchableOpacity, Text, ActivityIndicator, Alert } from "react-native";
-import testBarbers from "../utilities/testing/testBarbers.json";
 import testInformation from "../utilities/testing/testShopInformation.json";
 import ShopPortal from "../component/shopManagmentComponents/shopPortal";
 import BarberPortal from "../component/shopManagmentComponents/barberPortal";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function ShopManagementPage({ navigation, route }) {
-  const [barbers, setBarbers] = useState([]);
   const [shopInfo, setShopInfo] = useState(testInformation.shopInfo);
   const [activeView, setActiveView] = useState(route.params?.initialView || 'shop');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Sort barbers alphabetically by name
-  useEffect(() => {
-    const sortedBarbers = [...testBarbers].sort((a, b) => 
-      a.barber_name.localeCompare(b.barber_name)
-    );
-    setBarbers(sortedBarbers);
-  }, [testBarbers]);
 
   // Handle view changes from route params
   useEffect(() => {
@@ -74,12 +65,6 @@ export default function ShopManagementPage({ navigation, route }) {
     return (
       <View style={[styles.container, styles.center]}>
         <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity 
-          style={styles.retryButton}
-          onPress={() => fetchShopInfo()}
-        >
-          <Text style={styles.retryText}>Retry</Text>
-        </TouchableOpacity>
       </View>
     );
   }
