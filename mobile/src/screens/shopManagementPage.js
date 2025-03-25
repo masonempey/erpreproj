@@ -6,10 +6,9 @@ import testInformation from "../utilities/testing/testShopInformation.json";
 import ShopPortal from "../component/shopManagmentComponents/shopPortal";
 import BarberPortal from "../component/shopManagmentComponents/barberPortal";
 
-export default function ShopManagmentPage({ navigation }) {
+export default function ShopManagementPage({ navigation }) {
   const [barbers, setBarbers] = useState([]);
   const [shopInfo, setShopInfo] = useState(testInformation.shopInfo);
-  const [liftedData, setLiftedData] = useState(null);
 
   // Sort barbers alphabetically by name
   useEffect(() => {
@@ -21,18 +20,23 @@ export default function ShopManagmentPage({ navigation }) {
     setBarbers(sortedBarbers);
   }, [testBarbers]);
 
-  // Update shop info when liftedData changes
-  useEffect(() => {
-    if (liftedData) {
-      setShopInfo((prevShopInfo) => ({
-        ...prevShopInfo,
-        shopName: liftedData.name,
-        shopNumber: liftedData.number,
-        shopEmail: liftedData.email,
-      }));
-    }
-  }, [liftedData]);
 
+  useEffect(() => {
+    const getShopInfo = async () => {
+      try {
+        const response = await fetch("http://10.245.24.135:3000/api/shop");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const shopData = await response.json();
+        setShopInfo(shopData);
+      }
+      catch (error) {
+        console.error("Error fetching shop information:", error);
+      }
+    };
+    getShopInfo();
+  }, []);
   // Callback function to handle data from ShopPortal
   const callBack = (data) => {
     setLiftedData(data);

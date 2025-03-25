@@ -57,7 +57,7 @@ const LogInPage = () => {
             const idToken = await userCredential.user.getIdToken();
 
             const validateRes = await fetch(
-                "http://10.0.0.163:3000/api/users/validate",
+                "http://10.245.24.135:3000/api/users/validate",
                 {
                     method: "POST",
                     headers: {

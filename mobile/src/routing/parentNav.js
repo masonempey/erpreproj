@@ -48,7 +48,7 @@ function TabNavigator() {
                 component={SchedulingPage}
                 initialParams={{ selectedDate: new Date().toISOString().split('T')[0] }}
             />
-            <Tab.Screen name="Managment" component={ShopManagmentStack} />
+            <Tab.Screen name="Management" component={ShopManagmentStack} />
             <Tab.Screen name="Analytics" component={AnalyticsPage} />
             <Tab.Screen name="Profile" component={ProfilePage} />
         </Tab.Navigator>
