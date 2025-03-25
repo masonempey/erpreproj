@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     },
     detailLabel: {
         fontWeight: '600',     
-        width: 100,         
+        width: 130,         
         color: '#555',     
     },
     detailValue: {

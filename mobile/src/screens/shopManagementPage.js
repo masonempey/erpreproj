@@ -1,17 +1,22 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, TouchableOpacity, Text, ActivityIndicator, Alert } from "react-native";
-import testInformation from "../utilities/testing/testShopInformation.json";
 import ShopPortal from "../component/shopManagmentComponents/shopPortal";
-import BarberPortal from "../component/shopManagmentComponents/barberPortal";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function ShopManagementPage({ navigation, route }) {
-  const [shopInfo, setShopInfo] = useState(testInformation.shopInfo);
+  const [shopInfo, setShopInfo] = useState({
+    shop_name: '',
+    address: '',
+    city: '',
+    province: '',
+    postal_code: '',
+    phone: '',
+    email: ''
+  });
   const [activeView, setActiveView] = useState(route.params?.initialView || 'shop');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
 
   // Handle view changes from route params
   useEffect(() => {
@@ -21,31 +26,81 @@ export default function ShopManagementPage({ navigation, route }) {
   }, [route.params]);
 
   // Fetch shop information
-  useEffect(() => {
-    const fetchShopInfo = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await fetch("http://10.245.24.135:3000/api/shop");
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const shopData = await response.json();
-        setShopInfo(shopData);
-      } catch (error) {
-        console.error("Error fetching shop information:", error);
-        setError("Failed to load shop information");
-      } finally {
-        setLoading(false);
+  const fetchShopInfo = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch("http://10.245.24.135:3000/api/shop");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    };
-    
+      const shopData = await response.json();
+      // Ensure all fields are properly initialized
+      setShopInfo({
+        shop_name: shopData.shop_name || '',
+        address: shopData.address || '',
+        city: shopData.city || '',
+        province: shopData.province || '',
+        postal_code: shopData.postal_code || '',
+        phone: shopData.phone || '',
+        email: shopData.email || ''
+      });
+    } catch (error) {
+      console.error("Error fetching shop information:", error);
+      setError("Failed to load shop information");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchShopInfo();
   }, []);
 
-  const handleShopUpdate = (data) => {
-    console.log("Shop data to update:", data);
-    Alert.alert("Success", "Shop information updated successfully");
+  const handleShopUpdate = async (updatedData) => {
+    try {
+      setLoading(true);
+      console.log("Submitting data:", updatedData);
+      
+      const dataToSend = {
+        ...updatedData,
+        phone: updatedData.phone
+      };
+
+      const response = await fetch("http://10.245.24.135:3000/api/shop", {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      console.log("Update response:", response); // Debug log
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Server error:", errorData);
+        throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Update result:", result); // Debug log
+      
+      setShopInfo(prev => ({
+        ...prev,
+        ...result.updated,
+        ...result // Fallback to direct result
+      }));
+      
+      Alert.alert("Success", "Shop information updated successfully");
+      return true; // Indicate success to ShopPortal
+    } catch (error) {
+      console.error("Error updating shop information:", error);
+      Alert.alert("Error", error.message || "Failed to update shop information");
+      return false; // Indicate failure to ShopPortal
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleViewChange = (newView) => {
@@ -65,6 +120,12 @@ export default function ShopManagementPage({ navigation, route }) {
     return (
       <View style={[styles.container, styles.center]}>
         <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity 
+          style={styles.retryButton}
+          onPress={fetchShopInfo}
+        >
+          <Text style={styles.retryText}>Retry</Text>
+        </TouchableOpacity>
       </View>
     );
   }

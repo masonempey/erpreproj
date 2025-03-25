@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   View, 
   TextInput, 
@@ -14,26 +14,37 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function ShopPortal({ shopInformation, callBackOnSubmit }) {
     const [formData, setFormData] = useState({
-        name: shopInformation.shop_name || '',
-        address: shopInformation.address || '',
-        city: shopInformation.city || '',
-        province: shopInformation.province || '',
-        postalCode: shopInformation.postal_code || '',
-        number: shopInformation.phone || '',
-        email: shopInformation.email || ''
+        shop_name: '',
+        address: '',
+        city: '',
+        province: '',
+        postal_code: '',
+        phone: '',
+        email: ''
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    useEffect(() => {
+        setFormData({
+            shop_name: shopInformation.shop_name || '',
+            address: shopInformation.address || '',
+            city: shopInformation.city || '',
+            province: shopInformation.province || '',
+            postal_code: shopInformation.postal_code || '',
+            phone: shopInformation.phone || '',
+            email: shopInformation.email || ''
+        });
+    }, [shopInformation]);
 
     const handleChange = (name, value) => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
     const validateForm = () => {
-        if (!formData.name.trim()) {
+        if (!formData.shop_name.trim()) {
             Alert.alert('Validation Error', 'Shop name is required');
             return false;
         }
-        if (!formData.email.trim() && !formData.number.trim()) {
+        if (!formData.email.trim() && !formData.phone.trim()) {
             Alert.alert('Validation Error', 'Please provide at least one contact method (email or phone)');
             return false;
         }
@@ -42,15 +53,34 @@ export default function ShopPortal({ shopInformation, callBackOnSubmit }) {
 
     const handleSubmit = async () => {
         Keyboard.dismiss();
-        if (!validateForm()) return;
+        if (!validateForm()) {
+            return false; // Explicit return
+        }
         
         setIsSubmitting(true);
         try {
-            await callBackOnSubmit(formData);
-            Alert.alert('Success', 'Shop information updated successfully');
+            const submissionData = {
+                shop_name: formData.shop_name,
+                address: formData.address,
+                city: formData.city,
+                province: formData.province,
+                postal_code: formData.postal_code,
+                phone: formData.phone,
+                email: formData.email
+            };
+            
+            console.log('Submitting data:', submissionData); // Debug log
+            
+            if (callBackOnSubmit) {
+                const success = await callBackOnSubmit(submissionData);
+                if (!success) {
+                    throw new Error('Update failed');
+                }
+            }
+            return true;
         } catch (error) {
-            Alert.alert('Error', 'Failed to update shop information');
             console.error('Submission error:', error);
+            return false;
         } finally {
             setIsSubmitting(false);
         }
@@ -61,8 +91,20 @@ export default function ShopPortal({ shopInformation, callBackOnSubmit }) {
             'Confirm Changes',
             'Are you sure you want to update the shop information?',
             [
-                { text: 'Cancel', style: 'cancel' },
-                { text: 'Update', onPress: handleSubmit }
+                { 
+                    text: 'Cancel', 
+                    style: 'cancel',
+                    onPress: () => console.log('Update cancelled') 
+                },
+                { 
+                    text: 'Update', 
+                    onPress: async () => {
+                        const success = await handleSubmit();
+                        if (success) {
+                            console.log('Update successful');
+                        }
+                    }
+                }
             ]
         );
     };
@@ -87,8 +129,8 @@ export default function ShopPortal({ shopInformation, callBackOnSubmit }) {
                         <TextInput
                             style={styles.input}
                             placeholder="Enter shop name"
-                            value={formData.name}
-                            onChangeText={(text) => handleChange('name', text)}
+                            value={formData.shop_name}
+                            onChangeText={(text) => handleChange('shop_name', text)}
                             placeholderTextColor="#999"
                             importantForAutofill="yes"
                         />
@@ -137,8 +179,8 @@ export default function ShopPortal({ shopInformation, callBackOnSubmit }) {
                         <TextInput
                             style={styles.input}
                             placeholder="Enter postal code"
-                            value={formData.postalCode}
-                            onChangeText={(text) => handleChange('postalCode', text)}
+                            value={formData.postal_code}
+                            onChangeText={(text) => handleChange('postal_code', text)}
                             placeholderTextColor="#999"
                             keyboardType="numbers-and-punctuation"
                         />
@@ -153,8 +195,8 @@ export default function ShopPortal({ shopInformation, callBackOnSubmit }) {
                         <TextInput
                             style={styles.input}
                             placeholder="Enter phone number"
-                            value={formData.number}
-                            onChangeText={(text) => handleChange('number', text)}
+                            value={formData.phone}
+                            onChangeText={(text) => handleChange('phone', text)}
                             keyboardType="phone-pad"
                             placeholderTextColor="#999"
                         />
