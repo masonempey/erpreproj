@@ -120,51 +120,54 @@ const LogInPage = () => {
                         onRequestClose={() => setModalVisible(!modalVisible)}
                     >
                         <View style={styles.modalOverlay}>
-                            <View style={styles.modalView}>
-                                <Pressable
-                                    style={styles.buttonClose}
-                                    onPress={() => setModalVisible(false)}
-                                >
-                                    <Text style={styles.closeText}>X</Text>
-                                </Pressable>
+                        <View style={styles.modalView}>
+                            <Pressable
+                                style={styles.buttonClose}
+                                onPress={() => setModalVisible(false)}
+                            >
+                                <Text style={styles.closeText}>✕</Text>
+                            </Pressable>
 
-                                {error ? (
-                                    <Text style={styles.errorText}>{error}</Text>
-                                ) : null}
+                            <Text style={styles.formHeader}>Welcome Back</Text>
+                            <Text style={styles.formSubheader}>Sign in to your account</Text>
 
-                                <View style={styles.inputContainer}>
-                                    <TextInput
-                                        style={styles.input}
-                                        value={email}
-                                        onChangeText={setEmail}
-                                        placeholder="Email"
-                                        placeholderTextColor="#999"
-                                        autoCapitalize="none"
-                                        keyboardType="email-address"
-                                    />
-                                    <TextInput
-                                        style={styles.input}
-                                        placeholder="Password"
-                                        value={password}
-                                        onChangeText={setPassword}
-                                        secureTextEntry={true}
-                                        placeholderTextColor="#999"
-                                        autoCapitalize="none"
-                                    />
-                                </View>
+                            {error ? (
+                                <Text style={styles.errorText}>{error}</Text>
+                            ) : null}
 
-                                <Pressable
-                                    style={[styles.button, styles.buttonLogin]}
-                                    onPress={handleLogin}
-                                    disabled={isLoading}
-                                >
-                                    {isLoading ? (
-                                        <ActivityIndicator color="white" />
-                                    ) : (
-                                        <Text style={styles.buttonLoginText}>Login</Text>
-                                    )}
-                                </Pressable>
+                            <View style={styles.inputContainer}>
+                                <TextInput
+                                    style={styles.input}
+                                    value={email}
+                                    onChangeText={setEmail}
+                                    placeholder="Email address"
+                                    placeholderTextColor="#999"
+                                    autoCapitalize="none"
+                                    keyboardType="email-address"
+                                />
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Password"
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    secureTextEntry={true}
+                                    placeholderTextColor="#999"
+                                    autoCapitalize="none"
+                                />
                             </View>
+
+                            <Pressable
+                                style={[styles.button, styles.buttonLogin]}
+                                onPress={handleLogin}
+                                disabled={isLoading}
+                            >
+                                {isLoading ? (
+                                    <ActivityIndicator color="white" />
+                                ) : (
+                                    <Text style={styles.buttonLoginText}>Continue</Text>
+                                )}
+                            </Pressable>
+                        </View>
                         </View>
                     </Modal>
 
@@ -260,32 +263,98 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
     modalView: {
-        width: "80%",
+        width: "85%",
         backgroundColor: "#fff",
-        borderRadius: 10,
-        padding: 30,
+        borderRadius: 20,
+        padding: 35,
         alignItems: "center",
         position: "relative",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 10,
+        elevation: 8,
     },
     inputContainer: {
         width: "100%",
-        marginTop: 20,
+        marginTop: 25,
+        marginBottom: 15,
     },
     input: {
-        height: 40,
+        height: 50,
         width: "100%",
-        marginBottom: 12,
-        padding: 10,
-        borderRadius: 5,
+        marginBottom: 20,
+        paddingHorizontal: 15,
+        borderRadius: 12,
         borderWidth: 1,
-        borderColor: "#ccc",
-        color: "#000",
+        borderColor: "#e0e0e0",
+        backgroundColor: "#f8f9fa",
+        color: "#333",
+        fontSize: 16,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    buttonClose: {
+        position: "absolute",
+        top: 15,
+        right: 15,
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        backgroundColor: "#f5f5f5",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 1,
+    },
+    closeText: {
+        color: "#666",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    buttonLogin: {
+        backgroundColor: "#35281f",
+        width: "100%",
+        paddingVertical: 15,
+        borderRadius: 12,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    buttonLoginText: {
+        color: "white",
+        fontSize: 16,
+        fontWeight: "600",
+        letterSpacing: 0.5,
     },
     errorText: {
-        color: "red",
+        color: "#e74c3c",
         fontSize: 14,
-        marginBottom: 10,
+        marginBottom: 15,
         textAlign: "center",
+        backgroundColor: "#fdecea",
+        paddingVertical: 8,
+        paddingHorizontal: 15,
+        borderRadius: 8,
+        width: "100%",
+    },
+    formHeader: {
+        fontSize: 22,
+        fontWeight: "600",
+        color: "#2d3436",
+        marginBottom: 5,
+    },
+    formSubheader: {
+        fontSize: 14,
+        color: "#636e72",
+        marginBottom: 25,
     },
 });
 

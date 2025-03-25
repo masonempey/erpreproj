@@ -57,9 +57,13 @@ function LandingPage() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const appointmentData = await response.json();
+      // Sort appointments by date/time and limit to 3 most upcoming
+      const sortedAndLimitedAppointments = appointmentData
+        .sort((a, b) => new Date(a.date) - new Date(b.date)) // Sort by date/time
+        .slice(0, 3); // Take only first 3 appointments
 
       // Set the appointments state with the fetched appointment data
-      setAppointments(appointmentData);
+      setAppointments(sortedAndLimitedAppointments);
     } catch (error) {
       console.error("Error fetching appointments:", error);
     }

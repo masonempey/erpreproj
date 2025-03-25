@@ -1,7 +1,6 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
-import { View, Button } from "react-native";
+import { View, Button, StyleSheet } from "react-native";
 import testBarbers from "../utilities/testing/testBarbers.json";
 import testInformation from "../utilities/testing/testShopInformation.json";
 import ShopPortal from "../component/shopManagmentComponents/shopPortal";
@@ -40,17 +39,44 @@ export default function ShopManagmentPage({ navigation }) {
   };
 
   return (
-    <View>
-      <View>
+    <View style={styles.container}>
+      <View style={styles.section}>
         <ShopPortal shopInformation={shopInfo} callBackOnSubmit={callBack} />
       </View>
-      <View>
+      <View style={styles.section}>
         <BarberPortal barbers={barbers} navigation={navigation} />
       </View>
-      <Button
-        title="Add Barber"
-        onPress={() => navigation.push("Add Barber")}
-      />
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Add Barber"
+          onPress={() => navigation.push("Add Barber")}
+          color="#007AFF"
+        />
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#f8f9fa',
+  },
+  section: {
+    marginBottom: 25,
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  buttonContainer: {
+    marginTop: 10,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+});

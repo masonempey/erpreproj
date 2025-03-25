@@ -1,6 +1,7 @@
 import React from "react";
 import { FlatList, StyleSheet, View, Text } from "react-native";
 import UpcomingViewCard from "./UpcomingCards";
+import Ionicons from 'react-native-vector-icons/Ionicons'; // Import icons library
 
 // UpcomingView component to display the upcoming appointments
 // This component displays the upcoming appointments in a list format
@@ -10,7 +11,11 @@ import UpcomingViewCard from "./UpcomingCards";
 export default function UpcomingView({ appointmentData}) {
     return (
         <View style={styles.listContainer}>
-            <Text style={styles.title}>Upcoming Appointment</Text>
+            
+            <Text style={styles.title}>
+                Upcoming 3 latest Appointments
+                <Ionicons name="caret-up-outline"></Ionicons>
+            </Text>
             <View style={styles.divider}></View>
 
             {/* FlatList component to display the list of appointments
