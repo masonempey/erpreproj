@@ -148,7 +148,6 @@ const Footer = () => {
               </Box>
             </Stack>
           </Box>
-          SELECT role_id FROM users WHERE user_id = $1
           <Box
             sx={{
               flex: 1,

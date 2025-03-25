@@ -2,23 +2,29 @@
 import { NextResponse } from "next/server";
 import { getUserById } from "@/lib/services/userService";
 
-// GET user by userId
+// get user by ID
 export async function GET(request, { params }) {
   try {
     const { userId } = params;
-    const userFound = await getUserById(userId);
 
-    if (userFound) {
-      return NextResponse.json(userFound);
-    } else {
+    if (!userId) {
       return NextResponse.json(
-        { message: `User with userId ${userId} not found` },
-        { status: 404 }
+        { message: "User ID is required" },
+        { status: 400 }
       );
     }
-  } catch (err) {
+
+    const user = await getUserById(userId);
+
+    if (!user) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
     return NextResponse.json(
-      { message: "Error fetching user", error: err.message },
+      { message: `Failed to fetch user: ${error.message}` },
       { status: 500 }
     );
   }
