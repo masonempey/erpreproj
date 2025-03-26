@@ -3,7 +3,6 @@ import { Modal, TouchableOpacity, Text, View, StyleSheet, TouchableWithoutFeedba
 import { createStackNavigator } from "@react-navigation/stack";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ShopManagementPage from "../screens/shopManagementPage";
-import AddBarberPage from "../screens/addBarberPage";
 
 const Stack = createStackNavigator();
 
@@ -30,10 +29,6 @@ export default function ShopManagmentStack({ navigation }) {
           name="Shop Management"
           component={ShopManagementPage}
           initialParams={{ initialView: 'shop' }}
-        />
-        <Stack.Screen
-          name="Add Barber"
-          component={AddBarberPage}
         />
       </Stack.Navigator>
 

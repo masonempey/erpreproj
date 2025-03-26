@@ -8,7 +8,6 @@ import SchedulingPage from '../screens/schedulePage';
 import AnalyticsPage from '../screens/analyticsPage';
 import ProfilePage from '../screens/profilePage';
 import ShopManagementPage from '../screens/shopManagementPage';
-import AddBarberPage from '../screens/addBarberPage';
 import { ActivityIndicator, View, Modal, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import LogoutButton from '../component/loginPageComponents/logoutButton';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -129,10 +128,6 @@ function ManagementStackScreen() {
       <Stack.Screen 
         name="ShopManagement" 
         component={ShopManagementPage}
-      />
-      <Stack.Screen 
-        name="AddBarber" 
-        component={AddBarberPage} 
       />
     </Stack.Navigator>
   );

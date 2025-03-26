@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, TouchableOpacity, Text, ActivityIndicator, Alert } from "react-native";
 import ShopPortal from "../component/shopManagmentComponents/shopPortal";
+import BarberPortal from "../component/shopManagmentComponents/barberPortal";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function ShopManagementPage({ navigation, route }) {
@@ -181,29 +182,17 @@ export default function ShopManagementPage({ navigation, route }) {
 
       {/* Content Area */}
       {activeView === 'shop' ? (
-        <View style={styles.section}>
-          <ShopPortal 
-            shopInformation={shopInfo} 
-            callBackOnSubmit={handleShopUpdate} 
-          />
-        </View>
-      ) : (
-        <>
-          <View style={styles.section}>
-            <BarberPortal 
-              barbers={barbers} 
-              navigation={navigation} 
-            />
-          </View>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => navigation.navigate('AddBarber')}
-          >
-            <Ionicons name="add" size={24} color="white" />
-            <Text style={styles.addButtonText}>Add Barber</Text>
-          </TouchableOpacity>
-        </>
-      )}
+      <View style={styles.section}>
+        <ShopPortal 
+          shopInformation={shopInfo} 
+          callBackOnSubmit={handleShopUpdate} 
+        />
+      </View>
+    ) : (
+      <View style={styles.section}>
+        <BarberPortal navigation={navigation} />
+      </View>
+    )}
     </View>
   );
 }
