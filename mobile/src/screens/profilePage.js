@@ -4,6 +4,8 @@ import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator } from 're
 import { AuthContext } from '../firebase/firebase-context';
 import { Ionicons } from '@expo/vector-icons';
 
+const ip_address = process.env.EXPO_PUBLIC_IP_ADDRESS;
+
 const ProfilePage = () => {
   const { user } = useContext(AuthContext);
   const [userDetails, setUserDetails] = useState(null);
@@ -15,7 +17,7 @@ const ProfilePage = () => {
       try {
         if (!user?.uid) return;
         
-        const response = await fetch(`http://10.174.167.208:3000/api/users/${user.uid}`, {
+        const response = await fetch(`${ip_address}:3000/api/users/${user.uid}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

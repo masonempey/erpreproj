@@ -5,6 +5,8 @@ import ShopPortal from "../component/shopManagmentComponents/shopPortal";
 import BarberPortal from "../component/shopManagmentComponents/barberPortal";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+const ip_address = process.env.EXPO_PUBLIC_IP_ADDRESS;
+
 export default function ShopManagementPage({ navigation, route }) {
   const [shopInfo, setShopInfo] = useState({
     shop_name: '',
@@ -31,7 +33,7 @@ export default function ShopManagementPage({ navigation, route }) {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("http://10.174.167.208:3000/api/shop");
+      const response = await fetch(`${ip_address}:3000/api/shop`);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -68,7 +70,7 @@ export default function ShopManagementPage({ navigation, route }) {
         phone: updatedData.phone
       };
   
-      const response = await fetch("http://10.174.167.208:3000/api/shop", {
+      const response = await fetch(`${ip_address}:3000/api/shop`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

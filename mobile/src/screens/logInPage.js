@@ -16,6 +16,8 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { LinearGradient } from "expo-linear-gradient"; // Import LinearGradient
 
+const ip_address = process.env.EXPO_PUBLIC_IP_ADDRESS;
+
 const LogInPage = () => {
     const video = require("../../assets/ErpreVid.mp4");
     const logoImage = require("../../assets/logo.png");
@@ -57,7 +59,7 @@ const LogInPage = () => {
             const idToken = await userCredential.user.getIdToken();
 
             const validateRes = await fetch(
-                "http://10.174.167.208:3000/api/users/validate",
+                `${ip_address}:3000/api/users/validate`,
                 {
                     method: "POST",
                     headers: {

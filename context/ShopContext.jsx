@@ -11,7 +11,7 @@ export function ShopProvider({ children }) {
   const fetchShopInfo = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://10.174.167.208:3000/api/shop");
+      const response = await fetch("http://localhost:3000/api/shop");
       if (!response.ok) {
         throw new Error(`Failed to fetch shop info: ${response.status}`);
       }
@@ -29,7 +29,7 @@ export function ShopProvider({ children }) {
   const updateShopInfo = async (updatedData) => {
     try {
       setLoading(true);
-      const response = await fetch("http://10.174.167.208:3000/api/shop", {
+      const response = await fetch("http://localhost:3000/api/shop", {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import AppointmentDayView from "../component/schedulePageComponents/appointmentList";
 
+const ip_address = process.env.EXPO_PUBLIC_IP_ADDRESS;
+
 export default function SchedulingPage({ route }) { 
   const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -16,7 +18,7 @@ export default function SchedulingPage({ route }) {
       setError(null);
       
       const barberId = "barber2";
-      const response = await fetch(`http://10.174.167.208:3000/api/appointments/barbers/${barberId}?date=${date}`);
+      const response = await fetch(`${ip_address}:3000/api/appointments/barbers/${barberId}?date=${date}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);

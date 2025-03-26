@@ -15,8 +15,8 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import BarberCard from './barberCards';
 
-
-
+const ip_address = process.env.EXPO_PUBLIC_IP_ADDRESS;
+console.log(ip_address);
 const BarberPortal = ({ navigation }) => {
   // State management
   const [barbers, setBarbers] = useState([]);
@@ -46,7 +46,7 @@ const BarberPortal = ({ navigation }) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("http://10.174.167.208:3000/api/users/barber-role");
+      const response = await fetch(`${ip_address}:3000/api/users/barber-role`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -80,7 +80,7 @@ const BarberPortal = ({ navigation }) => {
   
     try {
       // First check if user exists
-      const checkResponse = await fetch('http://10.174.167.208:3000/api/users', {
+      const checkResponse = await fetch(`${ip_address}:3000/api/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ const BarberPortal = ({ navigation }) => {
   
       // If exists, get full user details
       const userResponse = await fetch(
-        `http://10.174.167.208:3000/api/email/${encodeURIComponent(searchEmail)}`
+        `${ip_address}:3000/api/email/${encodeURIComponent(searchEmail)}`
       );
       
       if (!userResponse.ok) {
@@ -133,7 +133,7 @@ const assignBarberRole = async () => {
   try {
     setLoading(true);
     
-    const response = await fetch("http://10.174.167.208:3000/api/users", {
+    const response = await fetch(`${ip_address}:3000/api/users`, {
       method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',

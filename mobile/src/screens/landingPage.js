@@ -5,6 +5,8 @@ import LandingCalendar from "../component/landingPageComponents/Calander";
 import UpcomingView from "../component/landingPageComponents/UpcomingView";
 import { useNavigation } from "@react-navigation/native";
 
+const ip_address = process.env.EXPO_PUBLIC_IP_ADDRESS;
+
 function LandingPage() {
   // Manage the state of the appointments type array to store the appointments being fetched from the server.
   // Manage the state of the selected date to store the date selected by the user.
@@ -36,7 +38,7 @@ function LandingPage() {
     try {
       setIsLoading(true);
       const barberId = "barber2";
-      const response = await fetch(`http://10.174.167.208:3000/api/appointments/barbers/${barberId}?date=${date}`);
+      const response = await fetch(`${ip_address}:3000/api/appointments/barbers/${barberId}?date=${date}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
