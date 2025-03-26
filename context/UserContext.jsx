@@ -36,6 +36,7 @@ export const UserProvider = ({ children }) => {
       }
 
       const userData = await response.json();
+
       setUser({
         phoneNumber: userData.phoneNumber,
         email: userData.email,
@@ -62,6 +63,9 @@ export const UserProvider = ({ children }) => {
           setUser({
             email: userData.email,
             uid: firebaseUser.uid,
+            name: userData.name,
+            phoneNumber: userData.phone_number,
+            coins: userData.coins,
           });
         } catch (error) {
           console.error("Error fetching user data:", error);
