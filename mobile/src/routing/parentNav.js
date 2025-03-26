@@ -5,7 +5,7 @@ import { AuthContext } from '../firebase/firebase-context';
 import LandingPage from '../screens/landingPage';
 import LogInPage from '../screens/logInPage';
 import SchedulingPage from '../screens/schedulePage';
-import AnalyticsPage from '../screens/analyticsPage';
+// import AnalyticsPage from '../screens/analyticsPage';
 import ProfilePage from '../screens/profilePage';
 import ShopManagementPage from '../screens/shopManagementPage';
 import { ActivityIndicator, View, Modal, Text, TouchableOpacity, StyleSheet } from 'react-native';
@@ -43,7 +43,7 @@ function TabNavigator() {
                             'Home': ['home', 'home-outline'],
                             'Schedule': ['calendar', 'calendar-outline'],
                             'Management': ['business', 'business-outline'],
-                            'Analytics': ['stats-chart', 'stats-chart-outline'],
+                            // 'Analytics': ['stats-chart', 'stats-chart-outline'],
                             'Profile': ['person', 'person-outline']
                         };
                         iconName = focused ? iconConfig[route.name][0] : iconConfig[route.name][1];
@@ -69,7 +69,7 @@ function TabNavigator() {
                         }
                     }} 
                 />
-                <Tab.Screen name="Analytics" component={AnalyticsPage} />
+                {/* <Tab.Screen name="Analytics" component={AnalyticsPage} /> */}
                 <Tab.Screen name="Profile" component={ProfilePage} />
             </Tab.Navigator>
             
