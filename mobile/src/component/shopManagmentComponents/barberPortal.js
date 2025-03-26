@@ -119,11 +119,7 @@ const BarberPortal = ({ navigation }) => {
       );
       
     } catch (error) {
-      console.error('Search error:', error);
-      Alert.alert(
-        'Error', 
-        error.message || 'Failed to search user'
-      );
+      setEmailError(error.message.includes('email') ? error.message : 'Failed to find user');
       setFoundUser(null);
     } finally {
       setLoading(false);

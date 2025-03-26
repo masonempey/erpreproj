@@ -10,7 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default function BarberCard({ barberInfo, backgroundColor, navigation }) {
   const handleBarberClick = () => {
-    navigation.navigate("profilePage", { barberId: barberInfo.barber_id });
+    navigation.navigate("Profile", { barberId: barberInfo.barber_id });
   };
 
   // Extract name from email (everything before @)
