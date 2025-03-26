@@ -19,7 +19,7 @@ const BarberPanel = () => {
             <ul>
                 {barbers.map((barber) => (
                 <li key={barber.id}>
-                    <Link href={`/admin/analytics?barberId=${barber.id}`}>
+                    <Link href={`/admin/statistics/${barber.id}`}>
                         {barber.name}
                 </Link>
                 </li>

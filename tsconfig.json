@@ -31,7 +31,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "app/components/ShopCreds.jsx"  ],
   "exclude": [
     "node_modules"
   ]

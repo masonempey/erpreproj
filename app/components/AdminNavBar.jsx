@@ -6,7 +6,7 @@ const AdminNavBar = () => {
     {name: 'Home', href: '/admin'},
     {name: 'Schedule', href: '/admin/schedule'},
     {name: 'Managment', href: '/admin/managment'},
-    {name: 'Profile', href: '/admin/profile'}
+    {name: 'Statistics', href: '/admin/statistics'}
   ]
   return(
     <nav className="bg-gray-800 text-white p-4">
