@@ -14,12 +14,14 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import BarberCard from './barberCards';
+
 const BarberPortal = ({ navigation }) => {
   // State management
   const [barbers, setBarbers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [isInviteModalVisible, setIsInviteModalVisible] = useState(false);
   const [isAddBarberModalVisible, setIsAddBarberModalVisible] = useState(false);
   const [newBarber, setNewBarber] = useState({
     name: '',
@@ -27,6 +29,10 @@ const BarberPortal = ({ navigation }) => {
     phone: '',
     specialty: ''
   });
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+
+  const { width } = Dimensions.get('window');
 
   // Fetch barbers data
   const fetchBarbers = async () => {
@@ -105,10 +111,56 @@ const BarberPortal = ({ navigation }) => {
     }));
   };
 
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
+  const sendBarberInvitation = async () => {
+    if (!validateEmail(email)) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+    
+    setEmailError('');
+    setLoading(true);
+
+    try {
+      // API Endpoint not exist right now in development
+      const response = await fetch("http://10.245.24.135:3000/api/invite-barber", {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send invitation');
+      }
+
+      Alert.alert(
+        'Invitation Sent',
+        `An invitation has been sent to ${email}. The barber will receive instructions to complete their registration.`,
+        [
+          { text: 'OK', onPress: () => {
+            setIsInviteModalVisible(false);
+            setEmail('');
+          }}
+        ]
+      );
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Initial data fetch
   useEffect(() => {
     fetchBarbers();
   }, []);
+
   // Render loading state
   if (loading && !refreshing && barbers.length === 0) {
     return (
@@ -177,15 +229,13 @@ const BarberPortal = ({ navigation }) => {
         animationType="fade"
         transparent={true}
         visible={isAddBarberModalVisible}
+        onRequestClose={() => setIsAddBarberModalVisible(false)}
       >
         <View style={styles.modalBackdrop}>
           <View style={styles.modalCard}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>New Barber</Text>
-              <TouchableOpacity 
-                onPress={() => setIsAddBarberModalVisible(false)}
-                style={styles.closeButton}
-              >
+              <Text style={styles.modalTitle}>Add Barber</Text>
+              <TouchableOpacity onPress={() => setIsAddBarberModalVisible(false)}>
                 <Ionicons name="close" size={24} color="#666" />
               </TouchableOpacity>
             </View>
@@ -251,6 +301,64 @@ const BarberPortal = ({ navigation }) => {
           </View>
         </View>
       </Modal>
+
+      {/* Invite Barber Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isInviteModalVisible}
+        onRequestClose={() => setIsInviteModalVisible(false)}
+      >
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalCard}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Invite Barber</Text>
+              <TouchableOpacity onPress={() => setIsInviteModalVisible(false)}>
+                <Ionicons name="close" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.modalBody}>
+              <Text style={styles.inputLabel}>Barber's Email Address *</Text>
+              <TextInput
+                style={[styles.inputField, emailError && styles.inputError]}
+                placeholder="barber@example.com"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+              {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+
+              <Text style={styles.helperText}>
+                An invitation email with setup instructions will be sent to this address.
+              </Text>
+            </View>
+
+            <View style={styles.modalFooter}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => setIsInviteModalVisible(false)}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.modalButton, styles.inviteButton]}
+                onPress={sendBarberInvitation}
+                disabled={loading || !email}
+              >
+                {loading ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <Text style={styles.inviteButtonText}>Send Invitation</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -268,7 +376,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 28,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#333',
   },
   listContent: {
@@ -339,6 +447,9 @@ const styles = StyleSheet.create({
   formContainer: {
     padding: 20,
   },
+  modalBody: {
+    padding: 20,
+  },
   inputLabel: {
     fontSize: 14,
     color: '#666',
@@ -354,6 +465,21 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 16,
     backgroundColor: '#fafafa',
+  },
+  inputError: {
+    borderColor: 'red',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: -15,
+    marginBottom: 15,
+  },
+  helperText: {
+    color: '#666',
+    fontSize: 12,
+    marginTop: -10,
+    marginBottom: 10,
   },
   modalFooter: {
     flexDirection: 'row',
@@ -384,6 +510,40 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   saveButtonText: {
+    color: 'white',
+    fontWeight: '600',
+  },
+  inviteButton: {
+    backgroundColor: '#5F402C',
+  },
+  inviteButtonText: {
+    color: 'white',
+    fontWeight: '600',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    fontSize: 16,
+    color: 'red',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  retryButton: {
+    backgroundColor: '#5F402C',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  retryText: {
     color: 'white',
     fontWeight: '600',
   },
