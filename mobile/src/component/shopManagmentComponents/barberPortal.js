@@ -15,23 +15,30 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import BarberCard from './barberCards';
 
+
+
 const BarberPortal = ({ navigation }) => {
   // State management
   const [barbers, setBarbers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [isInviteModalVisible, setIsInviteModalVisible] = useState(false);
-  const [isAddBarberModalVisible, setIsAddBarberModalVisible] = useState(false);
-  const [newBarber, setNewBarber] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    specialty: ''
-  });
-  const [email, setEmail] = useState('');
+  const [isAssignModalVisible, setIsAssignModalVisible] = useState(false);
+  const [searchEmail, setSearchEmail] = useState('');
+  const [foundUser, setFoundUser] = useState(null);
   const [emailError, setEmailError] = useState('');
-
+  const getRoleName = (role_id) => {
+    switch (role_id) {
+      case 1:
+        return 'User';
+      case 2:
+        return 'Admin';
+      case 3:
+        return 'Barber';
+      default:
+        return 'Unknown';
+    }
+  };
   const { width } = Dimensions.get('window');
 
   // Fetch barbers data
@@ -39,7 +46,7 @@ const BarberPortal = ({ navigation }) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("http://10.245.24.135:3000/api/barbers");
+      const response = await fetch("http://10.174.167.208:3000/api/users/barber-role");
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -62,98 +69,128 @@ const BarberPortal = ({ navigation }) => {
     fetchBarbers();
   };
 
-  // Submit new barber
-  const submitNewBarber = async () => {
-    try {
-      setLoading(true);
-      
-      // Basic validation
-      if (!newBarber.name.trim()) {
-        throw new Error("Barber name is required");
-      }
-
-      const response = await fetch("http://10.245.24.135:3000/api/barbers", {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newBarber)
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to add barber');
-      }
-
-      const result = await response.json();
-      
-      // Update local state immediately
-      setBarbers(prev => [result, ...prev]);
-      
-      // Reset form and close modal
-      setNewBarber({ name: '', email: '', phone: '', specialty: '' });
-      setIsAddBarberModalVisible(false);
-      
-      Alert.alert("Success", "Barber added successfully");
-    } catch (err) {
-      console.error("Error adding barber:", err);
-      Alert.alert("Error", err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Handle input changes
-  const handleInputChange = (field, value) => {
-    setNewBarber(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const validateEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  };
-
-  const sendBarberInvitation = async () => {
-    if (!validateEmail(email)) {
+  const searchUserByEmail = async () => {
+    if (!validateEmail(searchEmail)) {
       setEmailError('Please enter a valid email address');
       return;
     }
     
     setEmailError('');
     setLoading(true);
-
+  
     try {
-      // API Endpoint not exist right now in development
-      const response = await fetch("http://10.245.24.135:3000/api/invite-barber", {
+      // First check if user exists
+      const checkResponse = await fetch('http://10.174.167.208:3000/api/users', {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email: searchEmail })
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to send invitation');
+  
+      if (!checkResponse.ok) {
+        const errorData = await checkResponse.json();
+        throw new Error(errorData.error || 'Failed to validate email');
       }
-
-      Alert.alert(
-        'Invitation Sent',
-        `An invitation has been sent to ${email}. The barber will receive instructions to complete their registration.`,
-        [
-          { text: 'OK', onPress: () => {
-            setIsInviteModalVisible(false);
-            setEmail('');
-          }}
-        ]
+  
+      const { exists, user_id, current_role } = await checkResponse.json();
+      
+      if (!exists) {
+        throw new Error('User not found');
+      }
+  
+      // If exists, get full user details
+      const userResponse = await fetch(
+        `http://10.174.167.208:3000/api/email/${encodeURIComponent(searchEmail)}`
       );
+      
+      if (!userResponse.ok) {
+        const errorData = await userResponse.json();
+        throw new Error(errorData.error || 'Failed to get user details');
+      }
+  
+      const user = await userResponse.json();
+      setFoundUser(user);
+      
+      Alert.alert(
+        'User Found', 
+        `Email: ${user.email}\nCurrent Role: ${getRoleName(user.role_id)}`,
+        [{ text: 'OK' }]
+      );
+      
     } catch (error) {
-      Alert.alert('Error', error.message);
+      console.error('Search error:', error);
+      Alert.alert(
+        'Error', 
+        error.message || 'Failed to search user'
+      );
+      setFoundUser(null);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Assign barber role
+const assignBarberRole = async () => {
+  if (!foundUser) return;
+
+  try {
+    setLoading(true);
+    
+    const response = await fetch("http://10.174.167.208:3000/api/users", {
+      method: 'PUT',
+      headers: { 
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: foundUser.email  // Changed from userId to email
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to assign barber role');
+    }
+
+    const { user: updatedUser } = await response.json();
+    
+    Alert.alert(
+      "Success", 
+      `${updatedUser.email} is now a barber`,
+      [
+        { 
+          text: 'OK', 
+          onPress: () => {
+            setIsAssignModalVisible(false);
+            setSearchEmail('');
+            setFoundUser(null);
+            fetchBarbers(); // Refresh the list
+          }
+        }
+      ]
+    );
+  } catch (err) {
+    console.error("Role assignment error:", err);
+    Alert.alert(
+      "Error", 
+      err.message.includes("barber") 
+        ? err.message 
+        : 'Failed to update user role'
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
+  // Handle input changes
+  const handleInputChange = (text) => {
+    setSearchEmail(text);
+    setEmailError('');
+  };
+
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
   };
 
   // Initial data fetch
@@ -195,7 +232,7 @@ const BarberPortal = ({ navigation }) => {
       {/* Barbers List */}
       <FlatList
         data={barbers}
-        keyExtractor={(item) => item.barber_id.toString()}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <BarberCard barberInfo={item} navigation={navigation} />
         )}
@@ -204,7 +241,7 @@ const BarberPortal = ({ navigation }) => {
           <View style={styles.emptyContainer}>
             <Ionicons name="people-outline" size={64} color="#e0e0e0" />
             <Text style={styles.emptyText}>No barbers available</Text>
-            <Text style={styles.emptySubtext}>Add your first barber</Text>
+            <Text style={styles.emptySubtext}>Add a barber by assigning the role</Text>
           </View>
         }
         refreshControl={
@@ -219,140 +256,96 @@ const BarberPortal = ({ navigation }) => {
       {/* Add Button */}
       <TouchableOpacity
         style={styles.floatingButton}
-        onPress={() => setIsAddBarberModalVisible(true)}
+        onPress={() => setIsAssignModalVisible(true)}
       >
         <Ionicons name="add" size={28} color="white" />
       </TouchableOpacity>
 
-      {/* Add Barber Modal */}
+      {/* Assign Barber Role Modal */}
       <Modal
         animationType="fade"
         transparent={true}
-        visible={isAddBarberModalVisible}
-        onRequestClose={() => setIsAddBarberModalVisible(false)}
+        visible={isAssignModalVisible}
+        onRequestClose={() => setIsAssignModalVisible(false)}
       >
         <View style={styles.modalBackdrop}>
           <View style={styles.modalCard}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Add Barber</Text>
-              <TouchableOpacity onPress={() => setIsAddBarberModalVisible(false)}>
-                <Ionicons name="close" size={24} color="#666" />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.formContainer}>
-              <Text style={styles.inputLabel}>Full Name *</Text>
-              <TextInput
-                style={styles.inputField}
-                placeholder="John Doe"
-                value={newBarber.name}
-                onChangeText={(text) => handleInputChange('name', text)}
-              />
-
-              <Text style={styles.inputLabel}>Email</Text>
-              <TextInput
-                style={styles.inputField}
-                placeholder="john@example.com"
-                value={newBarber.email}
-                onChangeText={(text) => handleInputChange('email', text)}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-
-              <Text style={styles.inputLabel}>Phone</Text>
-              <TextInput
-                style={styles.inputField}
-                placeholder="(123) 456-7890"
-                value={newBarber.phone}
-                onChangeText={(text) => handleInputChange('phone', text)}
-                keyboardType="phone-pad"
-              />
-
-              <Text style={styles.inputLabel}>Specialty</Text>
-              <TextInput
-                style={styles.inputField}
-                placeholder="Haircuts, Shaves, etc."
-                value={newBarber.specialty}
-                onChangeText={(text) => handleInputChange('specialty', text)}
-              />
-            </View>
-
-            <View style={styles.modalFooter}>
-              <TouchableOpacity
-                style={[styles.modalButton, styles.cancelButton]}
-                onPress={() => setIsAddBarberModalVisible(false)}
+              <Text style={styles.modalTitle}>Assign Barber Role</Text>
+              <TouchableOpacity 
+                onPress={() => {
+                  setIsAssignModalVisible(false);
+                  setSearchEmail('');
+                  setFoundUser(null);
+                }}
+                hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
               >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity
-                style={[styles.modalButton, styles.saveButton, 
-                  (!newBarber.name.trim() || loading) && styles.saveButtonDisabled]}
-                onPress={submitNewBarber}
-                disabled={!newBarber.name.trim() || loading}
-              >
-                {loading ? (
-                  <ActivityIndicator color="white" />
-                ) : (
-                  <Text style={styles.saveButtonText}>Save Barber</Text>
-                )}
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Invite Barber Modal */}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isInviteModalVisible}
-        onRequestClose={() => setIsInviteModalVisible(false)}
-      >
-        <View style={styles.modalBackdrop}>
-          <View style={styles.modalCard}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Invite Barber</Text>
-              <TouchableOpacity onPress={() => setIsInviteModalVisible(false)}>
-                <Ionicons name="close" size={24} color="#666" />
+                <Ionicons name="close" size={22} color="#777" />
               </TouchableOpacity>
             </View>
 
             <View style={styles.modalBody}>
-              <Text style={styles.inputLabel}>Barber's Email Address *</Text>
+              <Text style={styles.inputLabel}>Search User by Email</Text>
               <TextInput
                 style={[styles.inputField, emailError && styles.inputError]}
-                placeholder="barber@example.com"
-                value={email}
-                onChangeText={setEmail}
+                placeholder="Enter user's email"
+                placeholderTextColor="#999"
+                value={searchEmail}
+                onChangeText={handleInputChange}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
               />
-              {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+              {emailError && <Text style={styles.errorText}>{emailError}</Text>}
 
-              <Text style={styles.helperText}>
-                An invitation email with setup instructions will be sent to this address.
-              </Text>
+              <TouchableOpacity
+                style={[styles.searchButton, (!searchEmail.trim() || loading) && {opacity: 0.7}]}
+                onPress={searchUserByEmail}
+                disabled={!searchEmail.trim() || loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <Text style={styles.searchButtonText}>Search User</Text>
+                )}
+              </TouchableOpacity>
+
+              {foundUser && (
+                <View style={styles.userInfoContainer}>
+                  <Text style={styles.userInfoText}>User Found</Text>
+                  <Text style={styles.userEmail}>{foundUser.email}</Text>
+                  <Text style={styles.userCurrentRole}>
+                    Current Role: {getRoleName(foundUser.role_id)}
+                  </Text>
+                </View>
+              )}
             </View>
 
             <View style={styles.modalFooter}>
               <TouchableOpacity
                 style={[styles.modalButton, styles.cancelButton]}
-                onPress={() => setIsInviteModalVisible(false)}
+                onPress={() => {
+                  setIsAssignModalVisible(false);
+                  setSearchEmail('');
+                  setFoundUser(null);
+                }}
               >
                 <Text style={styles.cancelButtonText}>Cancel</Text>
               </TouchableOpacity>
               
               <TouchableOpacity
-                style={[styles.modalButton, styles.inviteButton]}
-                onPress={sendBarberInvitation}
-                disabled={loading || !email}
+                style={[
+                  styles.modalButton, 
+                  styles.assignButton,
+                  (!foundUser || loading) && styles.assignButtonDisabled
+                ]}
+                onPress={assignBarberRole}
+                disabled={!foundUser || loading}
               >
                 {loading ? (
                   <ActivityIndicator color="white" />
                 ) : (
-                  <Text style={styles.inviteButtonText}>Send Invitation</Text>
+                  <Text style={styles.assignButtonText}>Assign Role</Text>
                 )}
               </TouchableOpacity>
             </View>
@@ -418,15 +411,16 @@ const styles = StyleSheet.create({
   },
   modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.4)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalCard: {
-    width: Dimensions.get('window').width - 40,
+    width: Dimensions.get('window').width - 48,
     backgroundColor: 'white',
-    borderRadius: 12,
+    borderRadius: 16,
     overflow: 'hidden',
+    maxHeight: Dimensions.get('window').height * 0.8,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -434,116 +428,108 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: '#f5f5f5',
+    backgroundColor: '#f9f9f9',
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
     color: '#333',
   },
-  closeButton: {
-    padding: 4,
-  },
-  formContainer: {
-    padding: 20,
-  },
   modalBody: {
-    padding: 20,
+    padding: 24,
   },
   inputLabel: {
     fontSize: 14,
-    color: '#666',
+    color: '#555',
     marginBottom: 8,
     fontWeight: '500',
   },
   inputField: {
-    height: 50,
+    height: 48,
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
+    borderColor: '#e0e0e0',
+    borderRadius: 10,
     paddingHorizontal: 16,
-    marginBottom: 20,
-    fontSize: 16,
-    backgroundColor: '#fafafa',
+    marginBottom: 8,
+    fontSize: 15,
+    backgroundColor: '#fcfcfc',
   },
   inputError: {
-    borderColor: 'red',
+    borderColor: '#ff4444',
+    backgroundColor: '#fff9f9',
   },
   errorText: {
-    color: 'red',
-    fontSize: 12,
-    marginTop: -15,
-    marginBottom: 15,
+    color: '#ff4444',
+    fontSize: 13,
+    marginBottom: 12,
   },
-  helperText: {
+  searchButton: {
+    backgroundColor: '#5F402C',
+    padding: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginVertical: 8,
+    elevation: 2,
+  },
+  searchButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 15,
+  },
+  userInfoContainer: {
+    marginTop: 16,
+    padding: 16,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 10,
+    borderLeftWidth: 4,
+    borderLeftColor: '#5F402C',
+  },
+  userInfoText: {
+    fontWeight: '600',
+    marginBottom: 6,
+    color: '#333',
+  },
+  userEmail: {
+    marginBottom: 6,
+    color: '#444',
+  },
+  userCurrentRole: {
     color: '#666',
-    fontSize: 12,
-    marginTop: -10,
-    marginBottom: 10,
+    fontSize: 13,
   },
   modalFooter: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 20,
+    justifyContent: 'flex-end',
+    padding: 16,
     borderTopWidth: 1,
     borderTopColor: '#f0f0f0',
+    backgroundColor: '#f9f9f9',
   },
   modalButton: {
-    flex: 1,
-    height: 50,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     borderRadius: 8,
-    justifyContent: 'center',
+    marginLeft: 12,
+    minWidth: 100,
     alignItems: 'center',
   },
   cancelButton: {
-    backgroundColor: '#f5f5f5',
-    marginRight: 10,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#ddd',
   },
   cancelButtonText: {
     color: '#666',
     fontWeight: '600',
   },
-  saveButton: {
+  assignButton: {
     backgroundColor: '#5F402C',
   },
-  saveButtonDisabled: {
-    opacity: 0.6,
+  assignButtonDisabled: {
+    backgroundColor: '#cccccc',
   },
-  saveButtonText: {
-    color: 'white',
-    fontWeight: '600',
-  },
-  inviteButton: {
-    backgroundColor: '#5F402C',
-  },
-  inviteButtonText: {
-    color: 'white',
-    fontWeight: '600',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  errorText: {
-    fontSize: 16,
-    color: 'red',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  retryButton: {
-    backgroundColor: '#5F402C',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-  },
-  retryText: {
+  assignButtonText: {
     color: 'white',
     fontWeight: '600',
   },

@@ -13,13 +13,19 @@ export default function BarberCard({ barberInfo, backgroundColor, navigation }) 
     navigation.navigate("profilePage", { barberId: barberInfo.barber_id });
   };
 
+  // Extract name from email (everything before @)
+  const displayName = barberInfo.email.split('@')[0];
+  const formattedEmail = barberInfo.email.length > 20 
+    ? `${barberInfo.email.substring(0, 18)}...` 
+    : barberInfo.email;
+
   return (
     <TouchableOpacity
       style={[styles.cardContainer, { backgroundColor }]}
       onPress={handleBarberClick}
       activeOpacity={0.8}
     >
-      {/* Profile Image Placeholder */}
+      {/* Profile Image with Email Initial */}
       <View style={styles.imageContainer}>
         {barberInfo.image_url ? (
           <Image 
@@ -27,31 +33,37 @@ export default function BarberCard({ barberInfo, backgroundColor, navigation }) 
             style={styles.profileImage}
           />
         ) : (
-          <Ionicons name="person-circle" size={60} color="#5F402C" />
+          <View style={styles.initialsCircle}>
+            <Text style={styles.initialsText}>
+              {displayName.charAt(0).toUpperCase()}
+            </Text>
+          </View>
         )}
       </View>
 
       {/* Barber Info */}
       <View style={styles.infoContainer}>
-        <Text style={styles.barberName}>{barberInfo.name}</Text>
-        <Text style={styles.barberSpecialty}>{barberInfo.specialty || "Professional Barber"}</Text>
+        <Text style={styles.barberName}>{displayName}</Text>
+        <Text style={styles.barberEmail}>{formattedEmail}</Text>
         
-        <View style={styles.ratingContainer}>
-          <Ionicons name="star" size={16} color="#FFD700" />
-          <Text style={styles.ratingText}>{barberInfo.rating || "4.8"}</Text>
-        </View>
-
-        <View style={styles.contactContainer}>
-          <Ionicons name="call" size={14} color="#5F402C" />
-          <Text style={styles.contactText}>{barberInfo.phone || "N/A"}</Text>
+        <View style={styles.detailsRow}>
+          <View style={styles.detailItem}>
+            <Ionicons name="star" size={14} color="#FFD700" />
+            <Text style={styles.detailText}>{barberInfo.rating || "4.8"}</Text>
+          </View>
+          
+          <View style={styles.detailItem}>
+            <Ionicons name="call" size={14} color="#5F402C" />
+            <Text style={styles.detailText}>{barberInfo.phone_number || "N/A"}</Text>
+          </View>
         </View>
       </View>
 
       {/* Right Chevron */}
       <Ionicons 
         name="chevron-forward" 
-        size={24} 
-        color="#5F402C" 
+        size={20} 
+        color="#7f8c8d" 
         style={styles.chevron}
       />
     </TouchableOpacity>
@@ -62,58 +74,67 @@ const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 15,
+    padding: 16,
     marginVertical: 8,
-    marginHorizontal: 16,
     borderRadius: 12,
+    backgroundColor: '#fff',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowRadius: 3,
+    elevation: 2,
   },
   imageContainer: {
-    marginRight: 15,
+    marginRight: 16,
   },
   profileImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+  },
+  initialsCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#e1f5fe',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  initialsText: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#0288d1',
   },
   infoContainer: {
     flex: 1,
   },
   barberName: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
-    color: '#2c3e50',
-    marginBottom: 4,
+    color: '#2d3436',
+    marginBottom: 2,
   },
-  barberSpecialty: {
-    fontSize: 14,
-    color: '#7f8c8d',
-    marginBottom: 6,
+  barberEmail: {
+    fontSize: 13,
+    color: '#636e72',
+    marginBottom: 8,
   },
-  ratingContainer: {
+  detailsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4,
   },
-  ratingText: {
-    fontSize: 14,
+  detailItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  detailText: {
+    fontSize: 13,
     color: '#5F402C',
     marginLeft: 4,
   },
-  contactContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  contactText: {
-    fontSize: 14,
-    color: '#5F402C',
-    marginLeft: 6,
-  },
   chevron: {
     marginLeft: 'auto',
+    opacity: 0.7,
   },
 });

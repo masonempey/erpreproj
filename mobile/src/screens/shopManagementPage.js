@@ -31,7 +31,7 @@ export default function ShopManagementPage({ navigation, route }) {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("http://10.245.24.135:3000/api/shop");
+      const response = await fetch("http://10.174.167.208:3000/api/shop");
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -68,7 +68,7 @@ export default function ShopManagementPage({ navigation, route }) {
         phone: updatedData.phone
       };
   
-      const response = await fetch("http://10.245.24.135:3000/api/shop", {
+      const response = await fetch("http://10.174.167.208:3000/api/shop", {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
