@@ -8,26 +8,21 @@ import {
 } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 
-export default function BarberCard({ barberInfo, backgroundColor, navigation }) {
-  const handleBarberClick = () => {
-    navigation.navigate("Profile", { barberId: barberInfo.barber_id });
-  };
-
-  // Extract name from email (everything before @)
-  const displayName = barberInfo.email.split('@')[0];
-  const formattedEmail = barberInfo.email.length > 20 
-    ? `${barberInfo.email.substring(0, 18)}...` 
-    : barberInfo.email;
+export default function BarberCard({ barberInfo, backgroundColor = '#fff' }) {
+  // Safely extract and format data with fallbacks
+  const email = barberInfo?.email || '';
+  const displayName = email.split('@')[0] || 'Barber';
+  const formattedEmail = email.length > 20 
+    ? `${email.substring(0, 18)}...` 
+    : email;
+  const rating = barberInfo?.rating ? String(barberInfo.rating) : "4.8";
+  const phoneNumber = barberInfo?.phone_number ? String(barberInfo.phone_number) : "N/A";
 
   return (
-    <TouchableOpacity
-      style={[styles.cardContainer, { backgroundColor }]}
-      onPress={handleBarberClick}
-      activeOpacity={0.8}
-    >
-      {/* Profile Image with Email Initial */}
+    <View style={[styles.cardContainer, { backgroundColor }]}>
+      {/* Profile Image with Initial */}
       <View style={styles.imageContainer}>
-        {barberInfo.image_url ? (
+        {barberInfo?.image_url ? (
           <Image 
             source={{ uri: barberInfo.image_url }} 
             style={styles.profileImage}
@@ -44,17 +39,17 @@ export default function BarberCard({ barberInfo, backgroundColor, navigation }) 
       {/* Barber Info */}
       <View style={styles.infoContainer}>
         <Text style={styles.barberName}>{displayName}</Text>
-        <Text style={styles.barberEmail}>{formattedEmail}</Text>
+        {email ? <Text style={styles.barberEmail}>{formattedEmail}</Text> : null}
         
         <View style={styles.detailsRow}>
           <View style={styles.detailItem}>
             <Ionicons name="star" size={14} color="#FFD700" />
-            <Text style={styles.detailText}>{barberInfo.rating || "4.8"}</Text>
+            <Text style={styles.detailText}>{rating}</Text>
           </View>
           
           <View style={styles.detailItem}>
             <Ionicons name="call" size={14} color="#5F402C" />
-            <Text style={styles.detailText}>{barberInfo.phone_number || "N/A"}</Text>
+            <Text style={styles.detailText}>{phoneNumber}</Text>
           </View>
         </View>
       </View>
@@ -66,7 +61,7 @@ export default function BarberCard({ barberInfo, backgroundColor, navigation }) 
         color="#7f8c8d" 
         style={styles.chevron}
       />
-    </TouchableOpacity>
+    </View>
   );
 }
 

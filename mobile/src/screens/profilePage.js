@@ -1,202 +1,226 @@
-"use client";
+// ProfilePage.js
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator } from 'react-native';
+import { AuthContext } from '../firebase/firebase-context';
+import { Ionicons } from '@expo/vector-icons';
 
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
-} from "react-native";
-import testBarbers from "../utilities/testing/testBarbers.json";
-import fakeUserContext from "../utilities/testing/testUserContext.json";
-export default function ProfilePage({ route }) {
-  const { barberId } = route.params || {}; // Get the barber ID from the route
-  const loggedInBarberId = fakeUserContext?.user?.barber_id || null;
-  const [barber, setBarber] = useState(null);
-  const [isEditable, setIsEditable] = useState(false);
-  const [bio, setBio] = useState("");
-  const [services, setServices] = useState([]);
+const ProfilePage = () => {
+  const { user } = useContext(AuthContext);
+  const [userDetails, setUserDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const barberData = testBarbers || [];
-    const selectedBarber = barberData.find(
-      (b) => b.barber_id === (barberId || loggedInBarberId)
-    );
-    if (selectedBarber) {
-      setBarber(selectedBarber);
-      setBio(selectedBarber.bio || "");
-      setServices(selectedBarber.services_offered || []);
-      setIsEditable(selectedBarber.barber_id === loggedInBarberId); // Enable editing only for the logged-in barber
-    }
-  }, [barberId, loggedInBarberId]);
+    const fetchUserDetails = async () => {
+      try {
+        if (!user?.uid) return;
+        
+        const response = await fetch(`http://10.174.167.208:3000/api/users/${user.uid}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${await user.getIdToken()}`,
+          },
+        });
 
-  const handleSave = () => {
-    if (barber) {
-      const updatedBarber = {
-        ...barber,
-        bio: bio,
-        services_offered: services,
-      };
-      setBarber(updatedBarber);
-      console.log("Updated Barber:", updatedBarber);
-    }
-  };
+        if (!response.ok) {
+          throw new Error('Failed to fetch user details');
+        }
 
-  // Handle adding a new service
-  const handleAddService = () => {
-    const newService = {
-      service_id: `S${services.length + 1}`,
-      service_name: "",
-      price: 0,
-      duration_minutes: 0,
+        const data = await response.json();
+        setUserDetails(data);
+      } catch (err) {
+        console.error('Error fetching user details:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     };
-    setServices([...services, newService]);
+
+    fetchUserDetails();
+  }, [user]);
+
+  // Fallback image URL or initials
+  const getAvatar = () => {
+    if (user?.photoURL) {
+      return { uri: user.photoURL };
+    }
+    return require('../../assets/logo.png');
   };
 
-  // Handle updating a service
-  const handleUpdateService = (index, field, value) => {
-    const updatedServices = [...services];
-    updatedServices[index][field] = value;
-    setServices(updatedServices);
+  const getInitials = () => {
+    if (user?.displayName) {
+      return user.displayName.split(' ').map(name => name[0]).join('').toUpperCase();
+    }
+    return user?.email?.charAt(0).toUpperCase() || 'U';
   };
 
-  // Handle deleting a service
-  const handleDeleteService = (index) => {
-    const updatedServices = services.filter((_, i) => i !== index);
-    setServices(updatedServices);
-  };
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#5F402C" />
+      </View>
+    );
+  }
 
-  // Render loading state if barber data is not yet available
-  if (!barber) {
-    return <Text>Loading...</Text>;
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>Error loading profile: {error}</Text>
+      </View>
+    );
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.name}>{barber.barber_name}</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.profileHeader}>
+        <View style={styles.avatarContainer}>
+          {user?.photoURL ? (
+            <Image source={getAvatar()} style={styles.avatar} />
+          ) : (
+            <View style={styles.initialsAvatar}>
+              <Text style={styles.initialsText}>{getInitials()}</Text>
+            </View>
+          )}
+        </View>
+        <Text style={styles.userName}>
+          {userDetails?.displayName || user?.displayName || 'User'}
+        </Text>
+        <Text style={styles.userEmail}>
+          {user?.email || 'No email provided'}
+        </Text>
+      </View>
 
-        <Text style={styles.label}>Bio:</Text>
-        {isEditable ? (
-          <TextInput
-            style={styles.input}
-            value={bio}
-            onChangeText={setBio}
-            multiline
-          />
-        ) : (
-          <Text style={styles.bio}>{bio}</Text>
-        )}
+      <View style={styles.detailsSection}>
+        <View style={styles.detailItem}>
+          <Ionicons name="mail" size={20} color="#5F402C" style={styles.icon} />
+          <Text style={styles.detailText}>
+            {user?.email || 'Email not available'}
+          </Text>
+        </View>
 
-        <Text style={styles.label}>Services:</Text>
-        {services.map((service, index) => (
-          <View key={service.service_id} style={styles.serviceContainer}>
-            {isEditable ? (
-              <>
-                <TextInput
-                  style={styles.input}
-                  value={service.service_name}
-                  onChangeText={(text) =>
-                    handleUpdateService(index, "service_name", text)
-                  }
-                  placeholder="Service Name"
-                />
-                <TextInput
-                  style={styles.input}
-                  value={service.price.toString()}
-                  onChangeText={(text) =>
-                    handleUpdateService(index, "price", parseFloat(text))
-                  }
-                  placeholder="Price"
-                  keyboardType="numeric"
-                />
-                <TextInput
-                  style={styles.input}
-                  value={service.duration_minutes.toString()}
-                  onChangeText={(text) =>
-                    handleUpdateService(
-                      index,
-                      "duration_minutes",
-                      parseInt(text)
-                    )
-                  }
-                  placeholder="Duration (minutes)"
-                  keyboardType="numeric"
-                />
-                <Button
-                  title="Delete"
-                  onPress={() => handleDeleteService(index)}
-                />
-              </>
-            ) : (
-              <>
-                <Text style={styles.serviceName}>{service.service_name}</Text>
-                <Text>Price: ${service.price}</Text>
-                <Text>Duration: {service.duration_minutes} minutes</Text>
-              </>
-            )}
+        {userDetails?.phone_number && (
+          <View style={styles.detailItem}>
+            <Ionicons name="phone-portrait" size={20} color="#5F402C" style={styles.icon} />
+            <Text style={styles.detailText}>
+              {userDetails.phone_number}
+            </Text>
           </View>
-        ))}
-
-        {isEditable && (
-          <Button title="Add Service" onPress={handleAddService} />
         )}
 
-        {isEditable && <Button title="Save Changes" onPress={handleSave} />}
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
+        <View style={styles.detailItem}>
+          <Ionicons name="calendar" size={20} color="#5F402C" style={styles.icon} />
+          <Text style={styles.detailText}>
+            Joined: {new Date(user?.metadata?.creationTime).toLocaleDateString() || 'Unknown'}
+          </Text>
+        </View>
 
-// Styles
+        {/* Additional fields from your API */}
+        {userDetails?.role_id && (
+          <View style={styles.detailItem}>
+            <Ionicons name="person-circle" size={20} color="#5F402C" style={styles.icon} />
+            <Text style={styles.detailText}>
+              Role: {getRoleName(userDetails.role_id)}
+            </Text>
+          </View>
+        )}
+      </View>
+    </ScrollView>
+  );
+};
+
+// Helper function to display role names
+const getRoleName = (role_id) => {
+  switch (role_id) {
+    case 1: return 'User';
+    case 2: return 'Admin';
+    case 3: return 'Barber';
+    default: return 'Unknown';
+  }
+};
+
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1, // Ensures the ScrollView expands to fill the available space
+    flexGrow: 1,
+    backgroundColor: '#fff',
     padding: 20,
-    paddingBottom: 100, // Add extra padding to avoid overlap with the nav bar
   },
-  profilePicture: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    alignSelf: "center",
-    marginBottom: 20,
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  name: {
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  profileHeader: {
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  avatarContainer: {
+    marginBottom: 15,
+  },
+  avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 2,
+    borderColor: '#5F402C',
+  },
+  initialsAvatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#e1f5fe',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#5F402C',
+  },
+  initialsText: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#0288d1',
+  },
+  userName: {
     fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  bio: {
-    fontSize: 16,
-    marginBottom: 20,
-  },
-  serviceContainer: {
-    marginBottom: 20,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-  },
-  serviceName: {
-    fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
+    color: '#333',
     marginBottom: 5,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
+  userEmail: {
+    fontSize: 16,
+    color: '#666',
+  },
+  detailsSection: {
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+    paddingTop: 20,
+  },
+  detailItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f5f5f5',
+  },
+  icon: {
+    marginRight: 15,
+    width: 24,
+  },
+  detailText: {
+    fontSize: 16,
+    color: '#444',
+    flex: 1,
   },
 });
+
+export default ProfilePage;
