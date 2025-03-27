@@ -565,13 +565,6 @@ const ProfilePopup = () => {
                             {appointment.status || "Confirmed"}
                           </Typography>
 
-                          {appointment.price && (
-                            <Typography>
-                              <strong>Price:</strong> $
-                              {appointment.price.toFixed(2)}
-                            </Typography>
-                          )}
-
                           {appointment.duration_minutes && (
                             <Typography>
                               <strong>Duration:</strong>{" "}

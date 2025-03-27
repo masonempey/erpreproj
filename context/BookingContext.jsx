@@ -114,6 +114,7 @@ export const BookingProvider = ({ children }) => {
           date: state.date.format("YYYY-MM-DD") + "T" + state.time,
           userId: user?.uid || null,
           barberId: state.barberId,
+          serviceId: state.serviceId,
           guestName: state.personalInfo.fullName,
           guestEmail: state.personalInfo.email,
           guestPhone: state.personalInfo.phone,

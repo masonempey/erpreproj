@@ -5,7 +5,9 @@ import landingStyles from "../../styles/Landing.module.css";
 import reviewStyles from "../../styles/Reviews.module.css";
 import newsletterStyles from "../../styles/Newsletter.module.css";
 import BookingPopUp from "../../components/Booking"; // From Main
-import { Button, Typography, Box, Container } from "@mui/material"; // From Main
+import { Button, Typography, Box, Container, IconButton } from "@mui/material";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CustomerReviewCard from "../../components/customerReviewCard";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
@@ -24,13 +26,15 @@ export default function Home() {
           console.log("Fetched review data:", reviewData);
           // Map database reviews to the format expected by CustomerReviewCard
           // reviewData.reviews contains the reviews fetched from the database
-          const mappedReviews = (reviewData.reviews || []).map(review => ({
+          const mappedReviews = (reviewData.reviews || []).map((review) => ({
             author_name: review.author_name || "Anonymous", // Use the saved author_name from the database
             profile_photo_url: review.profile_photo_url || "", // Use the saved profile picture URL from the database
             text: review.review, // Map the review text
             numsReviews: 0, // Not available in the database; set a default
             rating: review.rating || 5, // Use the saved rating, default to 5 if missing
-            relative_time_description: calculateRelativeTime(review.review_date), // Calculate relative time from review_date
+            relative_time_description: calculateRelativeTime(
+              review.review_date
+            ), // Calculate relative time from review_date
           }));
           setReviews(mappedReviews);
         } else {
@@ -148,61 +152,91 @@ export default function Home() {
       >
         <div id="reviewHeader" className={reviewStyles.reviewHeader}>
           <h2>Customer Reviews</h2>
-          <p>Rate by you</p>
+          <p>What Our Clients Say</p>
         </div>
 
         <hr></hr>
-        <div id="cardsWrapper" className={reviewStyles.cardsWrapper}>
-          {reviews.length > 0 ? (
-            reviews.map((data) => (
-              <CustomerReviewCard
-                key={data.author_name}
-                cusName={data.author_name}
-                image={data.profile_photo_url}
-                review={data.text}
-                numsReviews={data.numsReviews}
-                stars={data.rating}
-                time={data.relative_time_description}
-              />
-            ))
-          ) : (
-            <p>No reviews available.</p>
-          )}
-        </div>
-        <Stack
-          spacing={2}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "40px",
-          }}
-        >
-          <Pagination
+
+        <Box sx={{ position: "relative", width: "100%", maxWidth: "1400px" }}>
+          <IconButton
             sx={{
-              "& .MuiPaginationItem-root": {
-                color: "#35281f",
-                borderColor: "#35281f",
-              },
-              "& .MuiPaginationItem-root.Mui-selected": {
-                backgroundColor: "#35281f",
-                color: "white",
-                borderColor: "#35281f",
-              },
-              "& .MuiPaginationItem-root:hover": {
-                backgroundColor: "#35281f",
-                color: "white",
-              },
+              position: "absolute",
+              left: 0,
+              top: "50%",
+              transform: "translateY(-50%)",
+              bgcolor: "rgba(53, 40, 31, 0.05)",
+              "&:hover": { bgcolor: "rgba(53, 40, 31, 0.1)" },
+              zIndex: 2,
             }}
-            count={10}
-            size="large"
-          />
-        </Stack>
-        <hr></hr>
-      </section>
+            onClick={() => {
+              const container = document.getElementById("cardsWrapper");
+              container.scrollLeft -= 330;
+            }}
+          >
+            <ArrowBackIosNewIcon sx={{ color: "#35281f" }} />
+          </IconButton>
 
-      <section
-        className={`${landingStyles.section} ${newsletterStyles.newsletter}`}
-      >
+          <div id="cardsWrapper" className={reviewStyles.cardsWrapper}>
+            {reviews.length > 0 ? (
+              reviews.map((data) => (
+                <CustomerReviewCard
+                  key={data.author_name}
+                  cusName={data.author_name}
+                  image={data.profile_photo_url}
+                  review={data.text}
+                  numsReviews={data.numsReviews}
+                  stars={data.rating}
+                  time={data.relative_time_description}
+                />
+              ))
+            ) : (
+              <p>Loading reviews...</p>
+            )}
+          </div>
+
+          <IconButton
+            sx={{
+              position: "absolute",
+              right: 0,
+              top: "50%",
+              transform: "translateY(-50%)",
+              bgcolor: "rgba(53, 40, 31, 0.05)",
+              "&:hover": { bgcolor: "rgba(53, 40, 31, 0.1)" },
+              zIndex: 2,
+            }}
+            onClick={() => {
+              const container = document.getElementById("cardsWrapper");
+              container.scrollLeft += 330;
+            }}
+          >
+            <ArrowForwardIosIcon sx={{ color: "#35281f" }} />
+          </IconButton>
+        </Box>
+
+        <div className={reviewStyles.dots}>
+          {[...Array(Math.ceil(reviews.length / 4))].map((_, i) => (
+            <div
+              key={i}
+              className={`${reviewStyles.dot} ${
+                i === 0 ? reviewStyles.active : ""
+              }`}
+              onClick={() => {
+                const container = document.getElementById("cardsWrapper");
+                container.scrollLeft = i * container.offsetWidth;
+
+                // Update active dot
+                document
+                  .querySelectorAll(`.${reviewStyles.dot}`)
+                  .forEach((dot, index) => {
+                    if (index === i) dot.classList.add(reviewStyles.active);
+                    else dot.classList.remove(reviewStyles.active);
+                  });
+              }}
+            />
+          ))}
+        </div>
+      </section>
+      <section id="newsletter" className={landingStyles.section}>
         <NewsLetter />
       </section>
     </main>

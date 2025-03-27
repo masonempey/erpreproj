@@ -9,6 +9,7 @@ export async function POST(request) {
       date,
       userId, // Optional
       barberId,
+      serviceId,
       guestName, // Optional
       guestEmail, // Optional
       guestPhone, // Optional
@@ -31,6 +32,7 @@ export async function POST(request) {
     const newAppointment = await createAppointment(
       date,
       userId,
+      serviceId,
       barberId,
       guestName,
       guestEmail,
