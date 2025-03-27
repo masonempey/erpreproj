@@ -5,11 +5,11 @@ import landingStyles from "../../styles/Landing.module.css";
 import reviewStyles from "../../styles/Reviews.module.css";
 import aboutStyles from "../../styles/About.module.css";
 import newsletterStyles from "../../styles/Newsletter.module.css";
-import BookingPopUp from "../../components/Booking"; // From Main
-import { Button, Typography, Box, Container } from "@mui/material"; // From Main
+import BookingPopUp from "../../components/Booking";
+import { Button, Typography, Box, Container, IconButton } from "@mui/material";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CustomerReviewCard from "../../components/customerReviewCard";
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
 import NewsLetter from "./homeScreens/newsLetter";
 import AboutText from "../../components/AboutText";
 import AboutImages from "../../components/AboutImages";
@@ -26,6 +26,7 @@ export default function Home() {
         if (response.status === 200) {
           const reviewData = await response.json();
           console.log("Fetched review data:", reviewData);
+          // Keeping your mapping (alex) which is identical to Main
           const mappedReviews = (reviewData.reviews || []).map(review => ({
             author_name: review.author_name || "Anonymous",
             profile_photo_url: review.profile_photo_url || "",
@@ -149,57 +150,90 @@ export default function Home() {
       >
         <div id="reviewHeader" className={reviewStyles.reviewHeader}>
           <h2>Customer Reviews</h2>
-          <p>Rate by you</p>
+          <p>What Our Clients Say</p>
         </div>
         <hr></hr>
-        <div id="cardsWrapper" className={reviewStyles.cardsWrapper}>
-          {reviews.length > 0 ? (
-            reviews.map((data) => (
-              <CustomerReviewCard
-                key={data.author_name}
-                cusName={data.author_name}
-                image={data.profile_photo_url}
-                review={data.text}
-                numsReviews={data.numsReviews}
-                stars={data.rating}
-                time={data.relative_time_description}
-              />
-            ))
-          ) : (
-            <p>No reviews available.</p>
-          )}
-        </div>
-        <Stack
-          spacing={2}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "40px",
-          }}
-        >
-          <Pagination
+
+        <Box sx={{ position: "relative", width: "100%", maxWidth: "1400px" }}>
+          <IconButton
             sx={{
-              "& .MuiPaginationItem-root": {
-                color: "#35281f",
-                borderColor: "#35281f",
-              },
-              "& .MuiPaginationItem-root.Mui-selected": {
-                backgroundColor: "#35281f",
-                color: "white",
-                borderColor: "#35281f",
-              },
-              "& .MuiPaginationItem-root:hover": {
-                backgroundColor: "#35281f",
-                color: "white",
-              },
+              position: "absolute",
+              left: 0,
+              top: "50%",
+              transform: "translateY(-50%)",
+              bgcolor: "rgba(53, 40, 31, 0.05)",
+              "&:hover": { bgcolor: "rgba(53, 40, 31, 0.1)" },
+              zIndex: 2,
             }}
-            count={10}
-            size="large"
-          />
-        </Stack>
-        <hr></hr>
+            onClick={() => {
+              const container = document.getElementById("cardsWrapper");
+              container.scrollLeft -= 330;
+            }}
+          >
+            <ArrowBackIosNewIcon sx={{ color: "#35281f" }} />
+          </IconButton>
+
+          <div id="cardsWrapper" className={reviewStyles.cardsWrapper}>
+            {reviews.length > 0 ? (
+              reviews.map((data) => (
+                <CustomerReviewCard
+                  key={data.author_name}
+                  cusName={data.author_name}
+                  image={data.profile_photo_url}
+                  review={data.text}
+                  numsReviews={data.numsReviews}
+                  stars={data.rating}
+                  time={data.relative_time_description}
+                />
+              ))
+            ) : (
+              <p>Loading reviews...</p>
+            )}
+          </div>
+
+          <IconButton
+            sx={{
+              position: "absolute",
+              right: 0,
+              top: "50%",
+              transform: "translateY(-50%)",
+              bgcolor: "rgba(53, 40, 31, 0.05)",
+              "&:hover": { bgcolor: "rgba(53, 40, 31, 0.1)" },
+              zIndex: 2,
+            }}
+            onClick={() => {
+              const container = document.getElementById("cardsWrapper");
+              container.scrollLeft += 330;
+            }}
+          >
+            <ArrowForwardIosIcon sx={{ color: "#35281f" }} />
+          </IconButton>
+        </Box>
+
+        <div className={reviewStyles.dots}>
+          {[...Array(Math.ceil(reviews.length / 4))].map((_, i) => (
+            <div
+              key={i}
+              className={`${reviewStyles.dot} ${
+                i === 0 ? reviewStyles.active : ""
+              }`}
+              onClick={() => {
+                const container = document.getElementById("cardsWrapper");
+                container.scrollLeft = i * container.offsetWidth;
+
+                document
+                  .querySelectorAll(`.${reviewStyles.dot}`)
+                  .forEach((dot, index) => {
+                    if (index === i) dot.classList.add(reviewStyles.active);
+                    else dot.classList.remove(reviewStyles.active);
+                  });
+              }}
+            />
+          ))}
+        </div>
       </section>
 
+      {/* Adding Mason's About section */}
       <section
         id="about"
         className={`${landingStyles.section} ${aboutStyles.about}`}
@@ -211,7 +245,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Keeping both your and Mason's Newsletter section */}
       <section
+        id="newsletter"
         className={`${landingStyles.section} ${newsletterStyles.newsletter}`}
       >
         <NewsLetter />

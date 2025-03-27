@@ -1,136 +1,158 @@
+"use client";
+
 import React, { useState } from "react";
 import {
   Box,
+  Typography,
   TextField,
   Button,
-  Typography,
+  Container,
   Paper,
+  Snackbar,
   Alert,
 } from "@mui/material";
+import EmailIcon from "@mui/icons-material/Email";
+import newsletterStyles from "../../../styles/Newsletter.module.css";
 
-export default function NewsLetter() {
+const NewsLetter = () => {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
-      setStatus("error");
+
+    // Basic email validation
+    if (!email || !email.includes("@") || !email.includes(".")) {
+      setError("Please enter a valid email address");
       return;
     }
-    // Add newsletter signup logic here
-    setStatus("success");
-    setEmail("");
+
+    try {
+      // You would replace this with your actual API endpoint
+      const response = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        setSubmitted(true);
+        setEmail("");
+        setError("");
+      } else {
+        setError("Failed to subscribe. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error subscribing to newsletter:", err);
+      setError("An unexpected error occurred. Please try again later.");
+    }
+  };
+
+  const handleClose = () => {
+    setSubmitted(false);
   };
 
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        padding: "3rem",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 3,
-      }}
-    >
-      <Typography
-        variant="h4"
-        sx={{
-          color: "#35281f",
-          fontWeight: "bold",
-          textAlign: "center",
-        }}
-      >
-        Subscribe to Our Newsletter
-      </Typography>
-      <Typography
-        variant="body1"
-        sx={{
-          color: "#666",
-          textAlign: "center",
-          maxWidth: "600px",
-        }}
-      >
-        Stay updated with our latest news, promotions, and special offers!
-      </Typography>
+    <Container maxWidth="lg" className={newsletterStyles.newsletterContainer}>
+      <Paper elevation={3} className={newsletterStyles.newsletterPaper}>
+        <Box className={newsletterStyles.contentWrapper}>
+          <Box className={newsletterStyles.textContent}>
+            <Typography
+              variant="h3"
+              className={newsletterStyles.title}
+              sx={{
+                fontFamily: '"Oleo Script", cursive',
+                color: "#35281f",
+                mb: 2,
+              }}
+            >
+              Stay Updated
+            </Typography>
 
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{
-          display: "flex",
-          gap: 2,
-          width: "100%",
-          maxWidth: "500px",
-          marginTop: 2,
-        }}
-      >
-        <TextField
-          fullWidth
-          variant="outlined"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          error={status === "error"}
-          helperText={status === "error" ? "Please enter a valid email" : ""}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              "&.Mui-focused fieldset": {
-                borderColor: "#35281f",
-              },
-            },
-          }}
-        />
-        <Button
-          type="submit"
-          variant="contained"
-          sx={{
-            backgroundColor: "#35281f",
-            color: "#fafafa",
-            "&:hover": {
-              backgroundColor: "#fafafa",
-              color: "#35281f",
-              border: "1px solid #35281f",
-            },
-          }}
-        >
-          Subscribe
-        </Button>
-      </Box>
+            <Typography
+              variant="body1"
+              className={newsletterStyles.description}
+            >
+              Subscribe to our newsletter for exclusive offers, styling tips,
+              and the latest updates from Erpre Barber and Shop.
+            </Typography>
 
-      {status === "success" && (
-        <Alert severity="success" sx={{ width: "100%", maxWidth: "500px" }}>
-          Thank you for subscribing!
+            <Box className={newsletterStyles.features}>
+              <Box className={newsletterStyles.featureItem}>
+                <div className={newsletterStyles.checkmark}>✓</div>
+                <Typography variant="body2">
+                  Exclusive offers & discounts
+                </Typography>
+              </Box>
+              <Box className={newsletterStyles.featureItem}>
+                <div className={newsletterStyles.checkmark}>✓</div>
+                <Typography variant="body2">Grooming tips & trends</Typography>
+              </Box>
+              <Box className={newsletterStyles.featureItem}>
+                <div className={newsletterStyles.checkmark}>✓</div>
+                <Typography variant="body2">
+                  New service announcements
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+
+          <Box className={newsletterStyles.formContent}>
+            <form onSubmit={handleSubmit} className={newsletterStyles.form}>
+              <TextField
+                fullWidth
+                placeholder="Your email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                error={!!error}
+                helperText={error}
+                InputProps={{
+                  startAdornment: (
+                    <EmailIcon sx={{ mr: 1, color: "rgba(53, 40, 31, 0.5)" }} />
+                  ),
+                  className: newsletterStyles.input,
+                }}
+                sx={{ mb: 2 }}
+              />
+
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={{
+                  backgroundColor: "#e6853b",
+                  color: "white",
+                  py: 1.5,
+                  fontWeight: 600,
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    backgroundColor: "#d67b35",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 5px 15px rgba(230, 133, 59, 0.4)",
+                  },
+                }}
+              >
+                Subscribe Now
+              </Button>
+            </form>
+
+            <Typography variant="caption" className={newsletterStyles.privacy}>
+              We respect your privacy. Unsubscribe at any time.
+            </Typography>
+          </Box>
+        </Box>
+      </Paper>
+
+      <Snackbar open={submitted} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          Thank you for subscribing to our newsletter!
         </Alert>
-      )}
-    </Paper>
+      </Snackbar>
+    </Container>
   );
-}
+};
 
-// OLD NEWSLETTER (MAY GO BACK)
-// export default function NewsLetter() {
-//     const information = [
-//         {title: "20% Off Haircuts!", date: "Ends: February 20th 2025", description: "To celebrate our new app we are offering 25% off to anyone who makes an account and books an appointment!"},
-//         {title: "10% Product Discounts!", date: "Ends: February 25th 2025", description: "In shop products will be 10% off for the time being!"},
-//         {title: "Now Hiring!", description: "We are looking for new talent to come and join our team!"},
-//         {title: "New System!", description: "We are integrating a new website and discription, please contact us if you experiance any issue."},
-//         {title: "Shop closure!", date: "Closed: February 16th"},
-//         {title: "Family discounts!", description: "Book a bundle of appointments to recieve a discount."},
-//         {title: "Changing opening times!", date: "Starts: February 18th", description: "Shop  will be opening at 8 am instead of 9 am on saturadys."}
-//     ]
-//     return(
-//         <div>
-//             <h2 className={newsletterStyles.title}>Erpre Newsletter</h2>
-//             <div className={newsletterStyles.newsletterContainer}>
-//                 {information.map((point, index) => (
-//                     <div key={index} className={newsletterStyles.card}>
-//                         <h3>{point.title}</h3>
-//                         {point.date && <p className={newsletterStyles.date}>{point.date}</p>}
-//                         <p>{point.description}</p>
-//                     </div>
-//                 ))}
-//             </div>
-//         </div>
-//     );
-// }
+export default NewsLetter;

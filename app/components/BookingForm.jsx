@@ -1,4 +1,3 @@
-// BookingForm.jsx
 import React from "react";
 import { useBooking } from "../../context/BookingContext";
 import SelectService from "./SelectService";
@@ -8,6 +7,7 @@ import PersonalInfo from "./PersonalInfo";
 import PaymentForm from "./PaymentForm";
 import Confirmation from "./Confirmation";
 import styles from "../styles/Booking.module.css";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 export default function BookingForm({ onClose }) {
   const { state, dispatch } = useBooking();
@@ -43,8 +43,13 @@ export default function BookingForm({ onClose }) {
 
       {state.step > 1 && state.step < 6 && (
         <div className={styles.navigationButtons}>
-          <button className={styles.backButton} onClick={handleBack}>
-            Back
+          <button
+            className={styles.backButton}
+            onClick={handleBack}
+            aria-label="Go back to previous step"
+          >
+            <ArrowBackIcon />
+            <span>Back</span>
           </button>
         </div>
       )}

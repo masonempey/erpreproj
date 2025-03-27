@@ -78,3 +78,33 @@
   background-color: rgba(53, 40, 31, 0.05);
   transform: translateY(-50%) scale(1.1);
 }
+.navigationButtons {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 24px;
+  padding: 0 16px;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: transparent;
+  color: #35281f;
+  border: 2px solid #35281f;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.backButton:hover {
+  background-color: rgba(53, 40, 31, 0.1);
+  transform: translateX(-5px);
+}
+
+.backButton svg {
+  font-size: 18px;
+}

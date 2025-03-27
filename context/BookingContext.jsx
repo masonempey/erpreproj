@@ -74,7 +74,7 @@ function bookingReducer(state, action) {
     case "GO_BACK":
       return {
         ...state,
-        step: state.step > 1 ? state.step - 1 : 1,
+        step: state.step - 1,
       };
     case "RESET":
       return initialState;
@@ -84,15 +84,29 @@ function bookingReducer(state, action) {
 }
 
 export const BookingProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(bookingReducer, initialState);
   const { user } = useUser();
+  // Initialize with user data
+  const initialStateWithUserData = {
+    ...initialState,
+    personalInfo: user
+      ? {
+          fullName: user.name || "",
+          email: user.email || "",
+          phone: user.phoneNumber || "",
+          address: user.address || "",
+          postalCode: "",
+        }
+      : initialState.personalInfo,
+  };
+
+  const [state, dispatch] = useReducer(
+    bookingReducer,
+    initialStateWithUserData
+  );
 
   const createAppointment = async () => {
     dispatch({ type: "SET_LOADING", payload: true });
     try {
-      const appointment_date =
-        state.date.format("YYYY-MM-DD") + "T" + state.time;
-
       const response = await fetch("/api/appointments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -100,6 +114,7 @@ export const BookingProvider = ({ children }) => {
           date: state.date.format("YYYY-MM-DD") + "T" + state.time,
           userId: user?.uid || null,
           barberId: state.barberId,
+          serviceId: state.serviceId,
           guestName: state.personalInfo.fullName,
           guestEmail: state.personalInfo.email,
           guestPhone: state.personalInfo.phone,
