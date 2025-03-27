@@ -18,7 +18,6 @@ const AdminNavBar = () => {
   // Navigation items with correct routes
   const navItems = [
     { name: "Home", href: "/admin", icon: <DashboardIcon /> },
-    { name: "Profile", href: "/admin/profile", icon: <PersonIcon /> },
     { name: "Management", href: "/admin/managment", icon: <SettingsIcon /> },
     { name: "Statistics", href: "/admin/statistics", icon: <ChartIcon /> },
   ];

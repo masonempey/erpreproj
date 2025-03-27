@@ -4,12 +4,12 @@ import { Grid, Paper, Typography, Divider } from "@mui/material";
 import AdminLayout from "@/app/components/AdminLayout";
 import AdminNavBar from "@/app/components/AdminNavBar";
 import ShopCreds from "@/app/components/ShopCreds";
+import ShopHours from "@/app/components/ShopHours";
 
 export default function Management() {
   return (
     <AdminLayout title="Shop Management">
       <AdminNavBar />
-
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
@@ -23,7 +23,6 @@ export default function Management() {
             <ShopCreds />
           </Paper>
         </Grid>
-
         <Grid item xs={12} md={6}>
           <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
             <Typography
@@ -33,13 +32,7 @@ export default function Management() {
               Business Hours
             </Typography>
             <Divider sx={{ mb: 3 }} />
-            <Typography
-              variant="body1"
-              color="textSecondary"
-              sx={{ textAlign: "center", py: 4 }}
-            >
-              Business hours configuration coming soon...
-            </Typography>
+            <ShopHours />
           </Paper>
         </Grid>
       </Grid>

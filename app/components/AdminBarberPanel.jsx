@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   List,
   ListItem,
@@ -15,9 +16,10 @@ import {
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 
-const BarberPanel = ({ onBarberSelect, selectedBarber }) => {
+const BarberPanel = ({ onBarberSelect, selectedBarber, isDashboard = false }) => {
   const [barbers, setBarbers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchBarbers = async () => {
@@ -25,7 +27,6 @@ const BarberPanel = ({ onBarberSelect, selectedBarber }) => {
       try {
         const response = await fetch("/api/barbers");
         if (!response.ok) throw new Error("Failed to fetch barbers");
-
         const data = await response.json();
         setBarbers(data);
       } catch (err) {
@@ -38,7 +39,9 @@ const BarberPanel = ({ onBarberSelect, selectedBarber }) => {
   }, []);
 
   const handleBarberClick = (barberId) => {
-    if (onBarberSelect) {
+    if (isDashboard) {
+      router.push("/admin/statistics"); // Fixed to /admin/statistics
+    } else if (onBarberSelect) {
       onBarberSelect(barberId);
     }
   };
@@ -51,7 +54,6 @@ const BarberPanel = ({ onBarberSelect, selectedBarber }) => {
     );
   }
 
-  // Fallback if no barbers are found
   const barbersToDisplay =
     barbers.length > 0
       ? barbers
@@ -69,7 +71,7 @@ const BarberPanel = ({ onBarberSelect, selectedBarber }) => {
             <ListItem
               button
               onClick={() => handleBarberClick(barber.barber_id)}
-              selected={selectedBarber === barber.barber_id}
+              selected={!isDashboard && selectedBarber === barber.barber_id}
               sx={{
                 borderRadius: 1,
                 mb: 1,
