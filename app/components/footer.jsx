@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -10,6 +10,7 @@ import {
   useMediaQuery,
   useTheme,
   Stack,
+  Skeleton
 } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
@@ -21,6 +22,68 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 const Footer = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [shopInfo, setShopInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchShopInfo = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:3000/api/shop");
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setShopInfo({
+        shop_name: data.shop_name || '',
+        address: data.address || '',
+        city: data.city || '',
+        province: data.province || '',
+        postal_code: data.postal_code || '',
+        phone: data.phone || '',
+        email: data.email || ''
+      });
+      setError(null);
+    } catch (err) {
+      console.error("Failed to fetch shop info:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchShopInfo();
+  }, []);
+
+  if (error) {
+    return (
+      <Box sx={{ 
+        background: "#462A19", 
+        color: "white", 
+        p: 2, 
+        textAlign: "center",
+        borderTop: '2px solid red'
+      }}>
+        <Typography>Footer information currently unavailable</Typography>
+        <button 
+          onClick={fetchShopInfo}
+          style={{
+            marginTop: '10px',
+            padding: '5px 10px',
+            background: '#D6BEA9',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Retry
+        </button>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -41,14 +104,8 @@ const Footer = () => {
             mb: 5,
           }}
         >
-          <Box
-            sx={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: { xs: "center", md: "flex-start" },
-            }}
-          >
+          {/* Brand Section */}
+          <Box sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: { xs: "center", md: "flex-start" } }}>
             <Typography
               variant="h4"
               sx={{
@@ -70,7 +127,6 @@ const Footer = () => {
             >
               Barber & Shop
             </Typography>
-
             <Typography
               variant="body2"
               sx={{
@@ -84,14 +140,9 @@ const Footer = () => {
               precision cuts and exceptional service.
             </Typography>
           </Box>
-          <Box
-            sx={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: { xs: "center", md: "flex-start" },
-            }}
-          >
+
+          {/* Contact Information Section */}
+          <Box sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: { xs: "center", md: "flex-start" } }}>
             <Typography
               variant="h6"
               sx={{
@@ -114,38 +165,34 @@ const Footer = () => {
               Contact Information
             </Typography>
 
-            <Stack
-              spacing={2}
-              sx={{
-                alignItems: { xs: "center", md: "flex-start" },
-                width: "100%",
-              }}
-            >
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <PhoneIcon sx={{ mr: 1, color: "#D6BEA9" }} />
-                <Typography variant="body2">403-452-0154</Typography>
-              </Box>
-
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <EmailIcon sx={{ mr: 1, color: "#D6BEA9" }} />
-                <Typography variant="body2">
-                  erprebarberandshop@gmail.com
-                </Typography>
-              </Box>
-
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <LocationOnIcon sx={{ mr: 1, color: "#D6BEA9" }} />
-                <Typography variant="body2">
-                  1012 16 Ave NW 2nd floor, Calgary, AB T2M 0K5
-                </Typography>
-              </Box>
-
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <AccessTimeIcon sx={{ mr: 1, color: "#D6BEA9" }} />
-                <Typography variant="body2">
-                  Mon-Sat: 9AM-9PM | Sun: 10:30AM-7PM
-                </Typography>
-              </Box>
+            <Stack spacing={2} sx={{ alignItems: { xs: "center", md: "flex-start" }, width: "100%" }}>
+              <ContactItem 
+                icon={<PhoneIcon sx={{ color: "#D6BEA9" }} />}
+                text={loading ? <Skeleton width={120} /> : (shopInfo?.phone || "Not available")}
+              />
+              
+              <ContactItem 
+                icon={<EmailIcon sx={{ color: "#D6BEA9" }} />}
+                text={loading ? <Skeleton width={180} /> : (shopInfo?.email || "Not available")}
+              />
+              
+              <ContactItem 
+                icon={<LocationOnIcon sx={{ color: "#D6BEA9" }} />}
+                text={loading ? (
+                  <>
+                    <Skeleton width={100} />
+                    <Skeleton width={80} />
+                    <Skeleton width={60} />
+                  </>
+                ) : (
+                  `${shopInfo?.address || ""}, ${shopInfo?.city || ""}, ${shopInfo?.province || ""} ${shopInfo?.postal_code || ""}`
+                )}
+              />
+              
+              <ContactItem 
+                icon={<AccessTimeIcon sx={{ color: "#D6BEA9" }} />}
+                text="Mon-Sat: 9AM-9PM | Sun: 10:30AM-7PM"
+              />
             </Stack>
           </Box>
           <Box
@@ -178,48 +225,9 @@ const Footer = () => {
               Follow Us
             </Typography>
 
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: { xs: "center", md: "flex-start" },
-                mb: 3,
-                width: "100%",
-              }}
-            >
-              <IconButton
-                aria-label="Instagram"
-                component="a"
-                href="https://instagram.com"
-                target="_blank"
-                sx={{
-                  mr: 2,
-                  color: "#fafafa",
-                  bgcolor: "rgba(255,255,255,0.1)",
-                  "&:hover": {
-                    bgcolor: "#D6BEA9",
-                    color: "#5F402C",
-                  },
-                }}
-              >
-                <InstagramIcon />
-              </IconButton>
-
-              <IconButton
-                aria-label="Facebook"
-                component="a"
-                href="https://facebook.com"
-                target="_blank"
-                sx={{
-                  color: "#fafafa",
-                  bgcolor: "rgba(255,255,255,0.1)",
-                  "&:hover": {
-                    bgcolor: "#D6BEA9",
-                    color: "#5F402C",
-                  },
-                }}
-              >
-                <FacebookIcon />
-              </IconButton>
+            <Box sx={{ display: "flex", justifyContent: { xs: "center", md: "flex-start" }, mb: 3, width: "100%" }}>
+              <SocialIcon icon={<InstagramIcon />} href="https://instagram.com" />
+              <SocialIcon icon={<FacebookIcon />} href="https://facebook.com" />
             </Box>
 
             <Typography
@@ -253,34 +261,9 @@ const Footer = () => {
                 width: "100%",
               }}
             >
-              <Link
-                href="/"
-                color="inherit"
-                underline="hover"
-                sx={{ textAlign: { xs: "center", md: "left" } }}
-              >
-                Home
-              </Link>
-              <Link
-                href="/about"
-                color="inherit"
-                underline="hover"
-                sx={{ textAlign: { xs: "center", md: "left" } }}
-              >
-                About
-              </Link>
-              <Link
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.scrollTo(0, 0);
-                }}
-                color="inherit"
-                underline="hover"
-                sx={{ textAlign: { xs: "center", md: "left" } }}
-              >
-                Book Appointment
-              </Link>
+              <FooterLink href="/" text="Home" />
+              <FooterLink href="/about" text="About" />
+              <FooterLink href="#" text="Book Appointment" onClick={() => window.scrollTo(0, 0)} />
             </Stack>
           </Box>
         </Box>
@@ -300,5 +283,47 @@ const Footer = () => {
     </Box>
   );
 };
+
+// Helper components
+const ContactItem = ({ icon, text }) => (
+  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+    {icon}
+    <Typography variant="body2">
+      {text}
+    </Typography>
+  </Box>
+);
+
+const SocialIcon = ({ icon, href }) => (
+  <IconButton
+    aria-label="Social link"
+    component="a"
+    href={href}
+    target="_blank"
+    sx={{
+      mr: 2,
+      color: "#fafafa",
+      bgcolor: "rgba(255,255,255,0.1)",
+      "&:hover": {
+        bgcolor: "#D6BEA9",
+        color: "#5F402C",
+      },
+    }}
+  >
+    {icon}
+  </IconButton>
+);
+
+const FooterLink = ({ href, text, onClick }) => (
+  <Link
+    href={href}
+    color="inherit"
+    underline="hover"
+    sx={{ textAlign: { xs: "center", md: "left" } }}
+    onClick={onClick}
+  >
+    {text}
+  </Link>
+);
 
 export default Footer;
