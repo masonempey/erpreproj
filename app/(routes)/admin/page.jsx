@@ -1,338 +1,123 @@
 "use client";
-import { useEffect, useState } from "react";
-import Calendar from "../../components/Calendar";
-import dayjs from "dayjs";
-import styles from "../../styles/Admin.module.css";
-import AdminNavBar from "../../components/AdminNavBar";
-import TimeSlot from "../../components/TimeSlot";
-import Avatar from "@mui/material/Avatar";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
-import { red, grey } from "@mui/material/colors";
-import TutorialDisplay from "../../components/TutorialDisplay";
 
-export default function Admin() {
-  const [appointments, setAppointments] = useState([
-    {
-      id: "1",
-      customerName: "John Doe",
-      phone: "403-456-7890",
-      email: "johndoe@gmail.com",
-      serviceType: "Men's Haircut",
-      startTime: "2025-03-14T10:15:00",
-      endTime: "2025-03-14T11:00:00",
-    },
-    {
-      id: "2",
-      customerName: "Alice Smith",
-      phone: "403-777-8888",
-      email: "alice_smith@gmail.com",
-      serviceType: "Haircut & Hairwash",
-      startTime: "2025-03-14T11:00:00",
-      endTime: "2025-03-14T11:45:00",
-    },
-    {
-      id: "3",
-      customerName: "Robert Brown",
-      phone: "403-830-1234",
-      email: "robert.b@gmail.com",
-      serviceType: "Beard Trim",
-      startTime: "2025-03-14T12:30:00",
-      endTime: "2025-03-14T13:15:00",
-    },
-    {
-      id: "4",
-      customerName: "Emily Davis",
-      phone: "403-232-9191",
-      email: "em.davis@gmail.com",
-      serviceType: "Womens's Haircut",
-      startTime: "2025-03-18T14:00:00",
-      endTime: "2025-03-18T14:45:00",
-    },
-    {
-      id: "5",
-      customerName: "Chris Wilson",
-      phone: "403-111-1212",
-      email: "chris@gmail.com",
-      serviceType: "Kid's Haircut",
-      startTime: "2025-03-18T15:30:00",
-      endTime: "2025-03-18T16:15:00",
-    },
-    {
-      id: "6",
-      customerName: "Laura Smith",
-      phone: "403-273-0102",
-      email: "smithl@gmail.com",
-      serviceType: "Womens's Haircut",
-      startTime: "2025-03-17T09:30:00",
-      endTime: "2025-03-17T10:15:00",
-    },
-    {
-      id: "7",
-      customerName: "David Lee",
-      phone: "403-587-987",
-      email: "lee_david@gmail.com",
-      serviceType: "Beard Trim",
-      startTime: "2025-03-17T10:15:00",
-      endTime: "2025-03-17T11:00:00",
-    },
-    {
-      id: "8",
-      customerName: "Rachel Green",
-      phone: "403-777-8888",
-      email: "rgreen@gmail.com",
-      serviceType: "Hair Perm",
-      startTime: "2025-03-18T13:15:00",
-      endTime: "2025-03-18T14:00:00",
-    },
-    {
-      id: "9",
-      customerName: "James Carter",
-      phone: "403-000-0131",
-      email: "carterjames@gmail.com",
-      serviceType: "Men's Haircut",
-      startTime: "2025-03-14T16:15:00",
-      endTime: "2025-03-14T17:00:00",
-    },
-    {
-      id: "10",
-      customerName: "Sophia Turner",
-      phone: "403-876-3456",
-      email: "turner137@gmail.com",
-      serviceType: "Womens's Haircut",
-      startTime: "2025-03-17T11:45:00",
-      endTime: "2025-03-17T12:30:00",
-    },
-  ]);
-  const [selectedDate, setSelectedDate] = useState(dayjs());
-  const [selectedView, setSelectedView] = useState("Dashboard");
-  const [appointmentsThisDay, setAppointmentsThisDay] = useState([]);
-  const [selectedAppointment, setSelectedAppointment] = useState(null);
-  const [isTutorial, toggleTutorial] = useState(false);
-  const [position, setPosition] = useState({ x: "50%", y: "50%" });
-  const [tutorialDisplay, setTutorialDisplay] = useState(null);
-  const [isTutorialVisible, ToggleTutorialVisibility] = useState(false);
-  const [tutorialPosition, setTutorialPosition] = useState({
-    x: "50%",
-    y: "50%",
-  });
-  const [isMounted, setIsMounted] = useState(false); // Added for client-side check
+import { useState, useEffect } from "react";
+import { useUser } from "@/context/UserContext";
+import AdminLayout from "@/app/components/AdminLayout";
+import AdminNavBar from "@/app/components/AdminNavBar";
+import AdminDayView from "@/app/components/AdminDayView";
+import BarberPanel from "@/app/components/AdminBarberPanel";
+import {
+  Box,
+  Paper,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  Divider,
+  CircularProgress,
+} from "@mui/material";
 
-  // Set isMounted to true only on client-side
+export default function AdminDashboard() {
+  const { user } = useUser();
+  const [todayAppointments, setTodayAppointments] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch today's appointments
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    const fetchTodayAppointments = async () => {
+      setLoading(true);
+      setError(null);
 
-  // Handle mouse movement only on client
-  useEffect(() => {
-    if (!isMounted) return; // Skip on server
+      try {
+        const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+        const response = await fetch("/api/appointments/all");
 
-    const updateMousePosition = (e) => {
-      setPosition({ x: `${e.clientX}px`, y: `${e.clientY}px` });
+        if (!response.ok) {
+          throw new Error(`Failed to fetch appointments: ${response.status}`);
+        }
+
+        const allAppointments = await response.json();
+        const todayApps = allAppointments.filter((app) => {
+          const appDate = new Date(app.date).toISOString().split("T")[0];
+          return appDate === today;
+        });
+        setTodayAppointments(todayApps.length);
+      } catch (err) {
+        console.error("Error fetching appointments:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    window.addEventListener("mousemove", updateMousePosition);
-    return () => window.removeEventListener("mousemove", updateMousePosition);
-  }, [isMounted]);
+    fetchTodayAppointments();
+  }, []);
 
-  // Handle tutorial toggle
-  useEffect(() => {
-    if (selectedView === "Tutorial") {
-      toggleTutorial(true);
-    } else {
-      toggleTutorial(false);
-    }
-  }, [selectedView]);
-
-  // Filter appointments by selected date
-  useEffect(() => {
-    const appointmentsSelected = appointments.filter((appointment) =>
-      dayjs(appointment.startTime).isSame(selectedDate, "day")
-    );
-    setAppointmentsThisDay(appointmentsSelected);
-    setSelectedAppointment(null);
-  }, [selectedDate]);
-
-  const handleChangeView = (view) => {
-    setSelectedView(view);
-    if (view === "Tutorial" && isMounted) {
-      handleTutorialDisplay(
-        null,
-        "You have clicked the button to view the tutorial! You can view the tutorial at any time by clicking this button!"
-      );
-    }
-  };
-
-  const handleViewAppointment = (appointment) => {
-    setSelectedAppointment(appointment);
-    if (isTutorial && isMounted) {
-      handleTutorialDisplay(
-        null,
-        "View your customers appointment details here! You can view their contact information and the service they are scheduled for!"
-      );
-    }
-  };
-
-  const handleSetSelectedDate = (date) => {
-    setSelectedDate(date);
-    if (isTutorial && isMounted) {
-      handleTutorialDisplay(
-        null,
-        "You have clicked on the calendar! Here you can view your appointments for the selected date! Click on a highlighted appointment to view more details!"
-      );
-    }
-  };
-
-  const handleTutorialDisplay = (e, display, visible = true) => {
-    if (!isMounted) return; // Skip on server
-
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
-    const tutorialWidth = 500;
-    const tutorialHeight = 300;
-
-    if (e == null) {
-      e = { clientX: screenWidth / 2, clientY: screenHeight / 2 - 150 };
-    } else {
-      if (e.clientX + tutorialWidth > screenWidth) {
-        e.clientX = screenWidth - 300;
-      }
-      if (e.clientX < 250) {
-        e.clientX = 300;
-      }
-      if (e.clientY < 150) {
-        e.clientY = 200;
-      }
-      if (e.clientY + tutorialHeight > screenHeight) {
-        e.clientY = screenHeight - 200;
-      }
-    }
-
-    setTutorialDisplay(display);
-    setTutorialPosition({ x: `${e.clientX}px`, y: `${e.clientY}px` });
-    ToggleTutorialVisibility(visible);
-  };
-
-  const formatTime = (dateString) => {
-    return new Date(dateString).toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
-
-  // Map appointments to dayjs objects for the calendar
-  const appointmentDays = appointments.map((appointment) =>
-    dayjs(appointment.startTime)
-  );
-
-  // Render nothing on server-side during prerendering
-  if (!isMounted) {
-    return null;
-  }
+  const stats = [
+    { period: "Today", value: todayAppointments !== null ? todayAppointments : "Loading..." },
+    { period: "This Week", value: "N/A" },
+    { period: "This Month", value: "N/A" },
+    { period: "Total", value: "N/A" },
+  ];
 
   return (
-    <main>
-      <AdminNavBar
-        handleChangeView={handleChangeView}
-        selectedView={selectedView}
-        tutorialDisplay={tutorialDisplay}
-        handleTutorialDisplay={handleTutorialDisplay}
-      />
-      <div className={styles.dashboard}>
-        <section className={styles.view}>
-          <div className={styles.calendar}>
-            <Calendar
-              handleSetSelectedDate={handleSetSelectedDate}
-              selectedDate={selectedDate}
-              appointmentDays={appointmentDays}
-            />
-          </div>
-          <div className={styles.appointments}>
-            {selectedAppointment ? (
-              <div className={styles.appointmentDetails}>
-                <div className={styles.appointmentButtons}>
-                  <ArrowBackIcon
-                    onClick={() => setSelectedAppointment(null)}
-                    sx={{
-                      cursor: "pointer",
-                      fontSize: 50,
-                      bgcolor: grey[300],
-                      borderRadius: "20%",
-                      width: 80,
-                      mb: 2,
-                    }}
-                  />
-                  <DoDisturbOnIcon
-                    onClick={() => setSelectedAppointment(null)}
-                    sx={{
-                      cursor: "pointer",
-                      fontSize: 50,
-                      bgcolor: grey[300],
-                      borderRadius: "20%",
-                      width: 80,
-                      mb: 2,
-                      color: red[500],
-                    }}
-                  />
-                </div>
-                <div className={styles.appointmentHeader}>
-                  <h2>Appointment Details</h2>
-                  <Avatar
-                    src="/broken-image.jpg"
-                    sx={{ width: 120, height: 120, m: 3 }}
-                  />
-                </div>
-                <div className={styles.appointmentInfo}>
-                  <p>
-                    <span>Customer:</span> {selectedAppointment.customerName}
-                  </p>
-                  <p>
-                    <span>Phone Number:</span> {selectedAppointment.phone}
-                  </p>
-                </div>
-                <div className={styles.appointmentInfo}>
-                  <p>
-                    <span>Service:</span> {selectedAppointment.serviceType}
-                  </p>
-                  <p>
-                    <span>Email:</span>{" "}
-                    <a href={`mailto:${selectedAppointment.email}`}>
-                      {selectedAppointment.email}
-                    </a>
-                  </p>
-                </div>
-                <p className={styles.appointmentDate}>
-                  <span>Appointment Time:</span>{" "}
-                  {formatTime(selectedAppointment.startTime)} -{" "}
-                  {formatTime(selectedAppointment.endTime)}
-                </p>
-              </div>
+    <AdminLayout title="Admin Dashboard">
+      <AdminNavBar />
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={8}>
+          <Paper elevation={2} sx={{ p: 2, borderRadius: 2, height: "100%", minHeight: 400 }}>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: "#35281f" }}>
+              Today's Schedule
+            </Typography>
+            <Divider sx={{ mb: 2 }} />
+            <AdminDayView />
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Paper elevation={2} sx={{ p: 2, borderRadius: 2, height: "100%", minHeight: 400 }}>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: "#35281f" }}>
+              Barber Team
+            </Typography>
+            <Divider sx={{ mb: 2 }} />
+            <BarberPanel isDashboard={true} />
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper elevation={2} sx={{ p: 2, borderRadius: 2 }}>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: "#35281f" }}>
+              Quick Stats
+            </Typography>
+            <Divider sx={{ mb: 2 }} />
+            {loading && todayAppointments === null ? (
+              <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+                <CircularProgress sx={{ color: "#35281f" }} />
+              </Box>
+            ) : error ? (
+              <Typography color="error" sx={{ textAlign: "center", py: 2 }}>
+                {error}
+              </Typography>
             ) : (
-              <TimeSlot
-                appointmentsThisDay={appointmentsThisDay}
-                handleViewAppointment={handleViewAppointment}
-              />
+              <Grid container spacing={3}>
+                {stats.map((stat, index) => (
+                  <Grid item xs={6} md={3} key={index}>
+                    <Card sx={{ bgcolor: "#fafafa", boxShadow: "0 4px 10px rgba(53, 40, 31, 0.1)" }}>
+                      <CardContent>
+                        <Typography color="textSecondary" gutterBottom>
+                          {stat.period} Appointments
+                        </Typography>
+                        <Typography variant="h4" sx={{ color: "#35281f", fontWeight: "bold" }}>
+                          {stat.value}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
             )}
-          </div>
-        </section>
-      </div>
-      {isTutorial && (
-        <div>
-          <div
-            className={styles.flashlightOverlay}
-            style={{ "--x": position.x, "--y": position.y }}
-          />
-          {isTutorialVisible && (
-            <TutorialDisplay
-              tutorialDisplay={tutorialDisplay}
-              tutorialPosition={tutorialPosition}
-              isTutorialVisible={isTutorialVisible}
-              handleTutorialDisplay={handleTutorialDisplay}
-            />
-          )}
-        </div>
-      )}
-    </main>
+          </Paper>
+        </Grid>
+      </Grid>
+    </AdminLayout>
   );
 }

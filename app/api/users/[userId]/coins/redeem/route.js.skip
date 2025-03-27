@@ -1,6 +1,5 @@
 // app/api/users/[userId]/coins/redeem/route.js
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/database/mongodb";
 import User from "@/lib/database/models/userModel";
 d;
 // PATCH - redeem coins
