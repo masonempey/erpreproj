@@ -1,76 +1,124 @@
-//similar to the landing page, this page will filter the barbers upcoming
-//appointments by a day, eventually we will also make it so that by pressing
-//a day on the calander in the whome page, it will redirect the barber to
-//this page, filtered for the day they clicked.
 "use client";
-
-import React, { useState, useMemo, useEffect } from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
-import testAppointments from "../utilities/testing/testAppointments.json";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import AppointmentDayView from "../component/schedulePageComponents/appointmentList";
 
-export default function SchedulingPage({ selectedDate }) {
+const ip_address = process.env.EXPO_PUBLIC_IP_ADDRESS;
+
+export default function SchedulingPage({ route }) { 
   const [appointments, setAppointments] = useState([]);
-  const [date, setDate] = useState(new Date().toISOString());
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  const date = route.params?.selectedDate || new Date().toISOString().split('T')[0];
 
-  useEffect(() => {
-    const fetchBarberAppointments = async () => {
-      try {
-        const barberId = "barber2";
-        const response = await fetch(`http://10.187.128.21:3000/api/appointments/barbers/${barberId}`);
-        const appointmentData = await response.json();
-
-        console.log(appointmentData);
-        setAppointments(appointmentData);
-      } catch (error) {
-        console.error(error);
+  const fetchBarberAppointmentsForDate = async (date) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const barberId = "barber2";
+      const response = await fetch(`${ip_address}:3000/api/appointments/barbers/${barberId}?date=${date}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    };
-    if (selectedDate) {
-      setDate(selectedDate);
+      
+      const appointmentData = await response.json();
+      setAppointments(appointmentData);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
     }
-  }, [selectedDate]);
+  };
 
   useEffect(() => {
-    if (date) {
-      console.log("Selected date:", date);
-    }
+    fetchBarberAppointmentsForDate(date);
   }, [date]);
-  const handleDateIncrease = () => {
-    /* https://stackoverflow.com/questions/563406/how-to-add-days-to-date */
-    let newDate = new Date(date);
-    newDate.setDate(newDate.getDate() + 1);
-    setDate(newDate.toISOString());
-  };
-  const handleDateDecrese = () => {
-    let newDate = new Date(date);
-    newDate.setDate(newDate.getDate() - 1);
-    setDate(newDate.toISOString());
-  };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={styles.loadingText}>Loading appointments for {date}...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorTitle}>Error Loading Appointments</Text>
+        <Text style={styles.errorText}>{error}</Text>
+        <Text style={styles.errorSubtext}>Could not load appointments for {date}</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Button title="Prev" onPress={handleDateDecrese} />
-        <Text>Day View For: {date.substr(0, 10)}</Text>
-        <Button title="Next" onPress={handleDateIncrease} />
+        <Text style={styles.header}>Appointments for {date}</Text>
       </View>
-      <View>
-        <AppointmentDayView
-          appointmentDetails={appointments}
-          selectedDate={date}
-        />
-      </View>
+      <AppointmentDayView 
+        appointmentDetails={appointments}
+        selectedDate={date}
+      />
     </View>
   );
-}
+};
 
-/* https://reactnative.dev/docs/button */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f8f9fa',
   },
   headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    margin: 10,
+    padding: 20,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
   },
+  header: {
+    fontSize: 22,
+    fontWeight: '600',
+    color: '#2d3436',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f8f9fa',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#636e72',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#f8f9fa',
+  },
+  errorTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#d63031',
+    marginBottom: 8,
+  },
+  errorText: {
+    fontSize: 16,
+    color: '#d63031',
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  errorSubtext: {
+    fontSize: 14,
+    color: '#636e72',
+  }
 });

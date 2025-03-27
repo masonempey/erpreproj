@@ -1,30 +1,59 @@
-//this component will evenually use its own custom cards, that will be touchable
-//opacities that will most likely lead to the customer profile or more appointment
-//information.
 import React from "react";
-import {FlatList} from "react-native"
+import { FlatList, View, Text, ActivityIndicator } from "react-native";
 import UpcomingViewCard from "../landingPageComponents/UpcomingCards";
 
-export default function AppointmentDayView({appointmentDetails, selectedDate}) {
-    return(
-        <FlatList 
-            data={appointmentDetails}
-            /*
-                https://stackoverflow.com/questions/53655722/react-native-flatlist-conditional-rendering
+export default function AppointmentDayView({ appointmentDetails, selectedDate }) {
+    console.log("AppointmentDayView received:", { 
+        appointmentDetails, 
+        selectedDate 
+    });
 
-            */
-            renderItem={({item, index}) => {
-                let appointmentDate = item.date.substr(0,10);
-                let chosenDate = selectedDate.substr(0,10)
-                if (appointmentDate === chosenDate) {
-                    return(
-                        <UpcomingViewCard
-                        AppointmentInformation={item}
-                        backgroundColor ={index % 2 === 0 ? '#f0f0f0' : '#ffffff'} 
-                        />
-                    );
-                }   
-            }}
+    if (!appointmentDetails) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" />
+                <Text>Loading appointments...</Text>
+            </View>
+        );
+    }
+
+    const appointmentsArray = Array.isArray(appointmentDetails) ? appointmentDetails : [];
+    
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        try {
+            return new Date(dateString).toISOString().split('T')[0];
+        } catch {
+            return dateString.substr(0, 10);
+        }
+    };
+
+    const filteredAppointments = appointmentsArray.filter(item => {
+        const appointmentDate = formatDate(item.date);
+        const chosenDate = formatDate(selectedDate);
+        console.log(`Comparing: ${appointmentDate} vs ${chosenDate}`);
+        return appointmentDate === chosenDate;
+    });
+
+    console.log("Filtered appointments:", filteredAppointments);
+
+    if (filteredAppointments.length === 0) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text>No appointments for {formatDate(selectedDate) || 'this date'}</Text>
+            </View>
+        );
+    }
+
+    return (
+        <FlatList 
+            data={filteredAppointments}
+            keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
+            renderItem={({ item }) => (
+                <UpcomingViewCard
+                    appointmentInfo={item}
+                />
+            )}
         />
     );
 }
