@@ -1,194 +1,197 @@
 /* Reviews section styling */
 .reviews {
-  background: linear-gradient(30deg, #fafafa 40%, #35281f 40%);
-  background-size: cover;
-  background-position: center;
+  background: #fafafa;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 80px 20px 40px;
-  min-height: calc(100vh - 40px);
+  padding: 100px 20px 80px;
+  min-height: 100vh;
+  width: 100%;
 }
 
-/* Responsive adjustment for smaller screens */
-@media (max-width: 768px) {
-  .reviews {
-    padding: 60px 15px 30px;
-    min-height: calc(100vh - 30px);
-  }
-}
-
-/* Horizontal line styling */
-.reviews hr {
-  width: 80%;
-  margin: 15px auto;
-  border: none;
-  border-top: 1px solid #e1e1e1;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Review header (title) styling */
+/* Review header styling */
 .reviewHeader {
-  background-color: #ffffff;
-  padding: 15px 25px;
-  border-radius: 30px;
-  border: 2px solid #35281f;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   text-align: center;
-  width: 90%;
-  max-width: 450px;
-  margin-bottom: 20px;
+  margin-bottom: 3rem;
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .reviewHeader h2 {
   margin: 0;
-  font-size: 1.75rem;
+  font-size: 3rem;
   color: #35281f;
-  font-weight: 700;
+  font-weight: 600;
+  font-family: "Oleo Script", cursive;
+  margin-bottom: 0.5rem;
 }
 
 .reviewHeader p {
-  margin: 5px 0 0;
-  font-size: 0.95rem;
+  margin: 0;
+  font-size: 1.2rem;
   color: #666;
   font-weight: 400;
+  position: relative;
+  display: inline-block;
 }
 
-/* Custom scrollbar for cards */
-.card::-webkit-scrollbar {
-  width: 5px;
+.reviewHeader p:after {
+  content: "";
+  position: absolute;
+  width: 60%;
+  height: 3px;
+  background-color: #e6853b;
+  bottom: -10px;
+  left: 20%;
+  border-radius: 2px;
 }
 
-.card::-webkit-scrollbar-thumb {
-  background: #a1a1a1;
-  border-radius: 5px;
-}
-
-.card::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: 5px;
+/* Divider styling */
+.reviews hr {
+  width: 80%;
+  max-width: 1200px;
+  margin: 2rem auto;
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(53, 40, 31, 0.2),
+    transparent
+  );
 }
 
 /* Cards container */
 .cardsWrapper {
   display: flex;
   flex-wrap: nowrap;
-  flex-direction: row;
-  justify-content: center;
-  gap: 15px;
+  gap: 24px;
   width: 100%;
-  max-width: 1600px;
+  max-width: 1400px;
   overflow-x: auto;
-  padding: 0 10px;
-  margin-top: 130px; /* Increased from 100px to move the cards down more */
+  padding: 20px 40px;
+  margin-top: 20px;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.cardsWrapper::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 /* Card styling */
 .card {
   background-color: #ffffff;
-  max-width: 240px;
-  height: 360px;
-  padding: 15px;
-  border-radius: 25px;
-  border: 1px solid #e1e1e1;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow-y: hidden;
-  flex: 0 0 auto;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  overflow-y: auto;
-}
-
-/* Card header (customer name and image) */
-.cardHeader {
-  display: flex;
-  align-items: center;
-  background-color: #f8f8f8;
-  border-radius: 20px;
-  padding: 10px;
-  margin-bottom: 10px;
-  transition: border-radius 0.3s ease;
-}
-
-.cardHeader:hover {
-  border-radius: 15px;
-}
-
-.cardHeader img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
-  object-fit: cover;
-}
-
-.cardHeaderInfo {
+  width: 300px;
+  min-width: 300px;
+  height: 380px;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(53, 40, 31, 0.1);
+  box-shadow: 0 6px 15px rgba(53, 40, 31, 0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-.cardHeaderInfo p {
-  margin: 0;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #35281f;
+/* Card header styling */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(53, 40, 31, 0.08);
 }
 
-/* Card rating */
+.cardHeaderInfo {
+  margin-left: 16px;
+}
+
+/* Card rating styling */
 .cardRating {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
 }
 
-.cardRating img {
-  width: 18px;
-  height: 18px;
-  margin-right: 2px;
+/* Card body styling */
+.cardBody {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 6px;
 }
 
-/* Card review text */
-.card p {
-  font-size: 0.9rem;
-  line-height: 1.4;
-  color: #333;
-  margin: 0;
+.cardBody::-webkit-scrollbar {
+  width: 4px;
 }
 
-/* Responsive adjustments for cards */
+.cardBody::-webkit-scrollbar-thumb {
+  background-color: rgba(53, 40, 31, 0.2);
+  border-radius: 4px;
+}
+
+.cardBody::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Navigation dots for cards */
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgba(53, 40, 31, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dot.active {
+  background-color: #e6853b;
+  transform: scale(1.2);
+}
+
+/* Responsive styles */
 @media (max-width: 768px) {
+  .reviews {
+    padding: 80px 15px 60px;
+  }
+
+  .reviewHeader h2 {
+    font-size: 2.5rem;
+  }
+
+  .reviewHeader p {
+    font-size: 1rem;
+  }
+
   .cardsWrapper {
-    max-width: 100%;
-    margin-top: 90px; /* Increased from 70px for mobile */
+    padding: 15px;
   }
 
   .card {
-    max-width: 200px;
-    height: 320px;
-    padding: 12px;
-  }
-
-  .cardHeader img {
-    width: 36px;
-    height: 36px;
-  }
-
-  .cardHeaderInfo p {
-    font-size: 0.9rem;
-  }
-
-  .card p {
-    font-size: 0.85rem;
-  }
-
-  .cardRating img {
-    width: 16px;
-    height: 16px;
+    width: 260px;
+    min-width: 260px;
+    height: 340px;
+    padding: 18px;
   }
 }

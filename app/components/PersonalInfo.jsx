@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -12,22 +12,33 @@ import {
 } from "@mui/material";
 import { Person, Email, Phone, Home, LocationOn } from "@mui/icons-material";
 import { useBooking } from "../../context/BookingContext";
+import { useUser } from "../../context/UserContext";
 
 export default function PersonalInfo() {
   const { state, dispatch } = useBooking();
-
-  // Access personalInfo from state with fallback to empty object
-  const personalInfo = state.personalInfo || {};
-
+  const { personalInfo } = state;
+  const { user } = useUser();
   const [formData, setFormData] = useState({
     fullName: personalInfo.fullName || "",
     email: personalInfo.email || "",
-    address: personalInfo.address || "",
     phone: personalInfo.phone || "",
+    address: personalInfo.address || "",
     postalCode: personalInfo.postalCode || "",
   });
-
   const [error, setError] = useState("");
+
+  // Add this effect to update form when user data changes
+  useEffect(() => {
+    if (user) {
+      setFormData((prevState) => ({
+        ...prevState,
+        fullName: user.name || prevState.fullName,
+        email: user.email || prevState.email,
+        phone: user.phoneNumber || prevState.phone,
+        address: user.address || prevState.address,
+      }));
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

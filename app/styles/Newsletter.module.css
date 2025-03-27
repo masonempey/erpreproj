@@ -1,10 +1,136 @@
-.newsletter {
-  width: 100%;
-  background: linear-gradient(135deg, #fafafa 50%, #35281f 50%);
-  padding: 6rem 2rem;
-  color: #35281f;
+.newsletterContainer {
+  margin: 5rem auto;
+  position: relative;
+  z-index: 1;
+}
+
+.newsletterPaper {
+  background: linear-gradient(135deg, #ffffff, #f8f8f8);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  border-top: 4px solid #e6853b;
+  box-shadow: 0 12px 30px rgba(53, 40, 31, 0.12);
+}
+
+.newsletterPaper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #e6853b;
+}
+
+.contentWrapper {
   display: flex;
-  justify-content: center;
+  flex-direction: row;
+  padding: 3rem;
+}
+
+.textContent {
+  flex: 1;
+  padding-right: 3rem;
+}
+
+.title {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.title::after {
+  content: "";
+  position: absolute;
+  width: 50px;
+  height: 3px;
+  background-color: #e6853b;
+  bottom: -8px;
+  left: 0;
+  border-radius: 3px;
+}
+
+.description {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.features {
+  margin-top: 1.5rem;
+}
+
+.featureItem {
+  display: flex;
   align-items: center;
-  min-height: 50vh;
+  margin-bottom: 0.75rem;
+}
+
+.checkmark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(230, 133, 59, 0.15);
+  color: #e6853b;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.formContent {
+  flex: 1;
+  background-color: rgba(53, 40, 31, 0.03);
+  padding: 2rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form {
+  width: 100%;
+}
+
+.input {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.privacy {
+  margin-top: 1rem;
+  text-align: center;
+  color: #777;
+}
+
+/* Animation */
+.newsletterPaper {
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 900px) {
+  .contentWrapper {
+    flex-direction: column;
+    padding: 2rem;
+  }
+
+  .textContent {
+    padding-right: 0;
+    padding-bottom: 2rem;
+  }
 }
