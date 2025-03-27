@@ -26,7 +26,6 @@ export default function Statistics() {
   const [allAppointments, setAllAppointments] = useState([]);
   const [appointmentsLoading, setAppointmentsLoading] = useState(true);
 
-  // Fetch all appointments on mount
   useEffect(() => {
     const fetchAllAppointments = async () => {
       setAppointmentsLoading(true);
@@ -44,16 +43,16 @@ export default function Statistics() {
     fetchAllAppointments();
   }, []);
 
-  // Compute barber data
   const barberData = selectedBarber && allAppointments.length
     ? (() => {
+        const currentDate = new Date();
         const barberAppointments = allAppointments.filter(
-          (app) => app.barber_id === selectedBarber
+          (app) => app.barber_id === selectedBarber && new Date(app.date) < currentDate
         );
         const totalAppointments = barberAppointments.length;
 
         const recentClients = barberAppointments
-          .sort((a, b) => new Date(b.date) - new Date(a.date))
+          .sort((a, b) => new Date(b.date) - new Date(a.date)) // Newest to oldest
           .slice(0, 3)
           .map((app) => ({
             name: app.guest_name || "Unknown Client",
@@ -110,7 +109,7 @@ export default function Statistics() {
                   <Card sx={{ bgcolor: "#fafafa", boxShadow: "0 4px 10px rgba(53, 40, 31, 0.1)" }}>
                     <CardContent>
                       <Typography color="textSecondary" gutterBottom>
-                        Total Appointments
+                        Total Completed Appointments
                       </Typography>
                       <Typography variant="h4" sx={{ color: "#35281f", fontWeight: "bold" }}>
                         {barberData.totalAppointments}
