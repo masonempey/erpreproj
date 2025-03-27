@@ -3,15 +3,17 @@
 import React, { useEffect, useState } from "react";
 import landingStyles from "../../styles/Landing.module.css";
 import reviewStyles from "../../styles/Reviews.module.css";
+import aboutStyles from "../../styles/About.module.css";
 import newsletterStyles from "../../styles/Newsletter.module.css";
-import BookingPopUp from "../../components/Booking"; // From Main
+import BookingPopUp from "../../components/Booking";
 import { Button, Typography, Box, Container, IconButton } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CustomerReviewCard from "../../components/customerReviewCard";
-import Pagination from "@mui/material/Pagination";
-import Stack from "@mui/material/Stack";
 import NewsLetter from "./homeScreens/newsLetter";
+import AboutText from "../../components/AboutText";
+import AboutImages from "../../components/AboutImages";
+import AboutMap from "../../components/AboutMap";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,17 +26,14 @@ export default function Home() {
         if (response.status === 200) {
           const reviewData = await response.json();
           console.log("Fetched review data:", reviewData);
-          // Map database reviews to the format expected by CustomerReviewCard
-          // reviewData.reviews contains the reviews fetched from the database
-          const mappedReviews = (reviewData.reviews || []).map((review) => ({
-            author_name: review.author_name || "Anonymous", // Use the saved author_name from the database
-            profile_photo_url: review.profile_photo_url || "", // Use the saved profile picture URL from the database
-            text: review.review, // Map the review text
-            numsReviews: 0, // Not available in the database; set a default
-            rating: review.rating || 5, // Use the saved rating, default to 5 if missing
-            relative_time_description: calculateRelativeTime(
-              review.review_date
-            ), // Calculate relative time from review_date
+          // Keeping your mapping (alex) which is identical to Main
+          const mappedReviews = (reviewData.reviews || []).map(review => ({
+            author_name: review.author_name || "Anonymous",
+            profile_photo_url: review.profile_photo_url || "",
+            text: review.review,
+            numsReviews: 0,
+            rating: review.rating || 5,
+            relative_time_description: calculateRelativeTime(review.review_date),
           }));
           setReviews(mappedReviews);
         } else {
@@ -47,7 +46,6 @@ export default function Home() {
     fetchReviews();
   }, []);
 
-  // Helper function to calculate relative time (e.g., "3 months ago")
   const calculateRelativeTime = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -154,7 +152,6 @@ export default function Home() {
           <h2>Customer Reviews</h2>
           <p>What Our Clients Say</p>
         </div>
-
         <hr></hr>
 
         <Box sx={{ position: "relative", width: "100%", maxWidth: "1400px" }}>
@@ -224,7 +221,6 @@ export default function Home() {
                 const container = document.getElementById("cardsWrapper");
                 container.scrollLeft = i * container.offsetWidth;
 
-                // Update active dot
                 document
                   .querySelectorAll(`.${reviewStyles.dot}`)
                   .forEach((dot, index) => {
@@ -236,7 +232,24 @@ export default function Home() {
           ))}
         </div>
       </section>
-      <section id="newsletter" className={landingStyles.section}>
+
+      {/* Adding Mason's About section */}
+      <section
+        id="about"
+        className={`${landingStyles.section} ${aboutStyles.about}`}
+      >
+        <div className={aboutStyles.aboutContainer}>
+          <AboutText />
+          <AboutImages />
+          <AboutMap />
+        </div>
+      </section>
+
+      {/* Keeping both your and Mason's Newsletter section */}
+      <section
+        id="newsletter"
+        className={`${landingStyles.section} ${newsletterStyles.newsletter}`}
+      >
         <NewsLetter />
       </section>
     </main>
