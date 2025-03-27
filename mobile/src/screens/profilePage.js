@@ -1,6 +1,6 @@
 // ProfilePage.js
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
 import { AuthContext } from '../firebase/firebase-context';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -11,36 +11,43 @@ const ProfilePage = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchUserDetails = async () => {
+    try {
+      if (!user?.uid) return;
+      
+      const response = await fetch(`${ip_address}:3000/api/users/${user.uid}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${await user.getIdToken()}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user details');
+      }
+
+      const data = await response.json();
+      setUserDetails(data);
+    } catch (err) {
+      console.error('Error fetching user details:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchUserDetails = async () => {
-      try {
-        if (!user?.uid) return;
-        
-        const response = await fetch(`${ip_address}:3000/api/users/${user.uid}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${await user.getIdToken()}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch user details');
-        }
-
-        const data = await response.json();
-        setUserDetails(data);
-      } catch (err) {
-        console.error('Error fetching user details:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUserDetails();
   }, [user]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchUserDetails();
+  };
 
   // Fallback image URL or initials
   const getAvatar = () => {
@@ -57,7 +64,7 @@ const ProfilePage = () => {
     return user?.email?.charAt(0).toUpperCase() || 'U';
   };
 
-  if (loading) {
+  if (loading && !refreshing) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#5F402C" />
@@ -69,12 +76,29 @@ const ProfilePage = () => {
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>Error loading profile: {error}</Text>
+        <Ionicons 
+          name="refresh-circle" 
+          size={40} 
+          color="#5F402C" 
+          onPress={onRefresh}
+          style={{ marginTop: 10 }}
+        />
       </View>
     );
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView 
+      contentContainerStyle={styles.container}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={['#5F402C']}
+          tintColor="#5F402C"
+        />
+      }
+    >
       <View style={styles.profileHeader}>
         <View style={styles.avatarContainer}>
           {user?.photoURL ? (
