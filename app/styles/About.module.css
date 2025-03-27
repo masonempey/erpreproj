@@ -1,25 +1,153 @@
+/* styles/About.module.css */
 .about {
-  width: 100%;
-  background: linear-gradient(-26.5deg, #fafafa 50%, #35281f 50%);
-  padding: 6rem 2rem;
-  color: #35281f;
+  padding: 4rem 2rem;
+  background-color: #fafafa;
+}
+
+.aboutContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1600px;
+  margin: 0 auto;
+  gap: 4rem;
+}
+
+/* Left Section: Text */
+.textSection {
+  flex: 1;
+  max-width: 20%;
+  margin-left: 6rem;
+}
+
+/* Middle Section: Images */
+.imageSection {
+  flex: 2;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 50vh;
+  margin-left: 2rem;
 }
 
-.section {
+.imageWrapper {
+  position: relative;
   width: 100%;
-  box-sizing: border-box;
+  height: 400px;
 }
 
-.section h2 {
-  text-align: center;
-  margin-bottom: 20px;
+.image {
+  position: absolute;
+  width: 250px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.section p {
-  text-align: center;
-  margin-bottom: 20px;
+.image1 {
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.image2 {
+  top: 30px;
+  left: 150px;
+  z-index: 2;
+}
+
+.image3 {
+  top: 60px;
+  left: 300px;
+  z-index: 3;
+}
+
+/* Right Section: Map */
+.mapSection {
+  flex: 1;
+  max-width: 35%;
+  margin-right: 5rem;
+}
+
+.mapIframe {
+  border-radius: 15px; /* Rounded corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Drop shadow */
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .aboutContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .textSection,
+  .mapSection {
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .imageSection {
+    margin-left: 0;
+  }
+
+  .imageWrapper {
+    height: 300px;
+  }
+
+  .image {
+    width: 200px;
+    height: 250px;
+  }
+
+  .image2 {
+    left: 120px;
+  }
+
+  .image3 {
+    left: 240px;
+  }
+}
+
+@media (max-width: 768px) {
+  .image {
+    width: 150px;
+    height: 200px;
+  }
+
+  .image2 {
+    left: 90px;
+  }
+
+  .image3 {
+    left: 180px;
+  }
+
+  .imageWrapper {
+    height: 250px;
+  }
+}
+
+/* Ensure text, images, and map have consistent styling */
+.title {
+  color: #35281f;
+  font-family: "Lato", sans-serif;
+  font-weight: 800;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: #666;
+  font-family: "Lato", sans-serif;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.description {
+  color: #35281f;
+  font-family: "Lato", sans-serif;
+  line-height: 1.6;
+  margin-bottom: 1rem;
 }

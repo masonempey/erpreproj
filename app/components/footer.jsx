@@ -196,8 +196,14 @@ const Footer = () => {
             </Stack>
           </Box>
 
-          {/* Social Links Section */}
-          <Box sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: { xs: "center", md: "flex-start" } }}>
+          <Box
+            sx={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: { xs: "center", md: "flex-start" },
+            }}
+          >
             <Typography
               variant="h6"
               sx={{
