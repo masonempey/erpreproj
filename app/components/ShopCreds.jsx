@@ -212,7 +212,7 @@ const ShopCreds = () => {
                 <strong>Shop Name:</strong>
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {credentials.name}
+                {credentials.shop_name}
               </Typography>
             </Grid>
 
