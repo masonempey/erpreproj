@@ -23,7 +23,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch today's appointments
+  // Fetch today's appointments using consolidated API
   useEffect(() => {
     const fetchTodayAppointments = async () => {
       setLoading(true);
@@ -31,17 +31,15 @@ export default function AdminDashboard() {
 
       try {
         const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-        const response = await fetch("/api/appointments/all");
+
+        // Use the new consolidated API route
+        const response = await fetch(`/api/bookings?action=date&date=${today}`);
 
         if (!response.ok) {
           throw new Error(`Failed to fetch appointments: ${response.status}`);
         }
 
-        const allAppointments = await response.json();
-        const todayApps = allAppointments.filter((app) => {
-          const appDate = new Date(app.date).toISOString().split("T")[0];
-          return appDate === today;
-        });
+        const todayApps = await response.json();
         setTodayAppointments(todayApps.length);
       } catch (err) {
         console.error("Error fetching appointments:", err);
@@ -55,7 +53,10 @@ export default function AdminDashboard() {
   }, []);
 
   const stats = [
-    { period: "Today", value: todayAppointments !== null ? todayAppointments : "Loading..." },
+    {
+      period: "Today",
+      value: todayAppointments !== null ? todayAppointments : "Loading...",
+    },
     { period: "This Week", value: "N/A" },
     { period: "This Month", value: "N/A" },
     { period: "Total", value: "N/A" },
@@ -66,8 +67,14 @@ export default function AdminDashboard() {
       <AdminNavBar />
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
-          <Paper elevation={2} sx={{ p: 2, borderRadius: 2, height: "100%", minHeight: 400 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: "#35281f" }}>
+          <Paper
+            elevation={2}
+            sx={{ p: 2, borderRadius: 2, height: "100%", minHeight: 400 }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ mb: 2, fontWeight: 600, color: "#35281f" }}
+            >
               Today's Schedule
             </Typography>
             <Divider sx={{ mb: 2 }} />
@@ -75,8 +82,14 @@ export default function AdminDashboard() {
           </Paper>
         </Grid>
         <Grid item xs={12} md={4}>
-          <Paper elevation={2} sx={{ p: 2, borderRadius: 2, height: "100%", minHeight: 400 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: "#35281f" }}>
+          <Paper
+            elevation={2}
+            sx={{ p: 2, borderRadius: 2, height: "100%", minHeight: 400 }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ mb: 2, fontWeight: 600, color: "#35281f" }}
+            >
               Barber Team
             </Typography>
             <Divider sx={{ mb: 2 }} />
@@ -85,7 +98,10 @@ export default function AdminDashboard() {
         </Grid>
         <Grid item xs={12}>
           <Paper elevation={2} sx={{ p: 2, borderRadius: 2 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: "#35281f" }}>
+            <Typography
+              variant="h6"
+              sx={{ mb: 2, fontWeight: 600, color: "#35281f" }}
+            >
               Quick Stats
             </Typography>
             <Divider sx={{ mb: 2 }} />
@@ -101,12 +117,20 @@ export default function AdminDashboard() {
               <Grid container spacing={3}>
                 {stats.map((stat, index) => (
                   <Grid item xs={6} md={3} key={index}>
-                    <Card sx={{ bgcolor: "#fafafa", boxShadow: "0 4px 10px rgba(53, 40, 31, 0.1)" }}>
+                    <Card
+                      sx={{
+                        bgcolor: "#fafafa",
+                        boxShadow: "0 4px 10px rgba(53, 40, 31, 0.1)",
+                      }}
+                    >
                       <CardContent>
                         <Typography color="textSecondary" gutterBottom>
                           {stat.period} Appointments
                         </Typography>
-                        <Typography variant="h4" sx={{ color: "#35281f", fontWeight: "bold" }}>
+                        <Typography
+                          variant="h4"
+                          sx={{ color: "#35281f", fontWeight: "bold" }}
+                        >
                           {stat.value}
                         </Typography>
                       </CardContent>

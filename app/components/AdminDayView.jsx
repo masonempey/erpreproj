@@ -39,7 +39,7 @@ const AdminDayView = () => {
     try {
       const formattedDate = selectedDate.toISOString().split("T")[0]; // YYYY-MM-DD format
       const response = await fetch(
-        `/api/appointments/barbers/${barberId}?date=${formattedDate}`
+        `/api/bookings?action=barber&barberId=${barberId}&date=${formattedDate}`
       );
 
       if (!response.ok) {

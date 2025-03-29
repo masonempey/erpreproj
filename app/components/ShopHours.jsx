@@ -84,7 +84,9 @@ export default function ShopHours() {
     setSuccess(false);
 
     // Format for API (add seconds back)
-    const payload = {};
+    const payload = {
+      action: "updateHours", // Add action parameter
+    };
     Object.keys(formData).forEach((key) => {
       payload[key] = `${formData[key]}:00`; // "09:00" -> "09:00:00"
     });
@@ -174,7 +176,9 @@ export default function ShopHours() {
                   type="time"
                   name={`${day}_open`}
                   value={formData[`${day}_open`]}
-                  onChange={(e) => handleInputChange(day, "open", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange(day, "open", e.target.value)
+                  }
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}
                   inputProps={{ step: 300 }} // 5-minute intervals
@@ -185,7 +189,9 @@ export default function ShopHours() {
                   type="time"
                   name={`${day}_close`}
                   value={formData[`${day}_close`]}
-                  onChange={(e) => handleInputChange(day, "close", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange(day, "close", e.target.value)
+                  }
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}
                   inputProps={{ step: 300 }}

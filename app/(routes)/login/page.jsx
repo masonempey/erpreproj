@@ -8,7 +8,6 @@ import { auth, googleProvider } from "@/lib/firebase/client";
 import { TextField, Button, Typography, Paper, Alert } from "@mui/material";
 import { styled } from "@mui/system";
 import styles from "../../styles/login.module.css";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 
 const FormContainer = styled(Paper)({
@@ -36,23 +35,30 @@ const Login = () => {
 
     setIsLoading(true);
     try {
-      const res = await fetch("/api/users/register", {
+      // Updated: Using new consolidated auth API with action=register
+      const res = await fetch("/api/auth", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, phoneNumber }),
+        body: JSON.stringify({
+          action: "register",
+          email,
+          password,
+          phoneNumber,
+        }),
       });
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.message || "Registration failed");
+        throw new Error(data.error || "Registration failed");
       }
 
       alert("Registration successful! Please log in.");
       setEmail("");
       setPassword("");
       setPhoneNumber("");
+      setIsLogin(true); // Switch to login view
     } catch (error) {
       console.error("Signup error:", error);
       setError(error.message);
@@ -76,18 +82,22 @@ const Login = () => {
       );
       const idToken = await userCredential.user.getIdToken();
 
-      const validateRes = await fetch("/api/users/validate", {
+      // Updated: Using new consolidated auth API with action=validate
+      const validateRes = await fetch("/api/auth", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${idToken}`,
         },
-        body: JSON.stringify({ uid: userCredential.user.uid }),
+        body: JSON.stringify({
+          action: "validate",
+          uid: userCredential.user.uid,
+        }),
       });
 
       if (!validateRes.ok) {
         const data = await validateRes.json();
-        throw new Error(data.message || "User validation failed");
+        throw new Error(data.error || "User validation failed");
       }
 
       await router.push("/");
@@ -110,13 +120,15 @@ const Login = () => {
       const result = await signInWithPopup(auth, googleProvider);
       const idToken = await result.user.getIdToken();
 
-      const res = await fetch("/api/users/googleregister", {
+      // Updated: Using new consolidated auth API with action=googleAuth
+      const res = await fetch("/api/auth", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${idToken}`,
         },
         body: JSON.stringify({
+          action: "googleAuth",
           email: result.user.email,
           uid: result.user.uid,
         }),
@@ -124,7 +136,7 @@ const Login = () => {
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.message || "Google sign-in failed");
+        throw new Error(data.error || "Google sign-in failed");
       }
       await router.push("/");
       window.location.href = "/";
@@ -157,6 +169,7 @@ const Login = () => {
           {isLogin ? "Login" : "Sign Up"}
         </Typography>
         {error && <Alert severity="error">{error}</Alert>}
+        {/* Rest of the component remains unchanged */}
         <TextField
           label="Email"
           variant="outlined"
@@ -255,6 +268,7 @@ const Login = () => {
           color="primary"
           fullWidth
           onClick={isLogin ? handleLogin : handleSignUp}
+          disabled={isLoading}
           sx={{
             mt: 2,
             backgroundColor: "#35281f",
@@ -264,7 +278,7 @@ const Login = () => {
             fontStyle: "normal",
           }}
         >
-          {isLogin ? "Login" : "Sign Up"}
+          {isLoading ? "Loading..." : isLogin ? "Login" : "Sign Up"}
         </Button>
         <Button
           variant="outlined"
@@ -287,6 +301,7 @@ const Login = () => {
           color="secondary"
           fullWidth
           onClick={handleGoogleSignIn}
+          disabled={isLoading}
           sx={{
             mt: 2,
             backgroundColor: "#fafafa",
@@ -297,7 +312,7 @@ const Login = () => {
             fontStyle: "normal",
           }}
         >
-          Sign in with Google
+          {isLoading ? "Loading..." : "Sign in with Google"}
         </Button>
       </FormContainer>
     </div>

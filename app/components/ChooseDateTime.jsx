@@ -27,12 +27,9 @@ export default function ChooseDateTime() {
 
       try {
         console.log(`Fetching service with ID: ${state.serviceId}`);
-        const response = await fetch(`/api/services/${state.serviceId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          `/api/services?action=byId&id=${state.serviceId}`
+        );
         console.log(`Response status: ${response.status}`);
 
         if (!response.ok) {
@@ -58,7 +55,7 @@ export default function ChooseDateTime() {
         setLoading(true);
         const formattedDate = selectedDate.format("YYYY-MM-DD");
         const response = await fetch(
-          `/api/appointments/barbers/${state.barberId}?date=${formattedDate}`
+          `/api/bookings?action=barber&barberId=${state.barberId}&date=${formattedDate}`
         );
 
         if (!response.ok) {

@@ -107,10 +107,11 @@ export const BookingProvider = ({ children }) => {
   const createAppointment = async () => {
     dispatch({ type: "SET_LOADING", payload: true });
     try {
-      const response = await fetch("/api/appointments", {
+      const response = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          action: "create",
           date: state.date.format("YYYY-MM-DD") + "T" + state.time,
           userId: user?.uid || null,
           barberId: state.barberId,
