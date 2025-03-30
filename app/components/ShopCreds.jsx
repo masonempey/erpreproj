@@ -47,11 +47,13 @@ const ShopCreds = () => {
     setError(null);
     try {
       const response = await fetch("/api/shop", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "updateInfo",
+          // Fixed: use formData instead of undefined shopData
+          ...formData,
+        }),
       });
 
       if (!response.ok) throw new Error("Failed to update shop data");

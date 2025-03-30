@@ -29,12 +29,16 @@ export function ShopProvider({ children }) {
   const updateShopInfo = async (updatedData) => {
     try {
       setLoading(true);
+      // Changed from PUT to POST with action parameter
       const response = await fetch("http://localhost:3000/api/shop", {
-        method: 'PUT',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(updatedData),
+        body: JSON.stringify({
+          action: "updateInfo",
+          ...updatedData,
+        }),
       });
 
       if (!response.ok) {
@@ -115,7 +119,6 @@ export function ShopProvider({ children }) {
       {children}
     </ShopContext.Provider>
   );
-
 }
 
 export function useShop() {

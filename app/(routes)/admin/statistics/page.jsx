@@ -30,7 +30,7 @@ export default function Statistics() {
     const fetchAllAppointments = async () => {
       setAppointmentsLoading(true);
       try {
-        const response = await fetch("/api/appointments/all");
+        const response = await fetch("/api/bookings?action=list");
         if (!response.ok) throw new Error("Failed to fetch appointments");
         const data = await response.json();
         setAllAppointments(data);
@@ -43,35 +43,38 @@ export default function Statistics() {
     fetchAllAppointments();
   }, []);
 
-  const barberData = selectedBarber && allAppointments.length
-    ? (() => {
-        const currentDate = new Date();
-        const barberAppointments = allAppointments.filter(
-          (app) => app.barber_id === selectedBarber && new Date(app.date) < currentDate
-        );
-        const totalAppointments = barberAppointments.length;
+  const barberData =
+    selectedBarber && allAppointments.length
+      ? (() => {
+          const currentDate = new Date();
+          const barberAppointments = allAppointments.filter(
+            (app) =>
+              app.barber_id === selectedBarber &&
+              new Date(app.date) < currentDate
+          );
+          const totalAppointments = barberAppointments.length;
 
-        const recentClients = barberAppointments
-          .sort((a, b) => new Date(b.date) - new Date(a.date)) // Newest to oldest
-          .slice(0, 3)
-          .map((app) => ({
-            name: app.guest_name || "Unknown Client",
-            date: new Date(app.date).toLocaleString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
-          }));
+          const recentClients = barberAppointments
+            .sort((a, b) => new Date(b.date) - new Date(a.date)) // Newest to oldest
+            .slice(0, 3)
+            .map((app) => ({
+              name: app.guest_name || "Unknown Client",
+              date: new Date(app.date).toLocaleString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+            }));
 
-        return {
-          totalAppointments,
-          recentClients,
-          hasAppointments: barberAppointments.length > 0,
-        };
-      })()
-    : null;
+          return {
+            totalAppointments,
+            recentClients,
+            hasAppointments: barberAppointments.length > 0,
+          };
+        })()
+      : null;
 
   const handleBarberSelect = (barberId) => {
     setSelectedBarber(barberId);
@@ -83,7 +86,10 @@ export default function Statistics() {
       <Grid container spacing={3}>
         <Grid item xs={12} md={4} lg={3}>
           <Paper elevation={2} sx={{ p: 2, borderRadius: 2 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: "#35281f" }}>
+            <Typography
+              variant="h6"
+              sx={{ mb: 2, fontWeight: 600, color: "#35281f" }}
+            >
               Select Barber
             </Typography>
             <Divider sx={{ mb: 2 }} />
@@ -95,7 +101,10 @@ export default function Statistics() {
         </Grid>
         <Grid item xs={12} md={8} lg={9}>
           <Paper elevation={2} sx={{ p: 2, borderRadius: 2 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: "#35281f" }}>
+            <Typography
+              variant="h6"
+              sx={{ mb: 2, fontWeight: 600, color: "#35281f" }}
+            >
               Performance Statistics
             </Typography>
             <Divider sx={{ mb: 2 }} />
@@ -106,24 +115,40 @@ export default function Statistics() {
             ) : barberData ? (
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
-                  <Card sx={{ bgcolor: "#fafafa", boxShadow: "0 4px 10px rgba(53, 40, 31, 0.1)" }}>
+                  <Card
+                    sx={{
+                      bgcolor: "#fafafa",
+                      boxShadow: "0 4px 10px rgba(53, 40, 31, 0.1)",
+                    }}
+                  >
                     <CardContent>
                       <Typography color="textSecondary" gutterBottom>
                         Total Completed Appointments
                       </Typography>
-                      <Typography variant="h4" sx={{ color: "#35281f", fontWeight: "bold" }}>
+                      <Typography
+                        variant="h4"
+                        sx={{ color: "#35281f", fontWeight: "bold" }}
+                      >
                         {barberData.totalAppointments}
                       </Typography>
                     </CardContent>
                   </Card>
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Card sx={{ bgcolor: "#fafafa", boxShadow: "0 4px 10px rgba(53, 40, 31, 0.1)" }}>
+                  <Card
+                    sx={{
+                      bgcolor: "#fafafa",
+                      boxShadow: "0 4px 10px rgba(53, 40, 31, 0.1)",
+                    }}
+                  >
                     <CardContent>
                       <Typography color="textSecondary" gutterBottom>
                         Revenue Generated
                       </Typography>
-                      <Typography variant="h4" sx={{ color: "#35281f", fontWeight: "bold" }}>
+                      <Typography
+                        variant="h4"
+                        sx={{ color: "#35281f", fontWeight: "bold" }}
+                      >
                         ${"694.20"}
                       </Typography>
                     </CardContent>
@@ -145,7 +170,10 @@ export default function Statistics() {
                               <PersonIcon />
                             </Avatar>
                           </ListItemAvatar>
-                          <ListItemText primary={client.name} secondary={client.date} />
+                          <ListItemText
+                            primary={client.name}
+                            secondary={client.date}
+                          />
                         </ListItem>
                       ))}
                     </List>

@@ -111,7 +111,7 @@ const ProfilePopup = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(`/api/users/${user.uid}`);
+      const response = await fetch(`/api/users?action=byId&id=${user.uid}`);
       if (!response.ok) {
         throw new Error("Failed to fetch user data");
       }
@@ -137,7 +137,7 @@ const ProfilePopup = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `/api/appointments/users/${user.uid}/appointments`
+        `/api/bookings?action=user&userId=${user.uid}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch appointments");
@@ -158,7 +158,7 @@ const ProfilePopup = () => {
     }
 
     try {
-      const response = await fetch(`/api/users/${user.uid}/coins/redeem`, {
+      const response = await fetch(`/api/users?id=${user.uid}&action=coins`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -188,7 +188,7 @@ const ProfilePopup = () => {
 
   const saveProfile = async () => {
     try {
-      const response = await fetch(`/api/users/${user.uid}`, {
+      const response = await fetch(`/api/users?id=${user.uid}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

@@ -27,13 +27,15 @@ export default function Home() {
           const reviewData = await response.json();
           console.log("Fetched review data:", reviewData);
           // Keeping your mapping (alex) which is identical to Main
-          const mappedReviews = (reviewData.reviews || []).map(review => ({
+          const mappedReviews = (reviewData.reviews || []).map((review) => ({
             author_name: review.author_name || "Anonymous",
             profile_photo_url: review.profile_photo_url || "",
             text: review.review,
             numsReviews: 0,
             rating: review.rating || 5,
-            relative_time_description: calculateRelativeTime(review.review_date),
+            relative_time_description: calculateRelativeTime(
+              review.review_date
+            ),
           }));
           setReviews(mappedReviews);
         } else {
