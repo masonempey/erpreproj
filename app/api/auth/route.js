@@ -269,39 +269,74 @@ async function googleAuthHandler(body, request) {
 }
 
 async function validateHandler(body) {
-  const { uid } = body;
+  try {
+    const { userId } = body; // Changed from uid to userId to match frontend
 
-  // Validate the UID
-  if (!uid) {
-    return NextResponse.json({ error: "User ID is required" }, { status: 400 });
+    if (!userId) {
+      return NextResponse.json(
+        { error: "User ID is required", success: false },
+        { status: 400 }
+      );
+    }
+
+    const user = await getUserById(userId);
+    
+    if (!user) {
+      return NextResponse.json(
+        { error: "User not found", success: false },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      exists: true,
+      user_id: user.id,
+      role: user.role // Include role if needed
+    });
+
+  } catch (error) {
+    console.error("Validation error:", error);
+    return NextResponse.json(
+      { error: "Internal server error", success: false },
+      { status: 500 }
+    );
   }
-
-  // Check if the user exists
-  const user = await getUserById(uid).catch(() => null);
-
-  // Return the response
-  return NextResponse.json({ exists: !!user });
 }
 
 async function checkUserHandler(body) {
-  const { email } = body;
-
-  if (!email) {
-    return NextResponse.json({ error: "Email is required" }, { status: 400 });
-  }
-
   try {
-    const user = await getUserByEmail(email);
-    return NextResponse.json({
-      exists: true,
-      user_id: user.user_id,
-      current_role: user.role_id,
-    });
-  } catch (err) {
-    if (err.message.includes("not found")) {
-      return NextResponse.json({ exists: false });
+    const { email } = body;
+
+    if (!email) {
+      return NextResponse.json(
+        { error: "Email is required", success: false },
+        { status: 400 }
+      );
     }
-    throw err;
+
+    const user = await getUserByEmail(email);
+    
+    return NextResponse.json({
+      success: true,
+      exists: true,
+      user_id: user.id,
+      current_role: user.role
+    });
+
+  } catch (error) {
+    if (error.message.includes("not found")) {
+      return NextResponse.json({
+        success: true,
+        exists: false
+      });
+    }
+    
+    console.error("Check user error:", error);
+    return NextResponse.json(
+      { error: "Internal server error", success: false },
+      { status: 500 }
+    );
   }
 }
 

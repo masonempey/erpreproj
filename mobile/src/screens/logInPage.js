@@ -43,47 +43,39 @@ const LogInPage = () => {
 
     // Function to handle the login process
     const handleLogin = async () => {
-        if (!email || !password) {
-            setError("Email and password are required");
-            return;
-        }
-        setIsLoading(true);
-        setError("");
-
         try {
-            const userCredential = await signInWithEmailAndPassword(
-                auth,
-                email,
-                password
-            );
-            const idToken = await userCredential.user.getIdToken();
-
-            const validateRes = await fetch(
-                `${ip_address}:3000/api/users/validate`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${idToken}`,
-                    },
-                    body: JSON.stringify({ uid: userCredential.user.uid }),
-                }
-            );
-
-            setEmail("");
-            setPassword("");
-            if (!validateRes.ok) {
-                const data = await validateRes.json();
-                throw new Error(data.error || "User validation failed");
-            }
+          // 1. Firebase Auth
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          const userId = userCredential.user.uid;
+          const idToken = await userCredential.user.getIdToken();
+      
+          // 2. Debug logs
+          console.log("Auth successful - UID:", userId);
+          console.log("ID Token:", idToken);
+      
+          // 3. API Validation
+          const validateRes = await fetch(`${ip_address}:3000/api/auth`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${idToken}`
+            },
+            body: JSON.stringify({
+              action: "validate",
+              userId: userId // Using the verified UID
+            })
+          });
+      
+          if (!validateRes.ok) throw new Error("Validation failed");
+          
+          // 4. Success
+          console.log("Login complete");
+          
         } catch (error) {
-            setError(
-                error.message?.includes("auth/")
-                    ? "Invalid email or password"
-                    : error.message
-            );
-        } finally {
-            setIsLoading(false);
+          console.error("Login error:", error);
+          setError(error.message.includes("auth/") 
+            ? "Invalid credentials" 
+            : error.message);
         }
     };
 

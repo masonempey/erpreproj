@@ -38,8 +38,9 @@ function LandingPage() {
     try {
       setIsLoading(true);
       const barberId = "barber2";
-      const response = await fetch(`${ip_address}:3000/api/appointments/barbers/${barberId}?date=${date}`);
-      
+      const response = await fetch(
+        `${ip_address}:3000/api/barbers?action=appointments&barberId=${barberId}&date=${date}`
+      );      
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -49,6 +50,7 @@ function LandingPage() {
         .slice(0, 3);
       setAppointments(sortedAndLimitedAppointments);
     } catch (error) {
+      console.log(ip_address);
       console.error("Error fetching appointments:", error);
     } finally {
       setIsLoading(false);
