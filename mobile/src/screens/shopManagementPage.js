@@ -71,7 +71,7 @@ export default function ShopManagementPage({ navigation, route }) {
       };
   
       const response = await fetch(`${ip_address}:3000/api/shop`, {
-        method: 'PUT',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },

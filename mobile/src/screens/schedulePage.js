@@ -18,7 +18,9 @@ export default function SchedulingPage({ route }) {
       setError(null);
       
       const barberId = "barber2";
-      const response = await fetch(`${ip_address}:3000/api/appointments/barbers/${barberId}?date=${date}`);
+      const response = await fetch(
+        `${ip_address}:3000/api/barbers?action=appointments&barberId=${barberId}&date=${date}`
+      ); 
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
