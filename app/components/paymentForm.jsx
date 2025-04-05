@@ -19,7 +19,6 @@ export default function PaymentForm() {
   const stripe = useStripe();
   const elements = useElements();
   const [cardError, setCardError] = useState("");
-  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [postalCode, setPostalCode] = useState("");
   const { state, dispatch, createAppointment } = useBooking();
