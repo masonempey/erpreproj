@@ -4,7 +4,7 @@ import SelectService from "./SelectService";
 import ChooseBarber from "./ChooseBarber";
 import ChooseDateTime from "./ChooseDateTime";
 import PersonalInfo from "./PersonalInfo";
-import PaymentForm from "./PaymentForm";
+import PaymentForm from "./paymentForm";
 import Confirmation from "./Confirmation";
 import styles from "../styles/Booking.module.css";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
