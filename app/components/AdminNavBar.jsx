@@ -9,6 +9,7 @@ import {
   Settings as SettingsIcon,
   BarChart as ChartIcon,
 } from "@mui/icons-material";
+import ContentCutIcon from '@mui/icons-material/ContentCut';
 
 const AdminNavBar = () => {
   const router = useRouter();
@@ -20,7 +21,7 @@ const AdminNavBar = () => {
     { name: "Home", href: "/admin", icon: <DashboardIcon /> },
     { name: "Management", href: "/admin/managment", icon: <SettingsIcon /> },
     { name: "Statistics", href: "/admin/statistics", icon: <ChartIcon /> },
-    { name: "Barbers", href: "/admin/barbers", icon: <PersonIcon />}
+    { name: "Barbers", href: "/admin/barbers", icon: <ContentCutIcon />}
   ];
 
   // Update active tab when path changes
