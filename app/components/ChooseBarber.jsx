@@ -13,7 +13,6 @@ import {
   Chip,
   CircularProgress,
   Alert,
-  Skeleton,
 } from "@mui/material";
 import { FiberManualRecord as StatusIcon } from "@mui/icons-material";
 
@@ -43,7 +42,14 @@ export default function ChooseBarber() {
         }
         const data = await response.json();
         console.log("Barbers data:", data);
-        setBarbers(data);
+
+        // Add availability field for UI (in a real app, this would come from backend)
+        const barbersWithAvailability = data.map((barber) => ({
+          ...barber,
+          isAvailable: Math.random() > 0.3, // Random availability for demo
+        }));
+
+        setBarbers(barbersWithAvailability);
       } catch (error) {
         console.error("Error fetching barbers:", error);
         setError(`Failed to load barbers: ${error.message}`);
@@ -93,6 +99,10 @@ export default function ChooseBarber() {
 
   return (
     <Box sx={{ px: 2, py: 1, maxHeight: "65vh", overflow: "auto" }}>
+      <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
+        Choose Your Barber
+      </Typography>
+
       <Grid container spacing={3}>
         {barbers.map((barber) => (
           <Grid item xs={12} sm={6} md={4} key={barber.id}>

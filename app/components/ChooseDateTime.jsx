@@ -1,308 +1,224 @@
-import React, { useState, useEffect } from "react";
-import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { useState, useEffect } from "react";
 import { useBooking } from "../../context/BookingContext";
-import { useShop } from "../../context/ShopContext";
-import Button from "@mui/material/Button";
-import { Box, CircularProgress, Alert } from "@mui/material";
-import styles from "../styles/DateTime.module.css";
+import { LocalizationProvider, DateCalendar } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import {
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+  Alert,
+  Paper,
+  Container,
+} from "@mui/material";
+import TimeSelector from "./TimeSlot";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 export default function ChooseDateTime() {
   const { state, dispatch } = useBooking();
-  const { shopInfo, isWithinBusinessHours } = useShop();
   const [selectedDate, setSelectedDate] = useState(null);
   const [time, setTime] = useState(null);
   const [view, setView] = useState("calendar");
   const [existingAppointments, setExistingAppointments] = useState([]);
-  const [selectedServiceDuration, setSelectedServiceDuration] = useState(45);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Get service duration when component loads
+  // Get today's date at midnight for proper comparison
+  const today = dayjs().startOf("day");
+
   useEffect(() => {
-    const fetchServiceDuration = async () => {
-      if (!state.serviceId) return;
-
-      try {
-        console.log(`Fetching service with ID: ${state.serviceId}`);
-        const response = await fetch(
-          `/api/services?action=byId&id=${state.serviceId}`
-        );
-        console.log(`Response status: ${response.status}`);
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch service: ${response.status}`);
-        }
-        const serviceData = await response.json();
-        console.log("Service data:", serviceData);
-        setSelectedServiceDuration(serviceData.duration_minutes || 45);
-      } catch (err) {
-        console.error("Error fetching service duration:", err);
-      }
-    };
-
-    fetchServiceDuration();
-  }, [state.serviceId]);
-
-  // Fetch barber's existing appointments for the selected date
-  useEffect(() => {
-    const fetchBarberAppointments = async () => {
-      if (!selectedDate || !state.barberId) return;
-
-      try {
-        setLoading(true);
-        const formattedDate = selectedDate.format("YYYY-MM-DD");
-        const response = await fetch(
-          `/api/bookings?action=barber&barberId=${state.barberId}&date=${formattedDate}`
-        );
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch appointments: ${response.status}`);
-        }
-
-        const appointments = await response.json();
-        setExistingAppointments(appointments);
-      } catch (err) {
-        console.error("Error fetching barber appointments:", err);
-        setError("Could not load barber's schedule. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBarberAppointments();
+    // If selectedDate is set and valid, fetch appointments
+    if (selectedDate && state.barberId) {
+      fetchAppointmentsForDate(selectedDate);
+    }
   }, [selectedDate, state.barberId]);
 
-  const handleDateNext = () => {
-    if (selectedDate) {
-      setView("time");
+  const fetchAppointmentsForDate = async (date) => {
+    try {
+      setLoading(true);
+      const formattedDate = date.format("YYYY-MM-DD");
+
+      const response = await fetch(
+        `/api/bookings?action=barber&barberId=${state.barberId}&date=${formattedDate}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch appointments: ${response.status}`);
+      }
+
+      const appointments = await response.json();
+      setExistingAppointments(appointments || []); // Ensure it's always at least an empty array
+    } catch (err) {
+      console.error("Error fetching barber appointments:", err);
+      setError("Could not load barber's schedule. Please try again.");
+      setExistingAppointments([]); // Set to empty array on error
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleTimeSelect = (slot) => {
-    setTime(slot);
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    setTime(null); // Reset time when date changes
+    setView("time");
   };
 
-  const handleNextStep = () => {
-    if (selectedDate && time) {
-      // Convert time from "8:00 AM" to 24-hour format
-      let [hourMinute, period] = time.split(" ");
-      let [hour, minute] = hourMinute.split(":");
-
-      // Convert to 24-hour format
-      hour = parseInt(hour);
-      if (period === "PM" && hour < 12) hour += 12;
-      if (period === "AM" && hour === 12) hour = 0;
-
-      // Format as HH:MM:00
-      const formattedTime = `${hour.toString().padStart(2, "0")}:${minute}:00`;
-
-      dispatch({
-        type: "SELECT_DATETIME",
-        payload: {
-          date: selectedDate,
-          time: formattedTime,
-        },
-      });
-    }
+  const handleTimeSelect = (selectedTime) => {
+    setTime(selectedTime);
   };
 
-  // Check if a time slot is already booked or would overlap with existing appointments
-  const isTimeSlotBooked = (timeSlot) => {
-    if (existingAppointments.length === 0) return false;
+  const handleContinue = () => {
+    if (!selectedDate || !time) return;
 
-    // Parse the timeSlot
-    const [hourMinute, period] = timeSlot.split(" ");
-    const [slotHour, slotMinute] = hourMinute.split(":");
-    let hour = parseInt(slotHour);
-    if (period === "PM" && hour < 12) hour += 12;
-    if (period === "AM" && hour === 12) hour = 0;
-
-    // Create date objects for start and end of the potential appointment
-    const appointmentDate = selectedDate.format("YYYY-MM-DD");
-    const slotStartTime = new Date(
-      `${appointmentDate}T${hour}:${slotMinute}:00`
-    );
-    const slotEndTime = new Date(
-      slotStartTime.getTime() + selectedServiceDuration * 60000
-    );
-
-    // Check if this slot overlaps with any existing appointment
-    return existingAppointments.some((appointment) => {
-      const existingStart = new Date(appointment.date);
-
-      // Calculate end time based on the existing appointment's service duration
-      // If service_duration is available, use it, otherwise use default 45 minutes
-      const existingDuration = appointment.service_duration || 45;
-      const existingEnd = new Date(
-        existingStart.getTime() + existingDuration * 60000
-      );
-
-      // Check for overlap
-      return (
-        (slotStartTime < existingEnd && slotStartTime >= existingStart) ||
-        (slotEndTime > existingStart && slotEndTime <= existingEnd) ||
-        (slotStartTime <= existingStart && slotEndTime >= existingEnd)
-      );
+    dispatch({
+      type: "SELECT_DATETIME",
+      payload: {
+        date: selectedDate.format("YYYY-MM-DD"),
+        time: time,
+      },
     });
   };
 
-  const generateTimeSlots = () => {
-    if (!selectedDate || !shopInfo) return [];
-
-    const slots = [];
-    const dayOfWeek = selectedDate.day();
-    const dayNames = [
-      "sunday",
-      "monday",
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-      "saturday",
-    ];
-    const dayName = dayNames[dayOfWeek];
-
-    // Get business hours for the selected day
-    const openTime = shopInfo[`${dayName}_open`];
-    const closeTime = shopInfo[`${dayName}_close`];
-
-    // If shop is closed that day
-    if (!openTime || !closeTime) return [];
-
-    // Parse open/close times
-    const [openHours, openMinutes] = openTime.split(":").map(Number);
-    const [closeHours, closeMinutes] = closeTime.split(":").map(Number);
-
-    // Calculate appointment interval based on selected service duration
-    const intervalMinutes = selectedServiceDuration || 45;
-
-    // Generate slots from opening to closing time
-    let currentTime = new Date();
-    currentTime.setHours(openHours, openMinutes, 0, 0);
-
-    const endTime = new Date();
-    endTime.setHours(closeHours, closeMinutes, 0, 0);
-
-    // Subtract one service duration from end time to ensure last appointment finishes before closing
-    endTime.setMinutes(endTime.getMinutes() - intervalMinutes);
-
-    while (currentTime <= endTime) {
-      const hours = currentTime.getHours();
-      const minutes = currentTime.getMinutes();
-      const period = hours < 12 ? "AM" : "PM";
-      const hour12 = hours % 12 || 12;
-
-      const uniqueId = currentTime.toISOString();
-      const formattedTime = `${hour12}:${minutes
-        .toString()
-        .padStart(2, "0")} ${period}`;
-
-      slots.push({
-        id: uniqueId,
-        display: formattedTime,
-      });
-
-      currentTime.setMinutes(currentTime.getMinutes() + 15);
+  const handleBack = () => {
+    if (view === "time") {
+      setView("calendar");
     }
-
-    return slots;
   };
-
-  const timeSlots = generateTimeSlots();
-
-  const handleDateChange = (newDate) => {
-    setSelectedDate(newDate);
-    setTime(null); // Reset time selection when date changes
-  };
-
-  // check if a date should be disabled
-  const isDateDisabled = (date) => {
-    if (!shopInfo) return true;
-
-    const dayOfWeek = date.day();
-    const dayNames = [
-      "sunday",
-      "monday",
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-      "saturday",
-    ];
-    const dayName = dayNames[dayOfWeek];
-
-    // Check if the shop is open on this day
-    return !shopInfo[`${dayName}_open`] || !shopInfo[`${dayName}_close`];
-  };
-
-  if (loading) {
-    return (
-      <Box display="flex" justifyContent="center" my={4}>
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  if (error) {
-    return (
-      <Alert severity="error" sx={{ m: 2 }}>
-        {error}
-      </Alert>
-    );
-  }
 
   return (
-    <div className={styles.dateTime}>
-      {view === "calendar" && (
-        <>
-          <div className={styles.calendar}>
+    <Container maxWidth="md" sx={{ py: 3 }}>
+      <Paper
+        elevation={2}
+        sx={{
+          p: 3,
+          borderRadius: 2,
+          backgroundColor: "#fff",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            mb: 3,
+          }}
+        >
+          <CalendarMonthIcon sx={{ mr: 1, color: "#35281f" }} />
+          <Typography
+            variant="h5"
+            align="center"
+            sx={{
+              fontWeight: 600,
+              color: "#35281f",
+              textAlign: "center",
+              width: "100%",
+            }}
+          >
+            {view === "calendar" ? "Select a Date" : "Select a Time"}
+          </Typography>
+        </Box>
+
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
+
+        {view === "calendar" ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
+              "& .MuiDateCalendar-root": {
+                width: "100%",
+                maxWidth: "400px",
+              },
+            }}
+          >
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateCalendar
                 value={selectedDate}
                 onChange={handleDateChange}
-                shouldDisableDate={isDateDisabled}
-                minDate={dayjs().subtract(1, "day")}
+                loading={loading}
+                disablePast={true}
+                minDate={today}
+                sx={{
+                  width: "100%",
+                  "& .MuiPickersDay-root": {
+                    backgroundColor: "transparent",
+                    "&:hover": {
+                      backgroundColor: "#35281f",
+                      color: "#fff",
+                    },
+                  },
+                  "& .MuiPickersDay-root.Mui-selected:hover": {
+                    backgroundColor: "#35281f",
+                    color: "#fff",
+                  },
+                  "& .MuiPickersDay-root.Mui-selected": {
+                    backgroundColor: "#35281f",
+                  },
+                }}
               />
             </LocalizationProvider>
-          </div>
-          {selectedDate && (
-            <Button onClick={handleDateNext} variant="contained" sx={{ mt: 2 }}>
-              Next
+          </Box>
+        ) : (
+          <>
+            <Button
+              variant="outlined"
+              onClick={handleBack}
+              sx={{
+                mb: 3,
+                borderColor: "#35281f",
+                color: "#35281f",
+                "&:hover": {
+                  borderColor: "#5d4a3e",
+                  backgroundColor: "rgba(53, 40, 31, 0.04)",
+                },
+              }}
+            >
+              Back to Calendar
             </Button>
-          )}
-        </>
-      )}
 
-      {view === "time" && (
-        <div className={styles.timeSlots}>
-          <h2>Available Times</h2>
-          <div className={styles.timeSlotsContainer}>
-            {timeSlots.map((slot) => (
-              <Button
-                key={slot.id}
-                variant={slot.display === time ? "contained" : "outlined"}
-                onClick={() => handleTimeSelect(slot.display)}
-                disabled={isTimeSlotBooked(slot.display)}
-                className={styles.timeSlot}
-                sx={{
-                  m: 0.5,
-                  opacity: isTimeSlotBooked(slot.display) ? 0.5 : 1,
-                }}
-              >
-                {slot.display}
-              </Button>
-            ))}
-          </div>
-          {time && (
-            <Button onClick={handleNextStep} variant="contained" sx={{ mt: 3 }}>
-              Confirm
-            </Button>
-          )}
-        </div>
-      )}
-    </div>
+            {loading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+                <CircularProgress sx={{ color: "#35281f" }} />
+              </Box>
+            ) : (
+              <>
+                <TimeSelector
+                  selectedDate={selectedDate}
+                  existingAppointments={existingAppointments}
+                  onTimeSelect={handleTimeSelect}
+                  selectedTime={time}
+                  serviceDuration={state.serviceDuration}
+                />
+
+                <Box
+                  sx={{ mt: 4, display: "flex", justifyContent: "flex-end" }}
+                >
+                  <Button
+                    variant="contained"
+                    disabled={!time}
+                    onClick={handleContinue}
+                    sx={{
+                      bgcolor: "#35281f",
+                      "&:hover": { bgcolor: "#5d4a3e" },
+                      py: 1.5,
+                      px: 3,
+                    }}
+                  >
+                    Continue
+                  </Button>
+                </Box>
+              </>
+            )}
+          </>
+        )}
+      </Paper>
+    </Container>
   );
 }

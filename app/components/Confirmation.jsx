@@ -18,6 +18,7 @@ import {
   CalendarMonth,
 } from "@mui/icons-material";
 import { useBooking } from "../../context/BookingContext";
+import dayjs from "dayjs"; // Import dayjs
 
 export default function Confirmation({ onClose }) {
   const { state, dispatch } = useBooking();
@@ -25,11 +26,18 @@ export default function Confirmation({ onClose }) {
   const formatDate = (dateObj) => {
     if (!dateObj) return "N/A";
     try {
-      const date = dateObj.toDate ? dateObj.toDate() : new Date(dateObj);
+      // Convert string date to Date object
+      const date =
+        typeof dateObj === "string"
+          ? new Date(dateObj)
+          : dateObj.toDate
+          ? dateObj.toDate()
+          : new Date(dateObj);
+
       return date.toLocaleDateString("en-US", {
-        weekday: "short", // Shortened weekday
+        weekday: "short",
         year: "numeric",
-        month: "short", // Shortened month
+        month: "short",
         day: "numeric",
       });
     } catch (err) {
@@ -54,13 +62,27 @@ export default function Confirmation({ onClose }) {
   const addToCalendar = () => {
     if (!state.date || !state.time) return;
     try {
-      const eventDate = state.date.format
-        ? state.date.format("YYYYMMDD")
-        : new Date(state.date).toISOString().split("T")[0].replace(/-/g, "");
+      // Handle string date format from state
+      const eventDate =
+        typeof state.date === "string"
+          ? state.date.replace(/-/g, "") // Convert YYYY-MM-DD to YYYYMMDD
+          : state.date.format
+          ? state.date.format("YYYYMMDD")
+          : new Date(state.date).toISOString().split("T")[0].replace(/-/g, "");
+
       const [hours, minutes] = state.time.split(":");
       const startTime = `${eventDate}T${hours}${minutes}00`;
-      const endHour = (parseInt(hours) + 1).toString().padStart(2, "0");
-      const endTime = `${eventDate}T${endHour}${minutes}00`;
+
+      // Calculate end time based on service duration
+      const serviceDuration = state.serviceDuration || 45; // Default to 45 minutes
+      const endDate = dayjs(`${state.date}T${state.time}`).add(
+        serviceDuration,
+        "minute"
+      );
+      const endHour = endDate.hour().toString().padStart(2, "0");
+      const endMinute = endDate.minute().toString().padStart(2, "0");
+      const endTime = `${eventDate}T${endHour}${endMinute}00`;
+
       const eventTitle = `Haircut with ${state.barber}`;
       const eventDetails = `Your appointment for ${state.service}`;
       const eventLocation = "The Barber Shop";
@@ -76,8 +98,8 @@ export default function Confirmation({ onClose }) {
   };
 
   const closeBooking = () => {
-    dispatch({ type: "RESET" });
-    onClose();
+    dispatch({ type: "RESET_BOOKING" });
+    onClose && onClose();
   };
 
   return (
@@ -86,31 +108,31 @@ export default function Confirmation({ onClose }) {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        p: 1.5, // Reduced padding
-        maxWidth: 450, // Reduced width
+        p: 1.5,
+        maxWidth: 450,
         mx: "auto",
       }}
     >
       <Avatar
         sx={{
           bgcolor: "#4CAF50",
-          width: 50, // Reduced size
-          height: 50, // Reduced size
-          mb: 1, // Reduced margin
+          width: 50,
+          height: 50,
+          mb: 1,
         }}
       >
-        <CheckCircle sx={{ fontSize: 30 }} /> {/* Reduced icon size */}
+        <CheckCircle sx={{ fontSize: 30 }} />
       </Avatar>
 
       <Typography
-        variant="h6" // Reduced font size
+        variant="h6"
         component="h1"
         align="center"
         gutterBottom
         sx={{
           color: "#35281f",
           fontWeight: 600,
-          mb: 1.5, // Reduced margin
+          mb: 1.5,
         }}
       >
         Booking Confirmed!
@@ -122,70 +144,82 @@ export default function Confirmation({ onClose }) {
           width: "100%",
           overflow: "hidden",
           borderRadius: 3,
-          mb: 2, // Reduced margin
+          mb: 2,
         }}
       >
         <Box
           sx={{
             bgcolor: "#35281f",
             color: "white",
-            p: 1, // Reduced padding
+            p: 1,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <Typography variant="subtitle2">Appointment Details</Typography> {/* Reduced font size */}
+          <Typography variant="subtitle2">Appointment Details</Typography>{" "}
         </Box>
 
-        <Box sx={{ p: 1.5 }}> {/* Reduced padding */}
-          <Grid container spacing={1.5}> {/* Reduced spacing */}
+        <Box sx={{ p: 1.5 }}>
+          {" "}
+          <Grid container spacing={1.5}>
+            {" "}
             <Grid item xs={12}>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}> {/* Reduced margin */}
+              <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
+                {" "}
                 <ContentCut sx={{ color: "#35281f", mr: 1 }} />
                 <Typography variant="subtitle2" color="textSecondary">
                   Service
                 </Typography>
               </Box>
-              <Typography variant="body2" fontWeight={500}> {/* Reduced font size */}
+              <Typography variant="body2" fontWeight={500}>
+                {" "}
                 {state.service || "N/A"}
               </Typography>
-              <Divider sx={{ my: 0.5 }} /> {/* Reduced margin */}
+              <Divider sx={{ my: 0.5 }} />
             </Grid>
-
             <Grid item xs={12}>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}> {/* Reduced margin */}
+              <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
+                {" "}
                 <Person sx={{ color: "#35281f", mr: 1 }} />
                 <Typography variant="subtitle2" color="textSecondary">
                   Barber
                 </Typography>
               </Box>
-              <Typography variant="body2" fontWeight={500}> {/* Reduced font size */}
+              <Typography variant="body2" fontWeight={500}>
+                {" "}
+                {/* Reduced font size */}
                 {state.barber || "N/A"}
               </Typography>
               <Divider sx={{ my: 0.5 }} /> {/* Reduced margin */}
             </Grid>
-
             <Grid item xs={12} sm={6}>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}> {/* Reduced margin */}
+              <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
+                {" "}
+                {/* Reduced margin */}
                 <CalendarMonth sx={{ color: "#35281f", mr: 1 }} />
                 <Typography variant="subtitle2" color="textSecondary">
                   Date
                 </Typography>
               </Box>
-              <Typography variant="body2" fontWeight={500}> {/* Reduced font size */}
+              <Typography variant="body2" fontWeight={500}>
+                {" "}
+                {/* Reduced font size */}
                 {formatDate(state.date)}
               </Typography>
             </Grid>
-
             <Grid item xs={12} sm={6}>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}> {/* Reduced margin */}
+              <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
+                {" "}
+                {/* Reduced margin */}
                 <AccessTime sx={{ color: "#35281f", mr: 1 }} />
                 <Typography variant="subtitle2" color="textSecondary">
                   Time
                 </Typography>
               </Box>
-              <Typography variant="body2" fontWeight={500}> {/* Reduced font size */}
+              <Typography variant="body2" fontWeight={500}>
+                {" "}
+                {/* Reduced font size */}
                 {formatTime(state.time)}
               </Typography>
             </Grid>
@@ -204,7 +238,9 @@ export default function Confirmation({ onClose }) {
         reminder 24 hours before your appointment.
       </Typography>
 
-      <Stack direction="row" spacing={1}> {/* Reduced spacing */}
+      <Stack direction="row" spacing={1}>
+        {" "}
+        {/* Reduced spacing */}
         <Button
           variant="outlined"
           onClick={closeBooking}
@@ -219,7 +255,6 @@ export default function Confirmation({ onClose }) {
         >
           Close
         </Button>
-
         <Button
           variant="contained"
           startIcon={<Event />}

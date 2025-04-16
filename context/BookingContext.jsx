@@ -10,6 +10,8 @@ const initialState = {
   step: 1,
   service: null,
   serviceId: null,
+  serviceDuration: null,
+  servicePrice: null,
   barber: null,
   barberId: null,
   date: null,
@@ -27,18 +29,20 @@ const initialState = {
 
 function bookingReducer(state, action) {
   switch (action.type) {
-    case "SELECT_SERVICE":
-      return {
-        ...state,
-        service: action.payload.name,
-        serviceId: action.payload.id,
-        step: 2,
-      };
     case "SELECT_BARBER":
       return {
         ...state,
         barber: action.payload.name,
         barberId: action.payload.id,
+        step: 2,
+      };
+    case "SELECT_SERVICE":
+      return {
+        ...state,
+        service: action.payload.name,
+        serviceId: action.payload.id,
+        serviceDuration: action.payload.duration,
+        servicePrice: action.payload.price,
         step: 3,
       };
     case "SELECT_DATETIME":
@@ -54,6 +58,12 @@ function bookingReducer(state, action) {
         personalInfo: action.payload,
         step: 5,
       };
+    case "BOOKING_SUCCESS":
+      return {
+        ...state,
+        appointment: action.payload,
+        step: 6,
+      };
     case "SET_LOADING":
       return {
         ...state,
@@ -64,20 +74,16 @@ function bookingReducer(state, action) {
         ...state,
         error: action.payload,
       };
-    case "BOOKING_SUCCESS":
-      return {
-        ...state,
-        appointment: action.payload,
-        step: 6,
-        loading: false,
-      };
     case "GO_BACK":
       return {
         ...state,
         step: state.step - 1,
       };
-    case "RESET":
-      return initialState;
+    case "RESET_BOOKING":
+      return {
+        ...initialState,
+        personalInfo: state.personalInfo,
+      };
     default:
       return state;
   }
@@ -107,15 +113,20 @@ export const BookingProvider = ({ children }) => {
   const createAppointment = async () => {
     dispatch({ type: "SET_LOADING", payload: true });
     try {
+      console.log(
+        "Attempting to create appointment with duration:",
+        state.serviceDuration
+      );
       const response = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "create",
-          date: state.date.format("YYYY-MM-DD") + "T" + state.time,
+          date: state.date + "T" + state.time,
           userId: user?.uid || null,
           barberId: state.barberId,
           serviceId: state.serviceId,
+          serviceDuration: state.serviceDuration,
           guestName: state.personalInfo.fullName,
           guestEmail: state.personalInfo.email,
           guestPhone: state.personalInfo.phone,
@@ -127,7 +138,16 @@ export const BookingProvider = ({ children }) => {
         throw new Error("Failed to create appointment");
       }
 
-      return await response.json();
+      const result = await response.json();
+      console.log("Appointment created:", result);
+
+      // Dispatch success with the returned appointment
+      dispatch({
+        type: "BOOKING_SUCCESS",
+        payload: result.appointment,
+      });
+
+      return result;
     } catch (error) {
       dispatch({ type: "SET_ERROR", payload: error.message });
       throw error;

@@ -147,7 +147,7 @@ async function getServiceByIdHandler(id) {
 }
 
 async function createServiceHandler(data) {
-  const { serviceName, description, price, duration_minutes = 45 } = data;
+  const { serviceName, description, price, duration_minutes } = data;
 
   if (!serviceName || !description || !price) {
     return NextResponse.json(
@@ -156,11 +156,14 @@ async function createServiceHandler(data) {
     );
   }
 
+  // Ensure duration_minutes is a number
+  const duration = parseInt(duration_minutes, 10) || 45;
+
   const savedService = await createService(
     serviceName,
     description,
     price,
-    duration_minutes
+    duration
   );
 
   return NextResponse.json(

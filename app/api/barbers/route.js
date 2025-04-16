@@ -14,6 +14,7 @@ import {
   deleteBarber,
   deleteBarberByBarberId,
   getAppointmentsForBarberByDate,
+  getServicesByBarberId,
 } from "@/lib/services/barberService";
 
 /**
@@ -22,6 +23,7 @@ import {
  * /api/barbers?action=byId&id=barber1 - get barber by ID
  * /api/barbers?action=byName&name=John - get barber by name
  * /api/barbers?action=appointments&barberId=barber1&date=2023-11-01 - get barber appointments by date
+ * /api/barbers?action=services&barberId=barber1 - get services offered by barber
  */
 export async function GET(request) {
   try {
@@ -53,6 +55,16 @@ export async function GET(request) {
           );
         }
         return await getBarberByNameHandler(name);
+      }
+      case "services": {
+        const barberId = searchParams.get("barberId");
+        if (!barberId) {
+          return NextResponse.json(
+            { error: "Barber ID is required" },
+            { status: 400 }
+          );
+        }
+        return await getBarberServicesHandler(barberId);
       }
       case "appointments": {
         const barberId = searchParams.get("barberId");
@@ -175,6 +187,15 @@ export async function DELETE(request) {
       { error: error.message || "Failed to delete barber" },
       { status: 500 }
     );
+  }
+}
+
+async function getBarberServicesHandler(barberId) {
+  try {
+    const services = await getServicesByBarberId(barberId);
+    return NextResponse.json(services);
+  } catch (error) {
+    throw new Error(`Failed to fetch barber services: ${error.message}`);
   }
 }
 
