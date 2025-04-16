@@ -97,7 +97,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { action = "create", ...data } = body;
+    const { action, ...data } = body;
 
     switch (action) {
       case "create": {
@@ -106,23 +106,25 @@ export async function POST(request) {
           userId,
           barberId,
           serviceId,
+          serviceDuration,
           guestName,
           guestEmail,
           guestPhone,
           guestAddress,
         } = data;
 
+        console.log("API received service duration:", serviceDuration);
+
         // Validate required fields
         if (!date || !barberId || !serviceId) {
           return NextResponse.json(
-            {
-              error: "Date, barberId and serviceId are required",
-            },
+            { error: "Date, barber ID, and service ID are required" },
             { status: 400 }
           );
         }
 
-        const newAppointment = await createAppointment(
+        // Create appointment
+        const appointment = await createAppointment(
           date,
           userId,
           serviceId,
@@ -130,14 +132,12 @@ export async function POST(request) {
           guestName,
           guestEmail,
           guestPhone,
-          guestAddress
+          guestAddress,
+          serviceDuration
         );
 
         return NextResponse.json(
-          {
-            message: "Appointment created successfully",
-            appointment: newAppointment,
-          },
+          { message: "Appointment created", appointment },
           { status: 201 }
         );
       }

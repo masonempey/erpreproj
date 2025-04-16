@@ -4,8 +4,8 @@ import { useBooking } from "../../context/BookingContext";
 import styles from "../styles/BookingSteps.module.css";
 
 const steps = [
-  { id: 1, name: "Service" },
-  { id: 2, name: "Barber" },
+  { id: 1, name: "Barber" },
+  { id: 2, name: "Service" },
   { id: 3, name: "Date & Time" },
   { id: 4, name: "Details" },
   { id: 5, name: "Payment" },

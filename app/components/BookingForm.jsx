@@ -15,9 +15,9 @@ export default function BookingForm({ onClose }) {
   const renderStep = () => {
     switch (state.step) {
       case 1:
-        return <SelectService />;
+        return <ChooseBarber />; // First step is now barber selection
       case 2:
-        return <ChooseBarber />;
+        return <SelectService />; // Second step is service selection
       case 3:
         return <ChooseDateTime />;
       case 4:
@@ -27,7 +27,7 @@ export default function BookingForm({ onClose }) {
       case 6:
         return <Confirmation onClose={onClose} />;
       default:
-        return <SelectService />;
+        return <ChooseBarber />;
     }
   };
 
@@ -49,7 +49,6 @@ export default function BookingForm({ onClose }) {
             aria-label="Go back to previous step"
           >
             <ArrowBackIcon />
-            <span>Back</span>
           </button>
         </div>
       )}
