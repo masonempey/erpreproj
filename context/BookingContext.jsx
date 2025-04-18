@@ -1,4 +1,4 @@
-// BookingContext.jsx
+// context/BookingContext.jsx
 "use client";
 
 import React, { createContext, useReducer, useContext } from "react";
@@ -91,7 +91,8 @@ function bookingReducer(state, action) {
 
 export const BookingProvider = ({ children }) => {
   const { user } = useUser();
-  // Initialize with user data
+
+  // Initialize with any user data we have
   const initialStateWithUserData = {
     ...initialState,
     personalInfo: user
@@ -110,7 +111,11 @@ export const BookingProvider = ({ children }) => {
     initialStateWithUserData
   );
 
-  const createAppointment = async () => {
+  /**
+   * Creates a new appointment in the backend.
+   * @param {{ paymentIntentId: string }} opts
+   */
+  const createAppointment = async ({ paymentIntentId }) => {
     dispatch({ type: "SET_LOADING", payload: true });
     try {
       console.log(
@@ -122,7 +127,7 @@ export const BookingProvider = ({ children }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "create",
-          date: state.date + "T" + state.time,
+          date: `${state.date}T${state.time}`,
           userId: user?.uid || null,
           barberId: state.barberId,
           serviceId: state.serviceId,
@@ -131,6 +136,7 @@ export const BookingProvider = ({ children }) => {
           guestEmail: state.personalInfo.email,
           guestPhone: state.personalInfo.phone,
           guestAddress: state.personalInfo.address,
+          paymentIntentId, // ← forward the Stripe PaymentIntent ID
         }),
       });
 
@@ -141,7 +147,6 @@ export const BookingProvider = ({ children }) => {
       const result = await response.json();
       console.log("Appointment created:", result);
 
-      // Dispatch success with the returned appointment
       dispatch({
         type: "BOOKING_SUCCESS",
         payload: result.appointment,
