@@ -21,7 +21,8 @@ const AdminNavBar = () => {
     { name: "Home", href: "/admin", icon: <DashboardIcon /> },
     { name: "Management", href: "/admin/managment", icon: <SettingsIcon /> },
     { name: "Statistics", href: "/admin/statistics", icon: <ChartIcon /> },
-    { name: "Barbers", href: "/admin/barbers", icon: <ContentCutIcon />}
+    { name: "Barbers", href: "/admin/barbers", icon: <ContentCutIcon />},
+    { name: "Profile", href: "/admin/profile", icon: <PersonIcon /> },
   ];
 
   // Update active tab when path changes
