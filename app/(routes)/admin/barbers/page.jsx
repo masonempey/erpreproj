@@ -281,19 +281,7 @@ export default function BarberRoleManagement() {
                       {renderDaySchedule("Sunday", b.Sunday_Start || b.sundayStart, b.Sunday_End || b.sundayEnd)}
                     </Box>
                   </CardContent>
-                  <CardActions>
-                    <Button
-                      size="small"
-                      startIcon={<PersonAddIcon />}
-                      onClick={() => {
-                        setSearchEmail(b.email);
-                        setOpenAssign(true);
-                      }}
-                      sx={{ textTransform: "none" }}
-                    >
-                      Change Role
-                    </Button>
-                  </CardActions>
+                  
                 </Card>
               </Grid>
             ))}
