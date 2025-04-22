@@ -129,13 +129,13 @@ export default function BarberRoleManagement() {
     }
   };
 
-  // Assign barber role with proper API call
   const assignBarberRole = async () => {
     if (!foundUser) return;
     setLoading(true);
     try {
-      const response = await fetch(`/api/users/${foundUser.id}/make-barber`, {
-        method: "POST",
+      // 1. Update user's IsBarber flag
+      const updateResponse = await fetch(`/api/users?userId=${foundUser.user_id}&action=makeBarber`, {
+        method: "PUT",  // Changed to PUT to match your API route
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: foundUser.name,
@@ -143,16 +143,23 @@ export default function BarberRoleManagement() {
         })
       });
   
-      if (!response.ok) {
-        throw new Error("Failed to assign barber role");
+      if (!updateResponse.ok) {
+        const errorData = await updateResponse.json();
+        throw new Error(errorData.error || "Failed to update user role");
       }
   
-      const result = await response.json();
-      setBarbers(prev => [...prev, result.barber]);
+      const result = await updateResponse.json();
+      
+      // 2. Update local state
+      setBarbers(prev => [...prev, {
+        ...result.barber,
+        currentRole: "Barber",
+        barber_id: result.barber.barber_id || result.barber.id
+      }]);
       
       setSnackbar({
         open: true,
-        message: `${result.user.name} is now a Barber!`,
+        message: `${foundUser.name} is now a Barber!`,
         severity: "success",
       });
   
@@ -261,7 +268,6 @@ export default function BarberRoleManagement() {
                   <CardContent sx={{ pt: 1, flexGrow: 1 }}>
                     <Stack direction="row" spacing={1} alignItems="center" mb={2}>
                       <Chip label={b.currentRole || "Barber"} color={roleColors[b.currentRole || "Barber"]} size="small" />
-                      <Chip label={`ID: ${b.barber_id || b.barberId}`} size="small" variant="outlined" />
                     </Stack>
 
                     <Box mb={2}>
