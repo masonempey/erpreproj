@@ -20,6 +20,42 @@
   visibility: visible;
 }
 
+.bookingContainer {
+  width: 85%;
+  max-width: 1000px;
+  min-height: 600px;
+  max-height: 90vh;
+  background-color: #fafafa;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideIn 0.4s ease-out;
+  overflow-y: auto;
+}
+
+.tabletContainer {
+  width: 90%;
+  padding: 1.5rem;
+  max-height: 85vh;
+}
+
+.mobileContainer {
+  width: 95%;
+  padding: 1rem;
+  max-height: 85vh;
+}
+
+.mobileHeader {
+  padding: 0.5rem 0 !important;
+}
+
+.mobileHeading {
+  font-size: 1.5rem !important;
+}
+
 .bookingContainer header {
   position: relative;
   display: flex;
@@ -30,18 +66,11 @@
   margin-bottom: 1rem;
 }
 
-.bookingContainer {
-  width: 85%;
-  max-width: 1000px;
-  min-height: 600px;
-  background-color: #fafafa;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  animation: slideIn 0.4s ease-out;
+.bookingContainer header h2 {
+  font-size: 1.8rem;
+  color: #35281f;
+  margin: 0;
+  font-weight: 600;
 }
 
 @keyframes slideIn {
@@ -78,6 +107,7 @@
   background-color: rgba(53, 40, 31, 0.05);
   transform: translateY(-50%) scale(1.1);
 }
+
 .navigationButtons {
   display: flex;
   justify-content: flex-start;
@@ -107,4 +137,56 @@
 
 .backButton svg {
   font-size: 18px;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+  .bookingContainer header h2 {
+    font-size: 1.6rem;
+  }
+
+  .closeButton {
+    width: 36px;
+    height: 36px;
+    right: 0.75rem;
+  }
+
+  .backButton {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .bookingContainer {
+    width: 98%;
+    padding: 0.75rem;
+    border-radius: 10px;
+  }
+
+  .bookingContainer header {
+    padding: 0.75rem 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .bookingContainer header h2 {
+    font-size: 1.4rem;
+  }
+
+  .closeButton {
+    width: 32px;
+    height: 32px;
+    right: 0.5rem;
+  }
+
+  .navigationButtons {
+    margin-top: 16px;
+    padding: 0 8px;
+  }
+
+  .backButton {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    gap: 4px;
+  }
 }

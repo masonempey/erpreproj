@@ -6,6 +6,7 @@
 
 .aboutContainer {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-start;
   max-width: 1600px;
@@ -27,6 +28,8 @@
   justify-content: center;
   align-items: center;
   margin-left: 2rem;
+  width: 100%;
+  position: relative;
 }
 
 .imageWrapper {
@@ -72,33 +75,33 @@
 .mapIframe {
   border-radius: 15px; /* Rounded corners */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Drop shadow */
+  width: 100%;
+  height: 450px;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
+/* Responsive Design - Large tablets and smaller desktops */
+@media (max-width: 1200px) {
   .aboutContainer {
-    flex-direction: column;
-    align-items: center;
+    gap: 2rem;
   }
 
-  .textSection,
+  .textSection {
+    max-width: 25%;
+    margin-left: 2rem;
+  }
+
   .mapSection {
-    max-width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-  }
-
-  .imageSection {
-    margin-left: 0;
+    max-width: 35%;
+    margin-right: 2rem;
   }
 
   .imageWrapper {
-    height: 300px;
+    height: 350px;
   }
 
   .image {
-    width: 200px;
-    height: 250px;
+    width: 225px;
+    height: 275px;
   }
 
   .image2 {
@@ -110,7 +113,44 @@
   }
 }
 
+/* Tablets */
+@media (max-width: 1024px) {
+  .aboutContainer {
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+  }
+
+  .textSection,
+  .mapSection {
+    max-width: 90%;
+    margin-left: 0;
+    margin-right: 0;
+    text-align: center;
+  }
+
+  .imageSection {
+    margin-left: 0;
+    order: -1;
+  }
+
+  .imageWrapper {
+    height: 300px;
+    margin: 0 auto;
+    max-width: 600px;
+  }
+
+  .mapIframe {
+    height: 350px;
+  }
+}
+
+/* Mobile phones */
 @media (max-width: 768px) {
+  .about {
+    padding: 2rem 1rem;
+  }
+
   .image {
     width: 150px;
     height: 200px;
@@ -125,6 +165,39 @@
   }
 
   .imageWrapper {
+    height: 250px;
+    max-width: 100%;
+  }
+
+  .mapIframe {
+    height: 300px;
+  }
+}
+
+/* Small mobile phones */
+@media (max-width: 480px) {
+  .about {
+    padding: 1.5rem 0.5rem;
+  }
+
+  .imageWrapper {
+    height: 220px;
+  }
+
+  .image {
+    width: 120px;
+    height: 160px;
+  }
+
+  .image2 {
+    left: 70px;
+  }
+
+  .image3 {
+    left: 140px;
+  }
+
+  .mapIframe {
     height: 250px;
   }
 }
@@ -148,6 +221,20 @@
 .description {
   color: #35281f;
   font-family: "Lato", sans-serif;
-  line-height: 1.6;
-  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .description {
+    font-size: 0.9rem;
+  }
 }

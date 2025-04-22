@@ -12,6 +12,8 @@ import {
   Alert,
   CardActionArea,
   Grid,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
@@ -21,6 +23,10 @@ export default function SelectService() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
   useEffect(() => {
     // If no barber is selected, redirect back to step 1
@@ -32,7 +38,6 @@ export default function SelectService() {
     const fetchBarberServices = async () => {
       try {
         setLoading(true);
-        // Use the new endpoint to get services for the selected barber
         const response = await fetch(
           `/api/barbers?action=services&barberId=${state.barberId}`
         );
@@ -42,19 +47,21 @@ export default function SelectService() {
         }
 
         const data = await response.json();
-        console.log("Barber services data:", data);
 
         // Store services with defaults for missing values
         setServices(
           data.map((service) => ({
             ...service,
-            duration_minutes: service.duration_minutes || 45,
-            price: service.price || 0,
+            price: service.price || 25,
+            duration: service.duration_minutes || 45,
+            description:
+              service.description ||
+              "Standard service with our trained professionals.",
           }))
         );
       } catch (error) {
-        console.error("Error fetching barber services:", error);
-        setError(error.message);
+        console.error("Error fetching services:", error);
+        setError("Failed to load services. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -63,109 +70,128 @@ export default function SelectService() {
     fetchBarberServices();
   }, [state.barberId, dispatch]);
 
-  const handleServiceSelect = (serviceName, serviceId, duration, price) => {
+  const handleSelectService = (service) => {
     dispatch({
       type: "SELECT_SERVICE",
       payload: {
-        name: serviceName,
-        id: serviceId,
-        duration: duration,
-        price: price,
+        id: service.id,
+        name: service.service_name,
+        duration: service.duration_minutes,
+        price: service.price,
       },
     });
   };
 
-  if (loading)
+  if (loading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-        <CircularProgress sx={{ color: "#35281f" }} />
+      <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+        <CircularProgress />
       </Box>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
-      <Alert severity="error" sx={{ m: 2 }}>
-        {error}
-      </Alert>
+      <Box sx={{ my: 2, mx: isMobile ? 1 : 2 }}>
+        <Alert severity="error">{error}</Alert>
+      </Box>
     );
-
-  if (!services || services.length === 0)
-    return (
-      <Alert severity="info" sx={{ m: 2 }}>
-        This barber does not offer any services yet.
-      </Alert>
-    );
+  }
 
   return (
-    <Box sx={{ p: 2 }}>
-      <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
-        Select a Service with {state.barber}
+    <Box sx={{ px: isMobile ? 1 : 2, pb: 2 }}>
+      <Typography
+        variant="h6"
+        sx={{
+          mb: 3,
+          textAlign: "center",
+          fontSize: isMobile ? "1.1rem" : "1.25rem",
+        }}
+      >
+        Select a service
       </Typography>
 
-      <Grid container spacing={2}>
+      <Grid container spacing={isMobile ? 1.5 : 2}>
         {services.map((service) => (
-          <Grid item xs={12} sm={6} md={4} key={service.id}>
+          <Grid item xs={12} key={service.id}>
             <Card
-              raised={state.serviceId === service.id}
-              onClick={() =>
-                handleServiceSelect(
-                  service.service_name,
-                  service.id,
-                  service.duration_minutes,
-                  service.price
-                )
-              }
+              elevation={state.serviceId === service.id ? 3 : 1}
               sx={{
-                height: "100%",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                transform:
-                  state.serviceId === service.id ? "translateY(-5px)" : "none",
+                borderRadius: isMobile ? "10px" : "12px",
                 border:
-                  state.serviceId === service.id ? "2px solid #35281f" : "none",
-                "&:hover": {
-                  transform: "translateY(-5px)",
-                  boxShadow: "0 10px 20px rgba(0, 0, 0, 0.1)",
-                },
+                  state.serviceId === service.id
+                    ? "2px solid #35281f"
+                    : "1px solid transparent",
+                transition: "all 0.2s ease",
               }}
             >
-              <CardActionArea sx={{ height: "100%" }}>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    {service.service_name}
-                  </Typography>
-
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                    <AttachMoneyIcon
-                      sx={{ fontSize: 20, mr: 0.5, color: "text.secondary" }}
-                    />
-                    <Typography variant="h5" color="primary">
-                      ${service.price}
+              <CardActionArea
+                onClick={() => handleSelectService(service)}
+                sx={{ p: isMobile ? 1 : 1.5 }}
+              >
+                <CardContent sx={{ p: 0 }}>
+                  <Box>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontSize: isMobile ? "1rem" : "1.25rem",
+                      }}
+                    >
+                      {service.service_name}
                     </Typography>
-                  </Box>
 
-                  <Divider sx={{ my: 1.5 }} />
-
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mt: 1 }}
-                  >
-                    {service.description}
-                  </Typography>
-
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      mt: 2,
-                      color: "text.secondary",
-                    }}
-                  >
-                    <AccessTimeIcon sx={{ fontSize: 16, mr: 0.5 }} />
-                    <Typography variant="body2">
-                      {service.duration_minutes} minutes
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{
+                        mt: 0.5,
+                        fontSize: isMobile ? "0.75rem" : "0.85rem",
+                      }}
+                    >
+                      {service.description}
                     </Typography>
+
+                    <Divider sx={{ my: 1.5 }} />
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <AccessTimeIcon
+                          fontSize="small"
+                          sx={{ color: "#35281f", mr: 0.5 }}
+                        />
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontWeight: 500,
+                            fontSize: isMobile ? "0.75rem" : "0.85rem",
+                          }}
+                        >
+                          {service.duration_minutes} min
+                        </Typography>
+                      </Box>
+
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <AttachMoneyIcon
+                          fontSize="small"
+                          sx={{ color: "#35281f", mr: 0.5 }}
+                        />
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontWeight: 600,
+                            fontSize: isMobile ? "0.85rem" : "0.95rem",
+                          }}
+                        >
+                          ${service.price}
+                        </Typography>
+                      </Box>
+                    </Box>
                   </Box>
                 </CardContent>
               </CardActionArea>

@@ -9,6 +9,8 @@ import {
   Chip,
   Divider,
   Tooltip,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LightModeIcon from "@mui/icons-material/LightMode";
@@ -24,6 +26,9 @@ export default function TimeSelector({
   selectedTime,
   serviceDuration = 45, // Duration in minutes
 }) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
   const [timeOfDay, setTimeOfDay] = useState(0); // 0: Morning, 1: Afternoon, 2: Evening
   const [groupedTimeSlots, setGroupedTimeSlots] = useState({});
@@ -257,12 +262,28 @@ export default function TimeSelector({
 
   return (
     <Box sx={{ maxWidth: "100%" }}>
-      <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
+      <Typography
+        variant="h6"
+        gutterBottom
+        sx={{
+          mb: 2,
+          fontSize: isMobile ? "1rem" : "1.25rem",
+          textAlign: isMobile ? "center" : "left",
+        }}
+      >
         Available times for {selectedDate?.format("MMMM D, YYYY")}
       </Typography>
 
       {serviceDuration > 45 && (
-        <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 2 }}>
+        <Typography
+          variant="subtitle2"
+          color="text.secondary"
+          sx={{
+            mb: 2,
+            fontSize: isMobile ? "0.75rem" : "0.85rem",
+            textAlign: isMobile ? "center" : "left",
+          }}
+        >
           This service requires {serviceDuration} minutes (
           {Math.floor(serviceDuration / 60) > 0
             ? `${Math.floor(serviceDuration / 60)} hour${
@@ -287,6 +308,10 @@ export default function TimeSelector({
             "& .Mui-selected": {
               color: "#35281f",
               fontWeight: "bold",
+            },
+            "& .MuiTab-root": {
+              fontSize: isMobile ? "0.75rem" : "0.875rem",
+              minHeight: isMobile ? "48px" : "56px",
             },
           }}
         >
@@ -375,7 +400,7 @@ export default function TimeSelector({
 
               <Grid container spacing={1.5}>
                 {times.map((time) => (
-                  <Grid item xs={4} sm={3} key={time}>
+                  <Grid item xs={4} sm={3} md={2} key={time}>
                     <Tooltip
                       title={`${formatTime(time)} - ${formatTime(
                         calculateEndTime(time)
@@ -387,7 +412,12 @@ export default function TimeSelector({
                         sx={{
                           width: "100%",
                           height: "auto",
-                          p: 0.75,
+                          p: { xs: 0.5, sm: 0.75 },
+                          fontSize: {
+                            xs: "0.7rem",
+                            sm: "0.8rem",
+                            md: "0.85rem",
+                          },
                           fontWeight: selectedTime === time ? "bold" : "normal",
                           backgroundColor:
                             selectedTime === time ? "#35281f" : "white",

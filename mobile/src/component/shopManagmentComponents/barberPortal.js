@@ -41,7 +41,7 @@ const BarberPortal = ({ navigation }) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(`${ip_address}:3000/api/users/barber-role`);
+      const response = await fetch(`${ip_address}:3000/api/barbers`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -90,12 +90,12 @@ const BarberPortal = ({ navigation }) => {
   
     try {
       // First check if user exists
-      const checkResponse = await fetch(`${ip_address}:3000/api/users`, {
+      const checkResponse = await fetch(`${ip_address}:3000/api/auth`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: searchEmail })
+        body: JSON.stringify({action: 'check', email: searchEmail })
       });
   
       if (!checkResponse.ok) {
@@ -111,7 +111,7 @@ const BarberPortal = ({ navigation }) => {
   
       // If exists, get full user details
       const userResponse = await fetch(
-        `${ip_address}:3000/api/email/${encodeURIComponent(searchEmail)}`
+        `${ip_address}:3000/api/users?action=byEmail&email=${encodeURIComponent(searchEmail)}`
       );
       
       if (!userResponse.ok) {
@@ -143,6 +143,7 @@ const BarberPortal = ({ navigation }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          action: 'updateRole',
           email: foundUser.email
         })
       });
