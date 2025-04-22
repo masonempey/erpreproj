@@ -1,12 +1,20 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import landingStyles from "../../styles/Landing.module.css";
 import reviewStyles from "../../styles/Reviews.module.css";
 import aboutStyles from "../../styles/About.module.css";
 import newsletterStyles from "../../styles/Newsletter.module.css";
 import BookingPopUp from "../../components/Booking";
-import { Button, Typography, Box, Container, IconButton } from "@mui/material";
+import {
+  Button,
+  Typography,
+  Box,
+  Container,
+  IconButton,
+  useMediaQuery,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CustomerReviewCard from "../../components/customerReviewCard";
@@ -18,6 +26,16 @@ import AboutMap from "../../components/AboutMap";
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [reviews, setReviews] = useState([]);
+  const cardsWrapperRef = useRef(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
+
+  const getCardsPerView = () => {
+    if (isMobile) return 1;
+    if (isTablet) return 2;
+    return 4;
+  };
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -25,8 +43,6 @@ export default function Home() {
         const response = await fetch("/api/reviews");
         if (response.status === 200) {
           const reviewData = await response.json();
-          console.log("Fetched review data:", reviewData);
-          // Keeping your mapping (alex) which is identical to Main
           const mappedReviews = (reviewData.reviews || []).map((review) => ({
             author_name: review.author_name || "Anonymous",
             profile_photo_url: review.profile_photo_url || "",
@@ -71,27 +87,30 @@ export default function Home() {
     return "just now";
   };
 
+  const scrollReviews = (direction) => {
+    if (!cardsWrapperRef.current) return;
+
+    const cardWidth = isMobile ? cardsWrapperRef.current.offsetWidth : 330;
+    const scrollAmount = direction === "left" ? -cardWidth : cardWidth;
+
+    cardsWrapperRef.current.scrollBy({
+      left: scrollAmount,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <main className={landingStyles.main}>
       <header className={landingStyles.header}>
         <div className={landingStyles.headerOverlay}>
-          <Container
-            maxWidth="lg"
-            sx={{
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+          <Container maxWidth="lg" className={landingStyles.heroContainer}>
             <Box className={landingStyles.logoContainer}>
               <Typography
                 variant="h1"
                 className={landingStyles.logoText}
                 sx={{
                   fontFamily: '"Oleo Script", cursive',
-                  fontSize: { xs: "5rem", md: "8rem" },
+                  fontSize: { xs: "3.5rem", sm: "5rem", md: "8rem" },
                   color: "#fafafa",
                   textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
                   mb: 0,
@@ -104,10 +123,10 @@ export default function Home() {
                 variant="h2"
                 sx={{
                   fontFamily: '"Oleo Script", cursive',
-                  fontSize: { xs: "3rem", md: "5rem" },
+                  fontSize: { xs: "2rem", sm: "3rem", md: "5rem" },
                   color: "#fafafa",
                   textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
-                  mb: 4,
+                  mb: { xs: 2, md: 4 },
                 }}
               >
                 Barber and Shop
@@ -116,15 +135,15 @@ export default function Home() {
 
             <Button
               variant="contained"
-              size="large"
+              size={isMobile ? "medium" : "large"}
               onClick={() => setIsOpen(true)}
               sx={{
                 background: "#fafafa",
                 color: "#0C0C0C",
                 fontFamily: "Lato, sans-serif",
                 fontWeight: 800,
-                padding: "1rem 2.5rem",
-                fontSize: { xs: "1rem", md: "1.25rem" },
+                padding: { xs: "0.75rem 1.5rem", md: "1rem 2.5rem" },
+                fontSize: { xs: "0.9rem", sm: "1rem", md: "1.25rem" },
                 textTransform: "none",
                 borderRadius: "4px",
                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
@@ -143,9 +162,11 @@ export default function Home() {
           </Container>
         </div>
       </header>
+
       <BookingPopUp isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <h2>Book Appointment</h2>
       </BookingPopUp>
+
       <section
         id="reviews"
         className={`${landingStyles.section} ${reviewStyles.reviews}`}
@@ -156,26 +177,41 @@ export default function Home() {
         </div>
         <hr></hr>
 
-        <Box sx={{ position: "relative", width: "100%", maxWidth: "1400px" }}>
-          <IconButton
-            sx={{
-              position: "absolute",
-              left: 0,
-              top: "50%",
-              transform: "translateY(-50%)",
-              bgcolor: "rgba(53, 40, 31, 0.05)",
-              "&:hover": { bgcolor: "rgba(53, 40, 31, 0.1)" },
-              zIndex: 2,
-            }}
-            onClick={() => {
-              const container = document.getElementById("cardsWrapper");
-              container.scrollLeft -= 330;
+        <Box
+          sx={{
+            position: "relative",
+            width: "100%",
+            maxWidth: { xs: "95%", md: "1400px" },
+            px: { xs: 1, sm: 2, md: 4 },
+          }}
+        >
+          {!isMobile && (
+            <IconButton
+              sx={{
+                position: "absolute",
+                left: { xs: -10, sm: -5, md: 0 },
+                top: "50%",
+                transform: "translateY(-50%)",
+                bgcolor: "rgba(53, 40, 31, 0.05)",
+                "&:hover": { bgcolor: "rgba(53, 40, 31, 0.1)" },
+                zIndex: 2,
+                display: { xs: "none", sm: "flex" },
+              }}
+              onClick={() => scrollReviews("left")}
+            >
+              <ArrowBackIosNewIcon sx={{ color: "#35281f" }} />
+            </IconButton>
+          )}
+
+          <div
+            id="cardsWrapper"
+            ref={cardsWrapperRef}
+            className={reviewStyles.cardsWrapper}
+            style={{
+              scrollSnapType: isMobile ? "x mandatory" : "none",
+              padding: isMobile ? "20px 10px" : "20px 40px",
             }}
           >
-            <ArrowBackIosNewIcon sx={{ color: "#35281f" }} />
-          </IconButton>
-
-          <div id="cardsWrapper" className={reviewStyles.cardsWrapper}>
             {reviews.length > 0 ? (
               reviews.map((data) => (
                 <CustomerReviewCard
@@ -189,53 +225,56 @@ export default function Home() {
                 />
               ))
             ) : (
-              <p>Loading reviews...</p>
+              <p className={reviewStyles.loadingText}>Loading reviews...</p>
             )}
           </div>
 
-          <IconButton
-            sx={{
-              position: "absolute",
-              right: 0,
-              top: "50%",
-              transform: "translateY(-50%)",
-              bgcolor: "rgba(53, 40, 31, 0.05)",
-              "&:hover": { bgcolor: "rgba(53, 40, 31, 0.1)" },
-              zIndex: 2,
-            }}
-            onClick={() => {
-              const container = document.getElementById("cardsWrapper");
-              container.scrollLeft += 330;
-            }}
-          >
-            <ArrowForwardIosIcon sx={{ color: "#35281f" }} />
-          </IconButton>
+          {!isMobile && (
+            <IconButton
+              sx={{
+                position: "absolute",
+                right: { xs: -10, sm: -5, md: 0 },
+                top: "50%",
+                transform: "translateY(-50%)",
+                bgcolor: "rgba(53, 40, 31, 0.05)",
+                "&:hover": { bgcolor: "rgba(53, 40, 31, 0.1)" },
+                zIndex: 2,
+                display: { xs: "none", sm: "flex" },
+              }}
+              onClick={() => scrollReviews("right")}
+            >
+              <ArrowForwardIosIcon sx={{ color: "#35281f" }} />
+            </IconButton>
+          )}
         </Box>
 
         <div className={reviewStyles.dots}>
-          {[...Array(Math.ceil(reviews.length / 4))].map((_, i) => (
-            <div
-              key={i}
-              className={`${reviewStyles.dot} ${
-                i === 0 ? reviewStyles.active : ""
-              }`}
-              onClick={() => {
-                const container = document.getElementById("cardsWrapper");
-                container.scrollLeft = i * container.offsetWidth;
+          {[...Array(Math.ceil(reviews.length / getCardsPerView()))].map(
+            (_, i) => (
+              <div
+                key={i}
+                className={`${reviewStyles.dot} ${
+                  i === 0 ? reviewStyles.active : ""
+                }`}
+                onClick={() => {
+                  if (!cardsWrapperRef.current) return;
 
-                document
-                  .querySelectorAll(`.${reviewStyles.dot}`)
-                  .forEach((dot, index) => {
-                    if (index === i) dot.classList.add(reviewStyles.active);
-                    else dot.classList.remove(reviewStyles.active);
-                  });
-              }}
-            />
-          ))}
+                  const scrollWidth = cardsWrapperRef.current.offsetWidth;
+                  cardsWrapperRef.current.scrollLeft = i * scrollWidth;
+
+                  document
+                    .querySelectorAll(`.${reviewStyles.dot}`)
+                    .forEach((dot, index) => {
+                      if (index === i) dot.classList.add(reviewStyles.active);
+                      else dot.classList.remove(reviewStyles.active);
+                    });
+                }}
+              />
+            )
+          )}
         </div>
       </section>
 
-      {/* Adding Mason's About section */}
       <section
         id="about"
         className={`${landingStyles.section} ${aboutStyles.about}`}
@@ -247,7 +286,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Keeping both your and Mason's Newsletter section */}
       <section
         id="newsletter"
         className={`${landingStyles.section} ${newsletterStyles.newsletter}`}

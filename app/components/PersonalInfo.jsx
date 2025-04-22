@@ -9,6 +9,9 @@ import {
   Grid,
   Paper,
   InputAdornment,
+  useMediaQuery,
+  useTheme,
+  CircularProgress,
 } from "@mui/material";
 import { Person, Email, Phone, Home, LocationOn } from "@mui/icons-material";
 import { useBooking } from "../../context/BookingContext";
@@ -18,6 +21,9 @@ export default function PersonalInfo() {
   const { state, dispatch } = useBooking();
   const { personalInfo } = state;
   const { user } = useUser();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
   const [formData, setFormData] = useState({
     fullName: personalInfo.fullName || "",
     email: personalInfo.email || "",
@@ -48,7 +54,8 @@ export default function PersonalInfo() {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     // Basic validation
     if (!formData.fullName || !formData.email || !formData.phone) {
       setError("Please fill in all required fields");
@@ -77,50 +84,52 @@ export default function PersonalInfo() {
   };
 
   return (
-    <Paper
-      elevation={0}
+    <Box
       sx={{
         maxWidth: 600,
         mx: "auto",
-        p: { xs: 2, sm: 3 },
-        borderRadius: 2,
-        backgroundColor: "transparent",
+        px: isMobile ? 1 : 2,
       }}
     >
       <Typography
-        variant="h5"
-        component="h2"
-        align="center"
+        variant="h6"
         gutterBottom
-        sx={{ color: "#35281f", mb: 3 }}
+        sx={{
+          mb: 3,
+          textAlign: "center",
+          fontSize: isMobile ? "1.1rem" : "1.25rem",
+        }}
       >
         Your Information
       </Typography>
 
       {error && (
-        <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError("")}>
+        <Alert
+          severity="error"
+          sx={{
+            mb: 2,
+            fontSize: isMobile ? "0.75rem" : "0.85rem",
+          }}
+        >
           {error}
         </Alert>
       )}
 
-      <Stack spacing={2.5}>
-        <TextField
-          fullWidth
-          label="Full Name"
-          name="fullName"
-          value={formData.fullName}
-          onChange={handleChange}
-          required
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Person sx={{ color: "#35281f" }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-
-        <Grid container spacing={2}>
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={isMobile ? 1.5 : 2}>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Full Name"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              required
+              variant="outlined"
+              size={isMobile ? "small" : "medium"}
+              sx={{ mb: 1 }}
+            />
+          </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
@@ -130,92 +139,70 @@ export default function PersonalInfo() {
               value={formData.email}
               onChange={handleChange}
               required
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Email sx={{ color: "#35281f" }} />
-                  </InputAdornment>
-                ),
-              }}
+              variant="outlined"
+              size={isMobile ? "small" : "medium"}
+              sx={{ mb: 1 }}
             />
           </Grid>
-
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
-              label="Phone Number"
+              label="Phone"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
               required
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Phone sx={{ color: "#35281f" }} />
-                  </InputAdornment>
-                ),
-              }}
+              variant="outlined"
+              size={isMobile ? "small" : "medium"}
+              sx={{ mb: 1 }}
             />
           </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Address"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              variant="outlined"
+              size={isMobile ? "small" : "medium"}
+              sx={{ mb: 1 }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Postal Code"
+              name="postalCode"
+              value={formData.postalCode}
+              onChange={handleChange}
+              variant="outlined"
+              size={isMobile ? "small" : "medium"}
+              sx={{ mb: 1 }}
+            />
+          </Grid>
+          <Grid item xs={12} sx={{ mt: 2 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{
+                bgcolor: "#35281f",
+                py: isMobile ? 1 : 1.5,
+                "&:hover": {
+                  bgcolor: "#4a3c32",
+                },
+              }}
+            >
+              {state.loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Continue"
+              )}
+            </Button>
+          </Grid>
         </Grid>
-
-        <TextField
-          fullWidth
-          label="Address"
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Home sx={{ color: "#35281f" }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-
-        <TextField
-          label="Postal Code"
-          name="postalCode"
-          value={formData.postalCode}
-          onChange={handleChange}
-          sx={{ width: { xs: "100%", sm: "200px" } }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <LocationOn sx={{ color: "#35281f" }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            mt: 4,
-            pt: 2,
-            borderTop: "1px solid rgba(53, 40, 31, 0.1)",
-          }}
-        >
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-            size="large"
-            sx={{
-              minWidth: 160,
-              backgroundColor: "#35281f",
-              color: "#fafafa",
-              py: 1.5,
-              "&:hover": {
-                backgroundColor: "#4a3c32",
-              },
-            }}
-          >
-            Continue
-          </Button>
-        </Box>
-      </Stack>
-    </Paper>
+      </form>
+    </Box>
   );
 }

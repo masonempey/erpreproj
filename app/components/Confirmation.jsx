@@ -8,6 +8,8 @@ import {
   Stack,
   Avatar,
   Grid,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import {
   CheckCircle,
@@ -22,6 +24,9 @@ import dayjs from "dayjs"; // Import dayjs
 
 export default function Confirmation({ onClose }) {
   const { state, dispatch } = useBooking();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
   const formatDate = (dateObj) => {
     if (!dateObj) return "N/A";
@@ -108,7 +113,7 @@ export default function Confirmation({ onClose }) {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        p: 1.5,
+        p: isMobile ? 1 : 1.5,
         maxWidth: 450,
         mx: "auto",
       }}
@@ -116,12 +121,12 @@ export default function Confirmation({ onClose }) {
       <Avatar
         sx={{
           bgcolor: "#4CAF50",
-          width: 50,
-          height: 50,
+          width: isMobile ? 40 : 50,
+          height: isMobile ? 40 : 50,
           mb: 1,
         }}
       >
-        <CheckCircle sx={{ fontSize: 30 }} />
+        <CheckCircle sx={{ fontSize: isMobile ? 24 : 30 }} />
       </Avatar>
 
       <Typography
@@ -133,6 +138,7 @@ export default function Confirmation({ onClose }) {
           color: "#35281f",
           fontWeight: 600,
           mb: 1.5,
+          fontSize: isMobile ? "1.1rem" : "1.25rem",
         }}
       >
         Booking Confirmed!
@@ -157,69 +163,115 @@ export default function Confirmation({ onClose }) {
             justifyContent: "center",
           }}
         >
-          <Typography variant="subtitle2">Appointment Details</Typography>{" "}
+          <Typography
+            variant="subtitle2"
+            sx={{ fontSize: isMobile ? "0.75rem" : "0.875rem" }}
+          >
+            Appointment Details
+          </Typography>
         </Box>
 
         <Box sx={{ p: 1.5 }}>
-          {" "}
           <Grid container spacing={1.5}>
-            {" "}
             <Grid item xs={12}>
               <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
-                {" "}
-                <ContentCut sx={{ color: "#35281f", mr: 1 }} />
-                <Typography variant="subtitle2" color="textSecondary">
+                <ContentCut
+                  sx={{
+                    color: "#35281f",
+                    mr: 1,
+                    fontSize: isMobile ? 18 : 24,
+                  }}
+                />
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ fontSize: isMobile ? "0.7rem" : "0.8rem" }}
+                >
                   Service
                 </Typography>
               </Box>
-              <Typography variant="body2" fontWeight={500}>
-                {" "}
+              <Typography
+                variant="body2"
+                fontWeight={500}
+                sx={{ fontSize: isMobile ? "0.75rem" : "0.875rem" }}
+              >
                 {state.service || "N/A"}
               </Typography>
               <Divider sx={{ my: 0.5 }} />
             </Grid>
             <Grid item xs={12}>
               <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
-                {" "}
-                <Person sx={{ color: "#35281f", mr: 1 }} />
-                <Typography variant="subtitle2" color="textSecondary">
+                <Person
+                  sx={{
+                    color: "#35281f",
+                    mr: 1,
+                    fontSize: isMobile ? 18 : 24,
+                  }}
+                />
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ fontSize: isMobile ? "0.7rem" : "0.8rem" }}
+                >
                   Barber
                 </Typography>
               </Box>
-              <Typography variant="body2" fontWeight={500}>
-                {" "}
-                {/* Reduced font size */}
+              <Typography
+                variant="body2"
+                fontWeight={500}
+                sx={{ fontSize: isMobile ? "0.75rem" : "0.875rem" }}
+              >
                 {state.barber || "N/A"}
               </Typography>
-              <Divider sx={{ my: 0.5 }} /> {/* Reduced margin */}
+              <Divider sx={{ my: 0.5 }} />
             </Grid>
             <Grid item xs={12} sm={6}>
               <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
-                {" "}
-                {/* Reduced margin */}
-                <CalendarMonth sx={{ color: "#35281f", mr: 1 }} />
-                <Typography variant="subtitle2" color="textSecondary">
+                <CalendarMonth
+                  sx={{
+                    color: "#35281f",
+                    mr: 1,
+                    fontSize: isMobile ? 18 : 24,
+                  }}
+                />
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ fontSize: isMobile ? "0.7rem" : "0.8rem" }}
+                >
                   Date
                 </Typography>
               </Box>
-              <Typography variant="body2" fontWeight={500}>
-                {" "}
-                {/* Reduced font size */}
+              <Typography
+                variant="body2"
+                fontWeight={500}
+                sx={{ fontSize: isMobile ? "0.75rem" : "0.875rem" }}
+              >
                 {formatDate(state.date)}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Box sx={{ display: "flex", alignItems: "center", mb: 0.5 }}>
-                {" "}
-                {/* Reduced margin */}
-                <AccessTime sx={{ color: "#35281f", mr: 1 }} />
-                <Typography variant="subtitle2" color="textSecondary">
+                <AccessTime
+                  sx={{
+                    color: "#35281f",
+                    mr: 1,
+                    fontSize: isMobile ? 18 : 24,
+                  }}
+                />
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ fontSize: isMobile ? "0.7rem" : "0.8rem" }}
+                >
                   Time
                 </Typography>
               </Box>
-              <Typography variant="body2" fontWeight={500}>
-                {" "}
-                {/* Reduced font size */}
+              <Typography
+                variant="body2"
+                fontWeight={500}
+                sx={{ fontSize: isMobile ? "0.75rem" : "0.875rem" }}
+              >
                 {formatTime(state.time)}
               </Typography>
             </Grid>
@@ -231,19 +283,25 @@ export default function Confirmation({ onClose }) {
         variant="body2"
         align="center"
         color="textSecondary"
-        sx={{ mb: 2 }} // Reduced margin
+        sx={{
+          mb: 2,
+          fontSize: isMobile ? "0.7rem" : "0.8rem",
+        }}
       >
         An email confirmation has been sent to{" "}
         {state.personalInfo?.email || "your email address"}. You'll receive a
         reminder 24 hours before your appointment.
       </Typography>
 
-      <Stack direction="row" spacing={1}>
-        {" "}
-        {/* Reduced spacing */}
+      <Stack
+        direction={isMobile ? "column" : "row"}
+        spacing={isMobile ? 1 : 2}
+        width={isMobile ? "100%" : "auto"}
+      >
         <Button
           variant="outlined"
           onClick={closeBooking}
+          fullWidth={isMobile}
           sx={{
             borderColor: "#35281f",
             color: "#35281f",
@@ -259,6 +317,7 @@ export default function Confirmation({ onClose }) {
           variant="contained"
           startIcon={<Event />}
           onClick={addToCalendar}
+          fullWidth={isMobile}
           sx={{
             backgroundColor: "#35281f",
             "&:hover": {
