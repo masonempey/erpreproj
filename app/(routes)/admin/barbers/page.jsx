@@ -59,10 +59,11 @@ export default function BarberRoleManagement() {
   const fetchBarbers = async () => {
     setLoading(true);
     try {
+      // Using the consolidated API endpoint with no parameters to get all barbers
       const response = await fetch("/api/barbers");
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch barbers");
+        throw new Error(errorData.error || "Failed to fetch barbers");
       }
       const data = await response.json();
       setBarbers(data);
@@ -97,7 +98,7 @@ export default function BarberRoleManagement() {
       const response = await fetch(`/api/users?action=byEmail&email=${encodeURIComponent(searchEmail)}`);
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to find user");
+        throw new Error(errorData.error || "Failed to find user");
       }
       
       const user = await response.json();
@@ -133,36 +134,31 @@ export default function BarberRoleManagement() {
     if (!foundUser) return;
     setLoading(true);
     try {
-      const response = await fetch(`/api/users/${foundUser.id}/role`, {
-        method: "PATCH",
+      const response = await fetch(`/api/users/${foundUser.id}/make-barber`, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role: "Barber" }),
+        body: JSON.stringify({
+          name: foundUser.name,
+          email: foundUser.email
+        })
       });
-      
+  
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to assign role");
+        throw new Error("Failed to assign barber role");
       }
-      
-      const updatedUser = await response.json();
-      
-      // Update local state
-      setBarbers(prev =>
-        prev.map(b => b.id === updatedUser.id ? updatedUser : b)
-      );
+  
+      const result = await response.json();
+      setBarbers(prev => [...prev, result.barber]);
       
       setSnackbar({
         open: true,
-        message: `${updatedUser.name} is now a Barber!`,
+        message: `${result.user.name} is now a Barber!`,
         severity: "success",
       });
-      
+  
       setOpenAssign(false);
       setSearchEmail("");
       setFoundUser(null);
-      
-      // Refresh barbers list
-      await fetchBarbers();
     } catch (err) {
       setSnackbar({
         open: true,
@@ -264,19 +260,19 @@ export default function BarberRoleManagement() {
                   />
                   <CardContent sx={{ pt: 1, flexGrow: 1 }}>
                     <Stack direction="row" spacing={1} alignItems="center" mb={2}>
-                      <Chip label={b.currentRole} color={roleColors[b.currentRole]} size="small" />
-                      <Chip label={`ID: ${b.barber_id}`} size="small" variant="outlined" />
+                      <Chip label={b.currentRole || "Barber"} color={roleColors[b.currentRole || "Barber"]} size="small" />
+                      <Chip label={`ID: ${b.barber_id || b.barberId}`} size="small" variant="outlined" />
                     </Stack>
 
                     <Box mb={2}>
                       <Typography variant="subtitle2" gutterBottom>Working Hours:</Typography>
-                      {renderDaySchedule("Monday", b.Monday_Start, b.Monday_End)}
-                      {renderDaySchedule("Tuesday", b.Tuesday_Start, b.Tuesday_End)}
-                      {renderDaySchedule("Wednesday", b.Wednesday_Start, b.Wednesday_End)}
-                      {renderDaySchedule("Thursday", b.Thursday_Start, b.Thursday_End)}
-                      {renderDaySchedule("Friday", b.Friday_Start, b.Friday_End)}
-                      {renderDaySchedule("Saturday", b.Saturday_Start, b.Saturday_End)}
-                      {renderDaySchedule("Sunday", b.Sunday_Start, b.Sunday_End)}
+                      {renderDaySchedule("Monday", b.Monday_Start || b.mondayStart, b.Monday_End || b.mondayEnd)}
+                      {renderDaySchedule("Tuesday", b.Tuesday_Start || b.tuesdayStart, b.Tuesday_End || b.tuesdayEnd)}
+                      {renderDaySchedule("Wednesday", b.Wednesday_Start || b.wednesdayStart, b.Wednesday_End || b.wednesdayEnd)}
+                      {renderDaySchedule("Thursday", b.Thursday_Start || b.thursdayStart, b.Thursday_End || b.thursdayEnd)}
+                      {renderDaySchedule("Friday", b.Friday_Start || b.fridayStart, b.Friday_End || b.fridayEnd)}
+                      {renderDaySchedule("Saturday", b.Saturday_Start || b.saturdayStart, b.Saturday_End || b.saturdayEnd)}
+                      {renderDaySchedule("Sunday", b.Sunday_Start || b.sundayStart, b.Sunday_End || b.sundayEnd)}
                     </Box>
                   </CardContent>
                   <CardActions>
@@ -316,67 +312,82 @@ export default function BarberRoleManagement() {
             </IconButton>
           </DialogTitle>
           <DialogContent dividers>
-          <TextField
-            label="User Email"
-            fullWidth
-            value={searchEmail}
-            onChange={(e) => setSearchEmail(e.target.value)}
-            error={!!emailError}
-            helperText={emailError || "Enter a user's email to search"}
-            autoFocus
-            sx={{ mb: 2 }}
-          />
-          {loading && <CircularProgress size={24} sx={{ mt: 1 }} />}
-          
-          {!loading && foundUser && (
-            <Box display="flex" alignItems="center" mt={2}>
-              <Avatar sx={{ mr: 2 }}>
-                {foundUser.name?.charAt(0) || 'U'}
-              </Avatar>
-              <Box>
-                <Typography>{foundUser.name}</Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {foundUser.email}
-                </Typography>
-                <Stack direction="row" spacing={1} mt={1}>
-                  <Chip 
-                    label={foundUser.currentRole} 
-                    color={roleColors[foundUser.currentRole]} 
-                    size="small" 
-                  />
-                  {foundUser.phone_number && (
+            <TextField
+              label="User Email"
+              fullWidth
+              value={searchEmail}
+              onChange={(e) => setSearchEmail(e.target.value)}
+              error={!!emailError}
+              helperText={emailError || "Enter a user's email to search"}
+              autoFocus
+              sx={{ mb: 2 }}
+            />
+            {loading && <CircularProgress size={24} sx={{ mt: 1 }} />}
+            
+            {!loading && foundUser && (
+              <Box display="flex" alignItems="center" mt={2}>
+                <Avatar sx={{ mr: 2 }}>
+                  {foundUser.name?.charAt(0) || 'U'}
+                </Avatar>
+                <Box>
+                  <Typography>{foundUser.name}</Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {foundUser.email}
+                  </Typography>
+                  <Stack direction="row" spacing={1} mt={1}>
                     <Chip 
-                      label={`Phone: ${foundUser.phone_number}`} 
+                      label={foundUser.currentRole} 
+                      color={roleColors[foundUser.currentRole]} 
                       size="small" 
-                      variant="outlined" 
                     />
-                  )}
-                </Stack>
+                    {foundUser.phone_number && (
+                      <Chip 
+                        label={`Phone: ${foundUser.phone_number}`} 
+                        size="small" 
+                        variant="outlined" 
+                      />
+                    )}
+                  </Stack>
+                </Box>
               </Box>
-            </Box>
-          )}
-  
-  {!loading && !foundUser && emailError && (
-    <Typography color="error" sx={{ mt: 2 }}>
-      {emailError}
-    </Typography>
-  )}
-</DialogContent>
+            )}
+    
+            {!loading && !foundUser && emailError && (
+              <Typography color="error" sx={{ mt: 2 }}>
+                {emailError}
+              </Typography>
+            )}
+          </DialogContent>
           <DialogActions sx={{ px: 3, pb: 2 }}>
             <Button onClick={() => setOpenAssign(false)}>Cancel</Button>
-            <Button
-              variant="contained"
-              onClick={searchUserByEmail}
-              disabled={loading || !searchEmail}
-              startIcon={<PersonAddIcon />}
-              sx={{
-                bgcolor: "#5F402C",
-                "&:hover": { bgcolor: "#452B1F" },
-                textTransform: "none",
-              }}
-            >
-              Search
-            </Button>
+            {foundUser ? (
+              <Button
+                variant="contained"
+                onClick={assignBarberRole}
+                disabled={loading}
+                startIcon={<PersonAddIcon />}
+                sx={{
+                  bgcolor: "#5F402C",
+                  "&:hover": { bgcolor: "#452B1F" },
+                  textTransform: "none",
+                }}
+              >
+                Assign as Barber
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                onClick={searchUserByEmail}
+                disabled={loading || !searchEmail}
+                sx={{
+                  bgcolor: "#5F402C",
+                  "&:hover": { bgcolor: "#452B1F" },
+                  textTransform: "none",
+                }}
+              >
+                Search
+              </Button>
+            )}
           </DialogActions>
         </Dialog>
 
