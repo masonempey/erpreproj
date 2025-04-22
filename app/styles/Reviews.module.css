@@ -18,6 +18,14 @@
   animation: fadeIn 1s ease-in-out;
 }
 
+.loadingText {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #888;
+  padding: 2rem;
+  width: 100%;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -106,6 +114,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  scroll-snap-align: center;
 }
 
 /* Card header styling */
@@ -171,9 +180,20 @@
 }
 
 /* Responsive styles */
+@media (max-width: 1024px) {
+  .reviews {
+    padding: 80px 20px 60px;
+  }
+
+  .reviewHeader h2 {
+    font-size: 2.8rem;
+  }
+}
+
 @media (max-width: 768px) {
   .reviews {
-    padding: 80px 15px 60px;
+    padding: 60px 15px 40px;
+    min-height: auto;
   }
 
   .reviewHeader h2 {
@@ -186,6 +206,7 @@
 
   .cardsWrapper {
     padding: 15px;
+    gap: 16px;
   }
 
   .card {
@@ -193,5 +214,31 @@
     min-width: 260px;
     height: 340px;
     padding: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .reviews {
+    padding: 40px 10px 30px;
+  }
+
+  .reviewHeader h2 {
+    font-size: 2.2rem;
+  }
+
+  .card {
+    width: calc(100vw - 50px);
+    min-width: calc(100vw - 50px);
+    height: 320px;
+    padding: 16px;
+  }
+
+  .cardsWrapper {
+    padding: 10px 5px;
+    gap: 10px;
+  }
+
+  .dots {
+    margin-top: 16px;
   }
 }

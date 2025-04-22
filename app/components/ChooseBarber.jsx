@@ -13,10 +13,12 @@ import {
   Chip,
   CircularProgress,
   Alert,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { FiberManualRecord as StatusIcon } from "@mui/icons-material";
 
-// Hard-coded for now, but we will later get the images from the database
+// Hard-coded barber images
 const barberImages = {
   Anthony: "/images/barbers/Anthony.png",
   Carl: "/images/barbers/Carl.png",
@@ -31,6 +33,10 @@ export default function ChooseBarber() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
+
   useEffect(() => {
     // Fetch barbers
     const fetchBarbers = async () => {
@@ -41,18 +47,17 @@ export default function ChooseBarber() {
           throw new Error(`Network response was not ok: ${response.status}`);
         }
         const data = await response.json();
-        console.log("Barbers data:", data);
 
-        // Add availability field for UI (in a real app, this would come from backend)
-        const barbersWithAvailability = data.map((barber) => ({
+        // Make all barbers available
+        const availableBarbers = data.map((barber) => ({
           ...barber,
-          isAvailable: Math.random() > 0.3, // Random availability for demo
+          isAvailable: true, // All barbers are available by default
         }));
 
-        setBarbers(barbersWithAvailability);
+        setBarbers(availableBarbers);
       } catch (error) {
         console.error("Error fetching barbers:", error);
-        setError(`Failed to load barbers: ${error.message}`);
+        setError("Failed to load barbers. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -61,123 +66,130 @@ export default function ChooseBarber() {
     fetchBarbers();
   }, []);
 
-  const handleBarberSelect = (name, id) => {
-    console.log(`Selected barber: ${name} with ID: ${id}`);
+  const handleSelectBarber = (barber) => {
+    // No need to check availability since all barbers are available
     dispatch({
       type: "SELECT_BARBER",
-      payload: { name: name, id: id },
+      payload: { id: barber.barber_id, name: barber.name },
     });
   };
 
-  if (loading)
+  if (loading) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "40vh",
-        }}
-      >
-        <CircularProgress size={60} sx={{ color: "#35281f" }} />
+      <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+        <CircularProgress />
       </Box>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
-      <Alert severity="error" sx={{ m: 2 }}>
-        {error}
-      </Alert>
+      <Box sx={{ my: 2, mx: isMobile ? 1 : 2 }}>
+        <Alert severity="error">{error}</Alert>
+      </Box>
     );
-
-  if (!barbers || barbers.length === 0)
-    return (
-      <Alert severity="info" sx={{ m: 2 }}>
-        No barbers available
-      </Alert>
-    );
+  }
 
   return (
-    <Box sx={{ px: 2, py: 1, maxHeight: "65vh", overflow: "auto" }}>
-      <Typography variant="h5" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
-        Choose Your Barber
+    <Box sx={{ px: isMobile ? 1 : 2, pb: 2 }}>
+      <Typography
+        variant="h6"
+        sx={{
+          mb: 3,
+          textAlign: "center",
+          fontSize: isMobile ? "1.1rem" : "1.25rem",
+        }}
+      >
+        Choose your barber
       </Typography>
 
-      <Grid container spacing={3}>
+      <Grid container spacing={isMobile ? 1.5 : 2}>
         {barbers.map((barber) => (
-          <Grid item xs={12} sm={6} md={4} key={barber.id}>
+          <Grid item xs={12} sm={6} md={4} key={barber.barber_id}>
             <Card
-              raised={state.barberId === barber.barber_id}
-              onClick={() => handleBarberSelect(barber.name, barber.barber_id)}
+              elevation={state.barberId === barber.barber_id ? 3 : 1}
               sx={{
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                transform:
-                  state.barberId === barber.barber_id
-                    ? "translateY(-5px)"
-                    : "none",
+                borderRadius: isMobile ? "10px" : "12px",
                 border:
                   state.barberId === barber.barber_id
                     ? "2px solid #35281f"
-                    : "none",
-                backgroundColor:
-                  state.barberId === barber.barber_id
-                    ? "rgba(53, 40, 31, 0.05)"
-                    : "white",
-                "&:hover": {
-                  transform: "translateY(-5px)",
-                  boxShadow: "0 8px 16px rgba(53, 40, 31, 0.15)",
-                },
+                    : "1px solid transparent",
+                transition: "all 0.2s ease",
+                height: "100%",
               }}
             >
-              <CardActionArea>
-                <Box
-                  sx={{
-                    pt: 3,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <Avatar
-                    src={barberImages[barber.name]}
-                    alt={barber.name}
+              <CardActionArea
+                onClick={() => handleSelectBarber(barber)}
+                sx={{ height: "100%", p: isMobile ? 1 : 1.5 }}
+              >
+                <CardContent sx={{ p: 0, height: "100%" }}>
+                  <Box
                     sx={{
-                      width: 100,
-                      height: 100,
-                      border: "3px solid #f0f0f0",
+                      display: "flex",
+                      alignItems: "center",
+                      flexDirection: isMobile ? "column" : "row",
+                      mb: 1.5,
                     }}
-                  />
-                </Box>
+                  >
+                    <Avatar
+                      src={barberImages[barber.name] || ""}
+                      alt={barber.name}
+                      sx={{
+                        width: isMobile ? 80 : 100,
+                        height: isMobile ? 80 : 100,
+                        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                        mb: isMobile ? 1.5 : 0,
+                        mr: isMobile ? 0 : 2,
+                      }}
+                    />
 
-                <CardContent sx={{ textAlign: "center" }}>
-                  <Typography variant="h6" component="h3" gutterBottom>
-                    {barber.name}
-                  </Typography>
-
-                  <Chip
-                    icon={
-                      <StatusIcon
-                        fontSize="small"
+                    <Box sx={{ textAlign: isMobile ? "center" : "left" }}>
+                      <Typography
+                        variant="h6"
                         sx={{
-                          color: barber.isAvailable ? "#4CAF50" : "#FFA000",
-                          "& .MuiChip-icon": { marginLeft: 0 },
+                          mb: 0.5,
+                          fontSize: isMobile ? "1rem" : "1.25rem",
+                        }}
+                      >
+                        {barber.name}
+                      </Typography>
+
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          mb: 1,
+                          justifyContent: isMobile ? "center" : "flex-start",
+                        }}
+                      >
+                        <StatusIcon
+                          sx={{
+                            fontSize: 12,
+                            color: "success.main", // Always show as available
+                            mr: 0.5,
+                          }}
+                        />
+                        <Typography
+                          variant="body2"
+                          color="text.primary"
+                          fontSize={isMobile ? "0.75rem" : "0.85rem"}
+                        >
+                          Available today
+                        </Typography>
+                      </Box>
+
+                      <Chip
+                        label={barber.specialty || "All services"}
+                        size={isMobile ? "small" : "medium"}
+                        sx={{
+                          bgcolor: "rgba(53, 40, 31, 0.08)",
+                          color: "#35281f",
+                          fontWeight: 500,
+                          fontSize: isMobile ? "0.7rem" : "0.75rem",
                         }}
                       />
-                    }
-                    label={
-                      barber.isAvailable ? "Available" : "Limited Availability"
-                    }
-                    variant="outlined"
-                    size="small"
-                    sx={{
-                      backgroundColor: barber.isAvailable
-                        ? "rgba(76, 175, 80, 0.1)"
-                        : "rgba(255, 160, 0, 0.1)",
-                      borderColor: barber.isAvailable ? "#4CAF50" : "#FFA000",
-                      color: barber.isAvailable ? "#1B5E20" : "#E65100",
-                    }}
-                  />
+                    </Box>
+                  </Box>
                 </CardContent>
               </CardActionArea>
             </Card>
