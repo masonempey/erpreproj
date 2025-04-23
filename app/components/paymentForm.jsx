@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import axios from "axios";
 import {
   Box,
   Button,
@@ -11,77 +14,82 @@ import {
   TextField,
   CircularProgress,
   useMediaQuery,
-  useTheme,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useBooking } from "../../context/BookingContext";
 import { useUser } from "../../context/UserContext";
-import Image from "next/image";
 import LockIcon from "@mui/icons-material/Lock";
+import Image from "next/image";
 
 export default function PaymentForm() {
   const stripe = useStripe();
   const elements = useElements();
-  const [cardError, setCardError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [postalCode, setPostalCode] = useState("");
   const { state, dispatch, createAppointment } = useBooking();
   const { user } = useUser();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (loading) return;
+  const price = Number(state.servicePrice) || 0;
+  const amount = Math.round(price * 100);
+  const [clientSecret, setClientSecret] = useState("");
+  const [cardError, setCardError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [postalCode, setPostalCode] = useState("");
+
+  useEffect(() => {
+    if (amount <= 0) return;
+    axios
+      .post("/api/stripe", { action: "stripe", amount })
+      .then(({ data }) => setClientSecret(data.clientSecret))
+      .catch((err) =>
+        setCardError(
+          err.response?.data?.error || "Failed to initialize payment"
+        )
+      );
+  }, [amount]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (loading || !stripe || !elements) return;
 
     setLoading(true);
     setCardError("");
 
-    if (!stripe || !elements) {
-      setLoading(false);
-      return;
-    }
-
     try {
-      const { error } = await stripe.createPaymentMethod({
+      // 1) Create PaymentMethod
+      const cardEl = elements.getElement(CardElement);
+      const {
+        error: pmError,
+        paymentMethod,
+      } = await stripe.createPaymentMethod({
         type: "card",
-        card: elements.getElement(CardElement),
+        card: cardEl,
         billing_details: {
           name: state.personalInfo.fullName,
           email: state.personalInfo.email,
-          address: {
-            postal_code: postalCode,
-          },
+          address: { postal_code: postalCode },
         },
       });
+      if (pmError) throw pmError;
 
-      if (error) {
-        setCardError(error.message);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const appointmentResult = await createAppointment();
-        console.log("Appointment created:", appointmentResult);
-
-        dispatch({
-          type: "BOOKING_SUCCESS",
-          payload: appointmentResult.appointment,
+      // 2) Confirm the PaymentIntent
+      const { error: confirmError, paymentIntent } =
+        await stripe.confirmCardPayment(clientSecret, {
+          payment_method: paymentMethod.id,
         });
-      } catch (err) {
-        console.error("Booking error:", err);
-        setCardError(err.message || "Failed to create appointment");
-      }
+      if (confirmError) throw confirmError;
+
+      // 3) Create the appointment
+      const result = await createAppointment({
+        paymentIntentId: paymentIntent.id,
+      });
+      dispatch({ type: "BOOKING_SUCCESS", payload: result.appointment });
     } catch (err) {
-      setCardError(err.message || "Payment processing failed");
+      console.error("Payment/booking error:", err);
+      setCardError(err.message || "Payment failed");
     } finally {
       setLoading(false);
     }
-  };
-
-  const onBack = () => {
-    dispatch({ type: "GO_BACK" });
   };
 
   return (
@@ -94,9 +102,9 @@ export default function PaymentForm() {
               p: 0,
               borderRadius: 2,
               overflow: "hidden",
-              background: "linear-gradient(145deg, #35281f 0%, #5d4c40 100%)",
-              height: { xs: "160px", sm: "180px" },
+              background: "linear-gradient(145deg,#35281f 0%,#5d4c40 100%)",
               color: "white",
+              height: { xs: "160px", sm: "180px" },
               position: "relative",
               mb: { xs: 2, md: 0 },
             }}
@@ -114,271 +122,164 @@ export default function PaymentForm() {
                 justifyContent: "space-between",
               }}
             >
-              <Box>
-                <Typography
-                  variant="overline"
-                  sx={{
-                    opacity: 0.7,
-                    fontSize: isMobile ? "0.6rem" : "0.7rem",
-                  }}
-                >
-                  Payment Details
-                </Typography>
-              </Box>
-
-              <Box>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    letterSpacing: 2,
-                    fontSize: { xs: "1.1rem", sm: "1.2rem" },
-                    mb: 0.5,
-                  }}
-                >
-                  •••• •••• •••• ••••
-                </Typography>
-                <Grid container spacing={1}>
-                  <Grid item xs={6}>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        opacity: 0.7,
-                        fontSize: isMobile ? "0.65rem" : "0.7rem",
-                      }}
-                    >
-                      CARD HOLDER
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontSize: isMobile ? "0.75rem" : "0.8rem",
-                      }}
-                    >
-                      {state.personalInfo.fullName || "Your Name"}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        opacity: 0.7,
-                        fontSize: isMobile ? "0.65rem" : "0.7rem",
-                      }}
-                    >
-                      EXPIRY
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        fontSize: isMobile ? "0.75rem" : "0.8rem",
-                      }}
-                    >
-                      MM/YY
-                    </Typography>
-                  </Grid>
+              <Typography
+                variant="overline"
+                sx={{
+                  opacity: 0.7,
+                  fontSize: isMobile ? "0.6rem" : "0.7rem",
+                }}
+              >
+                Payment Details
+              </Typography>
+              <Typography
+                variant="h5"
+                sx={{
+                  letterSpacing: 2,
+                  fontSize: { xs: "1.1rem", sm: "1.2rem" },
+                }}
+              >
+                •••• •••• •••• ••••
+              </Typography>
+              <Grid container spacing={1}>
+                <Grid item xs={6}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      opacity: 0.7,
+                      fontSize: isMobile ? "0.65rem" : "0.7rem",
+                    }}
+                  >
+                    CARD HOLDER
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontSize: isMobile ? "0.75rem" : "0.8rem",
+                    }}
+                  >
+                    {state.personalInfo.fullName || "Your Name"}
+                  </Typography>
                 </Grid>
-              </Box>
+                <Grid item xs={6}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      opacity: 0.7,
+                      fontSize: isMobile ? "0.65rem" : "0.7rem",
+                    }}
+                  >
+                    EXPIRY
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontSize: isMobile ? "0.75rem" : "0.8rem",
+                    }}
+                  >
+                    MM/YY
+                  </Typography>
+                </Grid>
+              </Grid>
             </Box>
           </Paper>
         </Grid>
 
         <Grid item xs={12} md={7}>
           <form onSubmit={handleSubmit}>
-            <Box sx={{ mb: 2 }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  mb: 1.5,
-                  fontSize: isMobile ? "1.1rem" : "1.25rem",
-                }}
-              >
-                Payment Details
-              </Typography>
+            <Typography
+              variant="h6"
+              sx={{ mb: 1.5, fontSize: isMobile ? "1.1rem" : "1.25rem" }}
+            >
+              Payment Details
+            </Typography>
 
-              {cardError && (
-                <Alert severity="error" sx={{ mb: 1.5 }}>
-                  {cardError}
-                </Alert>
-              )}
-            </Box>
+            {cardError && (
+              <Alert severity="error" sx={{ mb: 1.5 }}>
+                {cardError}
+              </Alert>
+            )}
 
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Box
-                  sx={{
-                    borderRadius: 1,
-                    p: { xs: 1.5, sm: 2 },
-                    border: "1px solid #e0e0e0",
-                    mb: 2,
-                  }}
-                >
-                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                    Card Information
-                  </Typography>
-                  <CardElement
-                    options={{
-                      style: {
-                        base: {
-                          fontSize: isMobile ? "14px" : "16px",
-                          color: "#424770",
-                          "::placeholder": {
-                            color: "#aab7c4",
-                          },
-                        },
-                        invalid: {
-                          color: "#9e2146",
-                        },
-                      },
-                      hidePostalCode: true,
-                    }}
-                  />
-                </Box>
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Postal Code"
-                  variant="outlined"
-                  value={postalCode}
-                  onChange={(e) => setPostalCode(e.target.value)}
-                  placeholder="A1A 1A1"
-                  size={isMobile ? "small" : "medium"}
-                  inputProps={{
-                    maxLength: 7,
-                    style: { textTransform: "uppercase" },
-                  }}
-                  helperText="Enter your Canadian postal code (e.g., A1A 1A1)"
-                  sx={{ mb: 2 }}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <Box
-                  sx={{
-                    border: "1px solid #e0e0e0",
-                    borderRadius: 1,
-                    p: { xs: 1.5, sm: 2 },
-                    mb: 2,
-                    bgcolor: "rgba(0, 0, 0, 0.02)",
-                  }}
-                >
-                  <Typography
-                    variant="subtitle1"
-                    sx={{
-                      mb: 1,
-                      fontSize: isMobile ? "0.9rem" : "1rem",
-                    }}
-                  >
-                    Booking Summary
-                  </Typography>
-
-                  <Grid container spacing={1}>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="text.secondary">
-                        Service:
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" align="right">
-                        {state.service}
-                      </Typography>
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="text.secondary">
-                        Duration:
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" align="right">
-                        {state.serviceDuration} min
-                      </Typography>
-                    </Grid>
-
-                    <Grid item xs={12}>
-                      <Divider sx={{ my: 1 }} />
-                    </Grid>
-
-                    <Grid item xs={6}>
-                      <Typography variant="body1" fontWeight="bold">
-                        Total:
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography
-                        variant="body1"
-                        fontWeight="bold"
-                        align="right"
-                      >
-                        ${state.servicePrice}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </Box>
-              </Grid>
-            </Grid>
-
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              disabled={loading}
-              startIcon={<LockIcon />}
+            <Paper
+              variant="outlined"
               sx={{
-                bgcolor: "#35281f",
-                py: { xs: 1, sm: 1.5 },
-                "&:hover": {
-                  bgcolor: "#4a3c32",
-                },
+                p: { xs: 1.5, sm: 2 },
+                borderColor: cardError ? "error.main" : "divider",
                 mb: 2,
               }}
             >
-              {loading ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                `Pay $${state.servicePrice} & Confirm`
-              )}
-            </Button>
+              <CardElement
+                options={{
+                  hidePostalCode: true,
+                  style: {
+                    base: {
+                      fontSize: isMobile ? "14px" : "16px",
+                      color: "#424770",
+                      "::placeholder": {
+                        color: "#aab7c4",
+                      },
+                    },
+                    invalid: { color: "#9e2146" },
+                  },
+                }}
+              />
+            </Paper>
+
+            <TextField
+              fullWidth
+              label="Postal Code"
+              placeholder="A1A 1A1"
+              value={postalCode}
+              onChange={(e) => setPostalCode(e.target.value.toUpperCase())}
+              helperText="Canadian postal code"
+              sx={{ mb: 2 }}
+            />
+
+            <Box sx={{ mb: 2 }}>
+              <Typography>
+                Amount: <strong>${price.toFixed(2)}</strong>
+              </Typography>
+            </Box>
+
+            <Box sx={{ mb: 2 }}>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                disabled={loading || !clientSecret}
+                startIcon={<LockIcon />}
+                sx={{
+                  bgcolor: "#35281f",
+                  py: { xs: 1, sm: 1.5 },
+                  "&:hover": { bgcolor: "#4a3c32" },
+                }}
+              >
+                {loading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  `Pay $${price.toFixed(2)} & Confirm`
+                )}
+              </Button>
+            </Box>
 
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                flexDirection: { xs: "column", sm: "row" },
-                p: { xs: 1, sm: 1.5 },
-                borderRadius: 1,
-                bgcolor: "rgba(0, 0, 0, 0.02)",
+                gap: 2,
+                p: 2,
                 border: "1px solid #e0e0e0",
+                borderRadius: 1,
+                bgcolor: "rgba(0,0,0,0.02)",
               }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  mb: { xs: 1, sm: 0 },
-                  mr: { sm: 2 },
-                }}
-              >
-                <img
-                  src="/images/stripe-logo.png"
-                  alt="Stripe"
-                  width={isMobile ? 50 : 60}
-                  height={isMobile ? 21 : 25}
-                  style={{ objectFit: "contain" }}
-                />
-              </Box>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{
-                  fontSize: { xs: "0.7rem", sm: "0.75rem" },
-                  textAlign: { xs: "center", sm: "left" },
-                }}
-              >
-                Secure payments processed by Stripe. We don't store your card
-                details.
+              <Image
+                src="/images/stripe-logo.png"
+                alt="Stripe"
+                width={60}
+                height={21}
+              />
+              <Typography variant="body2" color="text.secondary">
+                Secure payments by Stripe. We don't store your card details.
               </Typography>
             </Box>
           </form>
