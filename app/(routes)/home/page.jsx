@@ -1,6 +1,8 @@
+// app/(your-folder)/page.jsx (Home)
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Navbar from "../../components/navBar";
 import landingStyles from "../../styles/Landing.module.css";
 import reviewStyles from "../../styles/Reviews.module.css";
 import aboutStyles from "../../styles/About.module.css";
@@ -26,7 +28,6 @@ export default function Home() {
         if (response.status === 200) {
           const reviewData = await response.json();
           console.log("Fetched review data:", reviewData);
-          // Keeping your mapping (alex) which is identical to Main
           const mappedReviews = (reviewData.reviews || []).map((review) => ({
             author_name: review.author_name || "Anonymous",
             profile_photo_url: review.profile_photo_url || "",
@@ -72,188 +73,191 @@ export default function Home() {
   };
 
   return (
-    <main className={landingStyles.main}>
-      <header className={landingStyles.header}>
-        <div className={landingStyles.headerOverlay}>
-          <Container
-            maxWidth="lg"
-            sx={{
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Box className={landingStyles.logoContainer}>
-              <Typography
-                variant="h1"
-                className={landingStyles.logoText}
-                sx={{
-                  fontFamily: '"Oleo Script", cursive',
-                  fontSize: { xs: "5rem", md: "8rem" },
-                  color: "#fafafa",
-                  textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
-                  mb: 0,
-                  lineHeight: 1.1,
-                }}
-              >
-                erpre
-              </Typography>
-              <Typography
-                variant="h2"
-                sx={{
-                  fontFamily: '"Oleo Script", cursive',
-                  fontSize: { xs: "3rem", md: "5rem" },
-                  color: "#fafafa",
-                  textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
-                  mb: 4,
-                }}
-              >
-                Barber and Shop
-              </Typography>
-            </Box>
+    <>
+      <Navbar onBookNow={() => setIsOpen(true)} />
 
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => setIsOpen(true)}
+      <main className={landingStyles.main}>
+        <header className={landingStyles.header}>
+          <div className={landingStyles.headerOverlay}>
+            <Container
+              maxWidth="lg"
               sx={{
-                background: "#fafafa",
-                color: "#0C0C0C",
-                fontFamily: "Lato, sans-serif",
-                fontWeight: 800,
-                padding: "1rem 2.5rem",
-                fontSize: { xs: "1rem", md: "1.25rem" },
-                textTransform: "none",
-                borderRadius: "4px",
-                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
-                transition: "all 0.3s ease",
-                border: "2px solid transparent",
-                "&:hover": {
-                  backgroundColor: "#fafafa",
-                  color: "#0C0C0C",
-                  transform: "translateY(-2px)",
-                  boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.3)",
-                },
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              Book Now
-            </Button>
-          </Container>
-        </div>
-      </header>
+              <Box className={landingStyles.logoContainer}>
+                <Typography
+                  variant="h1"
+                  className={landingStyles.logoText}
+                  sx={{
+                    fontFamily: '"Oleo Script", cursive',
+                    fontSize: { xs: "5rem", md: "8rem" },
+                    color: "#fafafa",
+                    textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+                    mb: 0,
+                    lineHeight: 1.1,
+                  }}
+                >
+                  erpre
+                </Typography>
+                <Typography
+                  variant="h2"
+                  sx={{
+                    fontFamily: '"Oleo Script", cursive',
+                    fontSize: { xs: "3rem", md: "5rem" },
+                    color: "#fafafa",
+                    textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+                    mb: 4,
+                  }}
+                >
+                  Barber and Shop
+                </Typography>
+              </Box>
+
+              <Button
+                variant="contained"
+                size="large"
+                onClick={() => setIsOpen(true)}
+                sx={{
+                  background: "#fafafa",
+                  color: "#0C0C0C",
+                  fontFamily: "Lato, sans-serif",
+                  fontWeight: 800,
+                  padding: "1rem 2.5rem",
+                  fontSize: { xs: "1rem", md: "1.25rem" },
+                  textTransform: "none",
+                  borderRadius: "4px",
+                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
+                  transition: "all 0.3s ease",
+                  border: "2px solid transparent",
+                  "&:hover": {
+                    backgroundColor: "#fafafa",
+                    color: "#0C0C0C",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.3)",
+                  },
+                }}
+              >
+                Book Now
+              </Button>
+            </Container>
+          </div>
+        </header>
+
+        <section
+          id="reviews"
+          className={`${landingStyles.section} ${reviewStyles.reviews}`}
+        >
+          <div id="reviewHeader" className={reviewStyles.reviewHeader}>
+            <h2>Customer Reviews</h2>
+            <p>What Our Clients Say</p>
+          </div>
+          <hr />
+
+          <Box sx={{ position: "relative", width: "100%", maxWidth: "1400px" }}>
+            <IconButton
+              sx={{
+                position: "absolute",
+                left: 0,
+                top: "50%",
+                transform: "translateY(-50%)",
+                bgcolor: "rgba(53, 40, 31, 0.05)",
+                "&:hover": { bgcolor: "rgba(53, 40, 31, 0.1)" },
+                zIndex: 2,
+              }}
+              onClick={() => {
+                const container = document.getElementById("cardsWrapper");
+                container.scrollLeft -= 330;
+              }}
+            >
+              <ArrowBackIosNewIcon sx={{ color: "#35281f" }} />
+            </IconButton>
+
+            <div id="cardsWrapper" className={reviewStyles.cardsWrapper}>
+              {reviews.length > 0 ? (
+                reviews.map((data) => (
+                  <CustomerReviewCard
+                    key={data.author_name}
+                    cusName={data.author_name}
+                    image={data.profile_photo_url}
+                    review={data.text}
+                    numsReviews={data.numsReviews}
+                    stars={data.rating}
+                    time={data.relative_time_description}
+                  />
+                ))
+              ) : (
+                <p>Loading reviews...</p>
+              )}
+            </div>
+
+            <IconButton
+              sx={{
+                position: "absolute",
+                right: 0,
+                top: "50%",
+                transform: "translateY(-50%)",
+                bgcolor: "rgba(53, 40, 31, 0.05)",
+                "&:hover": { bgcolor: "rgba(53, 40, 31, 0.1)" },
+                zIndex: 2,
+              }}
+              onClick={() => {
+                const container = document.getElementById("cardsWrapper");
+                container.scrollLeft += 330;
+              }}
+            >
+              <ArrowForwardIosIcon sx={{ color: "#35281f" }} />
+            </IconButton>
+          </Box>
+
+          <div className={reviewStyles.dots}>
+            {[...Array(Math.ceil(reviews.length / 4))].map((_, i) => (
+              <div
+                key={i}
+                className={`${reviewStyles.dot} ${
+                  i === 0 ? reviewStyles.active : ""
+                }`}
+                onClick={() => {
+                  const container = document.getElementById("cardsWrapper");
+                  container.scrollLeft = i * container.offsetWidth;
+                  document
+                    .querySelectorAll(`.${reviewStyles.dot}`)
+                    .forEach((dot, index) => {
+                      if (index === i) dot.classList.add(reviewStyles.active);
+                      else dot.classList.remove(reviewStyles.active);
+                    });
+                }}
+              />
+            ))}
+          </div>
+        </section>
+
+        <section
+          id="about"
+          className={`${landingStyles.section} ${aboutStyles.about}`}
+        >
+          <div className={aboutStyles.aboutContainer}>
+            <AboutText />
+            <AboutImages />
+            <AboutMap />
+          </div>
+        </section>
+
+        <section
+          id="newsletter"
+          className={`${landingStyles.section} ${newsletterStyles.newsletter}`}
+        >
+          <NewsLetter />
+        </section>
+      </main>
+
       <BookingPopUp isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <h2>Book Appointment</h2>
       </BookingPopUp>
-      <section
-        id="reviews"
-        className={`${landingStyles.section} ${reviewStyles.reviews}`}
-      >
-        <div id="reviewHeader" className={reviewStyles.reviewHeader}>
-          <h2>Customer Reviews</h2>
-          <p>What Our Clients Say</p>
-        </div>
-        <hr></hr>
-
-        <Box sx={{ position: "relative", width: "100%", maxWidth: "1400px" }}>
-          <IconButton
-            sx={{
-              position: "absolute",
-              left: 0,
-              top: "50%",
-              transform: "translateY(-50%)",
-              bgcolor: "rgba(53, 40, 31, 0.05)",
-              "&:hover": { bgcolor: "rgba(53, 40, 31, 0.1)" },
-              zIndex: 2,
-            }}
-            onClick={() => {
-              const container = document.getElementById("cardsWrapper");
-              container.scrollLeft -= 330;
-            }}
-          >
-            <ArrowBackIosNewIcon sx={{ color: "#35281f" }} />
-          </IconButton>
-
-          <div id="cardsWrapper" className={reviewStyles.cardsWrapper}>
-            {reviews.length > 0 ? (
-              reviews.map((data) => (
-                <CustomerReviewCard
-                  key={data.author_name}
-                  cusName={data.author_name}
-                  image={data.profile_photo_url}
-                  review={data.text}
-                  numsReviews={data.numsReviews}
-                  stars={data.rating}
-                  time={data.relative_time_description}
-                />
-              ))
-            ) : (
-              <p>Loading reviews...</p>
-            )}
-          </div>
-
-          <IconButton
-            sx={{
-              position: "absolute",
-              right: 0,
-              top: "50%",
-              transform: "translateY(-50%)",
-              bgcolor: "rgba(53, 40, 31, 0.05)",
-              "&:hover": { bgcolor: "rgba(53, 40, 31, 0.1)" },
-              zIndex: 2,
-            }}
-            onClick={() => {
-              const container = document.getElementById("cardsWrapper");
-              container.scrollLeft += 330;
-            }}
-          >
-            <ArrowForwardIosIcon sx={{ color: "#35281f" }} />
-          </IconButton>
-        </Box>
-
-        <div className={reviewStyles.dots}>
-          {[...Array(Math.ceil(reviews.length / 4))].map((_, i) => (
-            <div
-              key={i}
-              className={`${reviewStyles.dot} ${
-                i === 0 ? reviewStyles.active : ""
-              }`}
-              onClick={() => {
-                const container = document.getElementById("cardsWrapper");
-                container.scrollLeft = i * container.offsetWidth;
-
-                document
-                  .querySelectorAll(`.${reviewStyles.dot}`)
-                  .forEach((dot, index) => {
-                    if (index === i) dot.classList.add(reviewStyles.active);
-                    else dot.classList.remove(reviewStyles.active);
-                  });
-              }}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* Adding Mason's About section */}
-      <section
-        id="about"
-        className={`${landingStyles.section} ${aboutStyles.about}`}
-      >
-        <div className={aboutStyles.aboutContainer}>
-          <AboutText />
-          <AboutImages />
-          <AboutMap />
-        </div>
-      </section>
-
-      {/* Keeping both your and Mason's Newsletter section */}
-      <section
-        id="newsletter"
-        className={`${landingStyles.section} ${newsletterStyles.newsletter}`}
-      >
-        <NewsLetter />
-      </section>
-    </main>
+    </>
   );
 }

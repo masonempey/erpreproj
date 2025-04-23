@@ -1,3 +1,4 @@
+// components/Navbar.jsx
 "use client";
 
 import React, { useState } from "react";
@@ -27,20 +28,29 @@ import HomeIcon from "@mui/icons-material/Home";
 import InfoIcon from "@mui/icons-material/Info";
 import LoginIcon from "@mui/icons-material/Login";
 
-const Navbar = () => {
+const Navbar = ({ onBookNow }) => {
   const { user, loading } = useUser();
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const toggleDrawer = () => {
-    setDrawerOpen(!drawerOpen);
-  };
+  const toggleDrawer = () => setDrawerOpen((p) => !p);
+
+  // Always scroll the window to the very top
+  const scrollToTop = () =>
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
 
   const navLinks = [
-    { name: "Book Now", href: "/", icon: <BookOnlineIcon /> },
-    { name: "Home", href: "/", icon: <HomeIcon /> },
-    { name: "About", href: "/about", icon: <InfoIcon /> },
+    { name: "Book Now", action: onBookNow, icon: <BookOnlineIcon /> },
+    { name: "Home",     action: scrollToTop, icon: <HomeIcon /> },
+    {
+      name: "About",
+      action: () => {
+        const el = document.getElementById("about");
+        el?.scrollIntoView({ behavior: "smooth", block: "start" });
+      },
+      icon: <InfoIcon />,
+    },
   ];
 
   if (loading) {
@@ -57,13 +67,7 @@ const Navbar = () => {
 
   return (
     <>
-      <AppBar
-        position="fixed"
-        elevation={4}
-        sx={{
-          bgcolor: "#35281f",
-        }}
-      >
+      <AppBar position="fixed" elevation={4} sx={{ bgcolor: "#35281f" }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
             {/* Logo */}
@@ -82,41 +86,31 @@ const Navbar = () => {
               erpre
             </Typography>
 
-            {/* Desktop Navigation */}
+            {/* Desktop nav */}
             {!isMobile && (
-              <Box
-                sx={{
-                  display: "flex",
-                  flexGrow: 1,
-                  justifyContent: "center",
-                }}
-              >
+              <Box sx={{ display: "flex", flexGrow: 1, justifyContent: "center" }}>
                 {navLinks.map((link) => (
                   <Button
                     key={link.name}
-                    component={Link}
-                    href={link.href}
+                    onClick={link.action}
                     sx={{
-                      mx: 5, // Increased from 3 to 5 for more spacing
+                      mx: 5,
                       color: "#fafafa",
                       fontSize: "1rem",
-                      position: "relative", // For the underline positioning
+                      position: "relative",
                       "&::after": {
                         content: '""',
                         position: "absolute",
-                        width: "0",
+                        width: 0,
                         height: "2px",
-                        bottom: "0",
+                        bottom: 0,
                         left: "50%",
                         transform: "translateX(-50%)",
                         backgroundColor: "#e6853b",
                         transition: "width 0.3s ease",
                       },
                       "&:hover": {
-                        backgroundColor: "transparent",
-                        "&::after": {
-                          width: "80%", // Expands to 80% width on hover
-                        },
+                        "&::after": { width: "80%" },
                       },
                     }}
                   >
@@ -126,15 +120,10 @@ const Navbar = () => {
               </Box>
             )}
 
-            {/* Right Section - Profile/Login */}
+            {/* Right section */}
             <Box>
               {isMobile ? (
-                <IconButton
-                  edge="end"
-                  color="inherit"
-                  aria-label="menu"
-                  onClick={toggleDrawer}
-                >
+                <IconButton edge="end" color="inherit" onClick={toggleDrawer}>
                   <MenuIcon sx={{ fontSize: "2rem" }} />
                 </IconButton>
               ) : user ? (
@@ -178,16 +167,10 @@ const Navbar = () => {
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "flex-end", px: 2 }}>
-          <IconButton
-            color="inherit"
-            onClick={toggleDrawer}
-            edge="end"
-            aria-label="close drawer"
-          >
+          <IconButton color="inherit" onClick={toggleDrawer}>
             <CloseIcon />
           </IconButton>
         </Box>
-
         <Box sx={{ textAlign: "center", mt: 2, mb: 4 }}>
           <Typography
             variant="h5"
@@ -201,25 +184,23 @@ const Navbar = () => {
           </Typography>
           <Typography variant="subtitle1">Barber & Shop</Typography>
         </Box>
-
         <Divider sx={{ bgcolor: "rgba(250,250,250,0.1)" }} />
-
         <List>
           {navLinks.map((link) => (
             <ListItem
               key={link.name}
               button
-              component={Link}
-              href={link.href}
-              onClick={toggleDrawer}
+              onClick={() => {
+                link.action();
+                toggleDrawer();
+              }}
+              sx={{ py: 2 }}
             >
               <Box sx={{ mr: 2, color: "#e6853b" }}>{link.icon}</Box>
               <ListItemText primary={link.name} />
             </ListItem>
           ))}
-
           <Divider sx={{ my: 2, bgcolor: "rgba(250,250,250,0.1)" }} />
-
           {user ? (
             <Box sx={{ px: 3, py: 2 }}>
               <Typography variant="body2" sx={{ mb: 2 }}>
@@ -235,10 +216,7 @@ const Navbar = () => {
               component={Link}
               href="/login"
               onClick={toggleDrawer}
-              sx={{
-                py: 2,
-                bgcolor: "rgba(230, 133, 59, 0.2)",
-              }}
+              sx={{ py: 2, bgcolor: "rgba(230, 133, 59, 0.2)" }}
             >
               <Box sx={{ mr: 2, color: "#e6853b" }}>
                 <LoginIcon />
@@ -248,7 +226,6 @@ const Navbar = () => {
           )}
         </List>
       </Drawer>
-      <Toolbar />
     </>
   );
 };
