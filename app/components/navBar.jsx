@@ -1,4 +1,3 @@
-// components/Navbar.jsx
 "use client";
 
 import React, { useState } from "react";
@@ -36,13 +35,15 @@ const Navbar = ({ onBookNow }) => {
 
   const toggleDrawer = () => setDrawerOpen((p) => !p);
 
-  // Always scroll the window to the very top
-  const scrollToTop = () =>
-    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  // Scroll up to the Book Now button
+  const scrollToTop = () => {
+    const btn = document.getElementById("book-now-button");
+    btn?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
 
   const navLinks = [
     { name: "Book Now", action: onBookNow, icon: <BookOnlineIcon /> },
-    { name: "Home",     action: scrollToTop, icon: <HomeIcon /> },
+    { name: "Home",     action: scrollToTop,  icon: <HomeIcon /> },
     {
       name: "About",
       action: () => {
@@ -109,9 +110,7 @@ const Navbar = ({ onBookNow }) => {
                         backgroundColor: "#e6853b",
                         transition: "width 0.3s ease",
                       },
-                      "&:hover": {
-                        "&::after": { width: "80%" },
-                      },
+                      "&:hover": { "&::after": { width: "80%" } },
                     }}
                   >
                     {link.name}
@@ -171,6 +170,7 @@ const Navbar = ({ onBookNow }) => {
             <CloseIcon />
           </IconButton>
         </Box>
+
         <Box sx={{ textAlign: "center", mt: 2, mb: 4 }}>
           <Typography
             variant="h5"
@@ -184,15 +184,22 @@ const Navbar = ({ onBookNow }) => {
           </Typography>
           <Typography variant="subtitle1">Barber & Shop</Typography>
         </Box>
+
         <Divider sx={{ bgcolor: "rgba(250,250,250,0.1)" }} />
+
         <List>
           {navLinks.map((link) => (
             <ListItem
               key={link.name}
               button
               onClick={() => {
-                link.action();
-                toggleDrawer();
+                if (link.name === "Book Now") {
+                  link.action();
+                  toggleDrawer();
+                } else {
+                  toggleDrawer();
+                  setTimeout(link.action, 250);
+                }
               }}
               sx={{ py: 2 }}
             >
@@ -200,7 +207,9 @@ const Navbar = ({ onBookNow }) => {
               <ListItemText primary={link.name} />
             </ListItem>
           ))}
+
           <Divider sx={{ my: 2, bgcolor: "rgba(250,250,250,0.1)" }} />
+
           {user ? (
             <Box sx={{ px: 3, py: 2 }}>
               <Typography variant="body2" sx={{ mb: 2 }}>

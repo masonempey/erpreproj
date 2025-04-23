@@ -1,4 +1,3 @@
-// app/(your-folder)/page.jsx (Home)
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -27,7 +26,6 @@ export default function Home() {
         const response = await fetch("/api/reviews");
         if (response.status === 200) {
           const reviewData = await response.json();
-          console.log("Fetched review data:", reviewData);
           const mappedReviews = (reviewData.reviews || []).map((review) => ({
             author_name: review.author_name || "Anonymous",
             profile_photo_url: review.profile_photo_url || "",
@@ -119,6 +117,7 @@ export default function Home() {
               </Box>
 
               <Button
+                id="book-now-button"
                 variant="contained"
                 size="large"
                 onClick={() => setIsOpen(true)}
