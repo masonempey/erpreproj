@@ -32,10 +32,15 @@ const Login = () => {
       setError("Email and password are required");
       return;
     }
-
+  
+    // Validate phone number format if provided
+    if (phoneNumber && !/^\d{10,15}$/.test(phoneNumber)) {
+      setError("Please enter a valid 10-15 digit phone number");
+      return;
+    }
+  
     setIsLoading(true);
     try {
-      // Updated: Using new consolidated auth API with action=register
       const res = await fetch("/api/auth", {
         method: "POST",
         headers: {
@@ -45,23 +50,36 @@ const Login = () => {
           action: "register",
           email,
           password,
-          phoneNumber,
+          phoneNumber: phoneNumber || "", // Send empty string if null
+          // You can add additional fields here if needed
+          // isAdmin: false,  // Default handled by database
+          // isBarber: false  // Default handled by database
         }),
       });
-
+  
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.error || "Registration failed");
       }
-
-      alert("Registration successful! Please log in.");
-      setEmail("");
-      setPassword("");
-      setPhoneNumber("");
-      setIsLogin(true); // Switch to login view
+  
+      // Optional: Auto-login after registration
+      if (data.user) {
+        alert(`Welcome ${data.user.email}! Registration successful.`);
+        router.push("/dashboard"); // Redirect to dashboard or home
+      } else {
+        alert("Registration successful! Please log in.");
+        setEmail("");
+        setPassword("");
+        setPhoneNumber("");
+        setIsLogin(true); // Switch to login view
+      }
     } catch (error) {
       console.error("Signup error:", error);
-      setError(error.message);
+      setError(
+        error.message.includes("email already in use")
+          ? "This email is already registered"
+          : error.message || "Registration failed. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
