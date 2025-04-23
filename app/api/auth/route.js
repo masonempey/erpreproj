@@ -178,13 +178,6 @@ async function registerHandler(body) {
     );
   }
 
-  if (phoneNumber && !/^\d{10,15}$/.test(phoneNumber)) {
-    return NextResponse.json(
-      { error: "Invalid phone number" },
-      { status: 400 }
-    );
-  }
-
   const existingUser = await getUserByEmail(email).catch(() => null);
   if (existingUser) {
     return NextResponse.json({ error: "User already exists" }, { status: 400 });
@@ -205,18 +198,25 @@ async function registerHandler(body) {
     );
   }
 
-  const roleId = await getDefaultRoleId();
-  const newUser = await createUser(
-    firebaseUID,
-    email,
-    roleId,
-    phoneNumber || null
-  );
+  try {
+    const newUser = await createUser(
+      firebaseUID,
+      email,
+      phoneNumber || ''
+    );
 
-  return NextResponse.json(
-    { message: "User created successfully", user: newUser },
-    { status: 201 }
-  );
+    return NextResponse.json(
+      { message: "User created successfully", user: newUser },
+      { status: 201 }
+    );
+  } catch (err) {
+    console.error("Database error:", err);
+    await adminInstance.auth().deleteUser(firebaseUID);
+    return NextResponse.json(
+      { error: "Failed to create database record: " + err.message },
+      { status: 500 }
+    );
+  }
 }
 
 async function googleAuthHandler(body, request) {
@@ -256,8 +256,7 @@ async function googleAuthHandler(body, request) {
   }
 
   // Create new user with default role
-  const roleId = await getDefaultRoleId();
-  const newUser = await createUser(uid, email, roleId);
+  const newUser = await createUser(uid, email, );
 
   return NextResponse.json(
     {

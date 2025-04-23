@@ -54,7 +54,7 @@ const LogInPage = () => {
           console.log("ID Token:", idToken);
       
           // 3. API Validation
-          const validateRes = await fetch(`${ip_address}:3000/api/auth`, {
+          const validateRes = await fetch(`${ip_address}/api/auth`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

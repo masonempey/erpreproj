@@ -17,7 +17,7 @@ const ProfilePage = () => {
     try {
       if (!user?.uid) return;
       
-      const response = await fetch(`${ip_address}:3000//api/users?action=byId&id=${user.uid}`, {
+      const response = await fetch(`${ip_address}/api/users?action=byId&id=${user.uid}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

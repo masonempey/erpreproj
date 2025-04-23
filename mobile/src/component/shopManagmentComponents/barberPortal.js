@@ -27,24 +27,24 @@ const BarberPortal = ({ navigation }) => {
   const [foundUser, setFoundUser] = useState(null);
   const [emailError, setEmailError] = useState('');
 
-  const getRoleName = (role_id) => {
-    switch (role_id) {
-      case 1: return 'User';
-      case 2: return 'Admin';
-      case 3: return 'Barber';
-      default: return 'Unknown';
-    }
+  // Simplified role colors mapping (aligning with web)
+  const roleColors = {
+    User: "#777",
+    Admin: "#ff9800",
+    Barber: "#4caf50"
   };
 
-  // Fetch barbers data
+  // Fetch all barbers with error handling
   const fetchBarbers = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(`${ip_address}:3000/api/barbers`);
+      // Using the consolidated API endpoint with no parameters to get all barbers
+      const response = await fetch(`${ip_address}/api/barbers`);
       
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
       }
       
       const data = await response.json();
@@ -78,8 +78,12 @@ const BarberPortal = ({ navigation }) => {
     return re.test(email);
   };
 
-  // Search user by email
+  // Search user by email with validation
   const searchUserByEmail = async () => {
+    if (!searchEmail.trim()) {
+      setEmailError('Please enter an email address');
+      return;
+    }
     if (!validateEmail(searchEmail)) {
       setEmailError('Please enter a valid email address');
       return;
@@ -89,101 +93,100 @@ const BarberPortal = ({ navigation }) => {
     setLoading(true);
   
     try {
-      // First check if user exists
-      const checkResponse = await fetch(`${ip_address}:3000/api/auth`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({action: 'check', email: searchEmail })
-      });
-  
-      if (!checkResponse.ok) {
-        const errorData = await checkResponse.json();
-        throw new Error(errorData.error || 'Failed to validate email');
-      }
-  
-      const { exists, user_id, current_role } = await checkResponse.json();
-      
-      if (!exists) {
-        throw new Error('User not found');
-      }
-  
-      // If exists, get full user details
-      const userResponse = await fetch(
-        `${ip_address}:3000/api/users?action=byEmail&email=${encodeURIComponent(searchEmail)}`
+      // Using the same API endpoint as the web version
+      const response = await fetch(
+        `${ip_address}/api/users?action=byEmail&email=${encodeURIComponent(searchEmail)}`
       );
       
-      if (!userResponse.ok) {
-        const errorData = await userResponse.json();
-        throw new Error(errorData.error || 'Failed to get user details');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to find user');
       }
-  
-      const user = await userResponse.json();
-      setFoundUser(user);
       
-    } catch (error) {
-      setEmailError(error.message.includes('email') ? error.message : 'Failed to find user');
+      const user = await response.json();
+      console.log("API Response:", user); // Debug log
+      
+      if (!user) {
+        throw new Error("User not found");
+      }
+      
+      // Transform the user object to match the expected format
+      setFoundUser({
+        ...user,
+        currentRole: user.IsBarber ? "Barber" : user.IsAdmin ? "Admin" : "User",
+        name: user.name || "No name provided",
+        barber_id: user.user_id // Map user_id to barber_id if needed
+      });
+      
+    } catch (err) {
+      setEmailError(err.message);
       setFoundUser(null);
     } finally {
       setLoading(false);
     }
   };
 
-  // Assign barber role
+  // Assign barber role matching web implementation
   const assignBarberRole = async () => {
     if (!foundUser) return;
-
+    setLoading(true);
     try {
-      setLoading(true);
-      
-      const response = await fetch(`${ip_address}:3000/api/users`, {
-        method: 'PUT',
-        headers: { 
-          'Content-Type': 'application/json',
-        },
+      // Update user's IsBarber flag using the same API as web
+      const updateResponse = await fetch(`${ip_address}/api/users?userId=${foundUser.user_id}&action=makeBarber`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          action: 'updateRole',
+          name: foundUser.name,
           email: foundUser.email
         })
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to assign barber role');
+  
+      if (!updateResponse.ok) {
+        const errorData = await updateResponse.json();
+        throw new Error(errorData.error || "Failed to update user role");
       }
-
-      const { user: updatedUser } = await response.json();
+  
+      const result = await updateResponse.json();
       
-      // Show success state in modal
+      // Update local state to match web implementation
+      setBarbers(prev => [...prev, {
+        ...result.barber,
+        currentRole: "Barber",
+        barber_id: result.barber.barber_id || result.barber.id
+      }]);
+      
+      // Show success message
       setFoundUser({
-        ...updatedUser,
-        successMessage: `${updatedUser.email} is now a barber`
+        ...foundUser,
+        successMessage: `${foundUser.name} is now a Barber!`
       });
-      
-      // Refresh the barbers list
-      await fetchBarbers();
       
     } catch (err) {
       console.error("Role assignment error:", err);
-      setEmailError(err.message.includes("barber") 
-        ? err.message 
-        : 'Failed to update user role');
+      setEmailError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle input changes
-  const handleInputChange = (text) => {
-    setSearchEmail(text);
-    setEmailError('');
+  // Format time display (same as web)
+  const formatTimeDisplay = (time) => {
+    if (!time) return "Not available";
+    const [hours, minutes] = time.split(':');
+    const hourNum = parseInt(hours);
+    return `${hourNum % 12 || 12}:${minutes} ${hourNum >= 12 ? 'PM' : 'AM'}`;
   };
 
   // Initial data fetch
   useEffect(() => {
     fetchBarbers();
   }, []);
+
+  // Handle input changes
+  const handleInputChange = (text) => {
+    setSearchEmail(text);
+    setEmailError('');
+  };
 
   // Render loading state
   if (loading && !refreshing && barbers.length === 0) {
@@ -213,13 +216,13 @@ const BarberPortal = ({ navigation }) => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Barbers</Text>
+        <Text style={styles.headerTitle}>Manage Barber Roles</Text>
       </View>
 
       {/* Barbers List */}
       <FlatList
         data={barbers}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => (item.id || item.barber_id).toString()}
         renderItem={({ item }) => (
           <BarberCard barberInfo={item} navigation={navigation} />
         )}
@@ -258,7 +261,7 @@ const BarberPortal = ({ navigation }) => {
         <View style={styles.modalBackdrop}>
           <View style={styles.modalCard}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Assign Barber Role</Text>
+              <Text style={styles.modalTitle}>Find User</Text>
               <TouchableOpacity 
                 onPress={handleCloseModal}
                 hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
@@ -281,10 +284,9 @@ const BarberPortal = ({ navigation }) => {
                 </View>
               ) : (
                 <>
-                  <Text style={styles.inputLabel}>Search User by Email</Text>
                   <TextInput
                     style={[styles.inputField, emailError && styles.inputError]}
-                    placeholder="Enter user's email"
+                    placeholder="User Email"
                     placeholderTextColor="#999"
                     value={searchEmail}
                     onChangeText={handleInputChange}
@@ -294,25 +296,30 @@ const BarberPortal = ({ navigation }) => {
                   />
                   {emailError && <Text style={styles.errorText}>{emailError}</Text>}
 
-                  <TouchableOpacity
-                    style={[styles.searchButton, (!searchEmail.trim() || loading) && {opacity: 0.7}]}
-                    onPress={searchUserByEmail}
-                    disabled={!searchEmail.trim() || loading}
-                  >
-                    {loading ? (
-                      <ActivityIndicator color="white" />
-                    ) : (
-                      <Text style={styles.searchButtonText}>Search User</Text>
-                    )}
-                  </TouchableOpacity>
-
-                  {foundUser && !foundUser.successMessage && (
+                  {!loading && foundUser && (
                     <View style={styles.userInfoContainer}>
-                      <Text style={styles.userInfoText}>User Found</Text>
-                      <Text style={styles.userEmail}>{foundUser.email}</Text>
-                      <Text style={styles.userCurrentRole}>
-                        Current Role: {getRoleName(foundUser.role_id)}
-                      </Text>
+                      <View style={styles.avatarContainer}>
+                        <Text style={styles.avatarText}>
+                          {foundUser.name?.charAt(0) || 'U'}
+                        </Text>
+                      </View>
+                      <View style={styles.userDetailsContainer}>
+                        <Text style={styles.userName}>{foundUser.name}</Text>
+                        <Text style={styles.userEmail}>{foundUser.email}</Text>
+                        <View style={styles.chipContainer}>
+                          <View style={[
+                            styles.roleChip, 
+                            {backgroundColor: roleColors[foundUser.currentRole] || "#777"}
+                          ]}>
+                            <Text style={styles.roleChipText}>{foundUser.currentRole}</Text>
+                          </View>
+                          {foundUser.phone_number && (
+                            <View style={styles.phoneChip}>
+                              <Text style={styles.phoneChipText}>Phone: {foundUser.phone_number}</Text>
+                            </View>
+                          )}
+                        </View>
+                      </View>
                     </View>
                   )}
                 </>
@@ -328,21 +335,42 @@ const BarberPortal = ({ navigation }) => {
                   <Text style={styles.cancelButtonText}>Cancel</Text>
                 </TouchableOpacity>
                 
-                <TouchableOpacity
-                  style={[
-                    styles.modalButton, 
-                    styles.assignButton,
-                    (!foundUser || loading) && styles.assignButtonDisabled
-                  ]}
-                  onPress={assignBarberRole}
-                  disabled={!foundUser || loading}
-                >
-                  {loading ? (
-                    <ActivityIndicator color="white" />
-                  ) : (
-                    <Text style={styles.assignButtonText}>Assign Role</Text>
-                  )}
-                </TouchableOpacity>
+                {foundUser ? (
+                  <TouchableOpacity
+                    style={[
+                      styles.modalButton, 
+                      styles.assignButton,
+                      loading && styles.assignButtonDisabled
+                    ]}
+                    onPress={assignBarberRole}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <ActivityIndicator color="white" size="small" />
+                    ) : (
+                      <>
+                        <Ionicons name="person-add" size={16} color="white" style={styles.buttonIcon} />
+                        <Text style={styles.assignButtonText}>Assign as Barber</Text>
+                      </>
+                    )}
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    style={[
+                      styles.modalButton, 
+                      styles.assignButton,
+                      (!searchEmail.trim() || loading) && styles.assignButtonDisabled
+                    ]}
+                    onPress={searchUserByEmail}
+                    disabled={!searchEmail.trim() || loading}
+                  >
+                    {loading ? (
+                      <ActivityIndicator color="white" size="small" />
+                    ) : (
+                      <Text style={styles.assignButtonText}>Search</Text>
+                    )}
+                  </TouchableOpacity>
+                )}
               </View>
             )}
           </View>
@@ -462,12 +490,6 @@ const styles = StyleSheet.create({
   modalBody: {
     padding: 24,
   },
-  inputLabel: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 8,
-    fontWeight: '500',
-  },
   inputField: {
     height: 48,
     borderWidth: 1,
@@ -487,39 +509,70 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginBottom: 12,
   },
-  searchButton: {
-    backgroundColor: '#5F402C',
-    padding: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginVertical: 8,
-    elevation: 2,
-  },
-  searchButtonText: {
-    color: 'white',
-    fontWeight: '600',
-    fontSize: 15,
-  },
   userInfoContainer: {
     marginTop: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 16,
     backgroundColor: '#f8f8f8',
     borderRadius: 10,
-    borderLeftWidth: 4,
-    borderLeftColor: '#5F402C',
   },
-  userInfoText: {
+  avatarContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#ddd',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  avatarText: {
+    fontSize: 18,
     fontWeight: '600',
-    marginBottom: 6,
+    color: '#555',
+  },
+  userDetailsContainer: {
+    flex: 1,
+  },
+  userName: {
+    fontSize: 16,
+    fontWeight: '500',
     color: '#333',
+    marginBottom: 4,
   },
   userEmail: {
-    marginBottom: 6,
-    color: '#444',
-  },
-  userCurrentRole: {
     color: '#666',
-    fontSize: 13,
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  chipContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 4,
+  },
+  roleChip: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    marginRight: 8,
+    marginBottom: 4,
+  },
+  roleChipText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  phoneChip: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    marginBottom: 4,
+  },
+  phoneChipText: {
+    color: '#666',
+    fontSize: 12,
   },
   modalFooter: {
     flexDirection: 'row',
@@ -536,6 +589,11 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     minWidth: 100,
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  buttonIcon: {
+    marginRight: 6,
   },
   cancelButton: {
     backgroundColor: 'transparent',

@@ -33,7 +33,7 @@ export default function ShopManagementPage({ navigation, route }) {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${ip_address}:3000/api/shop`);
+      const response = await fetch(`${ip_address}/api/shop`);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -70,7 +70,7 @@ export default function ShopManagementPage({ navigation, route }) {
         phone: updatedData.phone
       };
   
-      const response = await fetch(`${ip_address}:3000/api/shop`, {
+      const response = await fetch(`${ip_address}/api/shop`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
