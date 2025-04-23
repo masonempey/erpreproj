@@ -5,6 +5,7 @@
   width: 100%;
   min-height: 100vh;
   justify-content: flex-start;
+  overflow-x: hidden;
 }
 
 .header {
@@ -38,17 +39,35 @@
   padding: 2rem;
 }
 
+.heroContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .logoContainer {
   text-align: center;
-  margin-bottom: 3rem;
-  animation: fadeIn 1.5s ease-in-out;
+  animation: fadeInUp 1.2s ease-out;
 }
 
 .logoText {
   display: block;
 }
 
-@keyframes fadeIn {
+.section {
+  position: relative;
+  width: 100%;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+}
+
+@keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -65,4 +84,34 @@
   color: #fafafa;
   font-family: "Oleo Script";
   font-weight: bold;
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) {
+  .section {
+    padding: 3rem 1rem;
+    min-height: auto;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .section {
+    padding: 2.5rem 0.75rem;
+  }
+
+  .header {
+    height: 90vh;
+  }
+
+  .headerOverlay {
+    padding: 1rem;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .section {
+    padding: 2rem 0.5rem;
+  }
 }

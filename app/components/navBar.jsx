@@ -1,6 +1,7 @@
+// app/components/navBar.jsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useUser } from "../../context/UserContext";
 import ProfilePopup from "./ProfilePopup";
@@ -18,8 +19,8 @@ import {
   ListItemText,
   Divider,
   useMediaQuery,
-  useTheme,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import BookOnlineIcon from "@mui/icons-material/BookOnline";
@@ -29,26 +30,29 @@ import LoginIcon from "@mui/icons-material/Login";
 
 const Navbar = ({ onBookNow }) => {
   const { user, loading } = useUser();
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const toggleDrawer = () => setDrawerOpen((p) => !p);
+  const toggleDrawer = () => setDrawerOpen((o) => !o);
 
-  // Scroll up to the Book Now button
-  const scrollToTop = () => {
+  // ⬇️ scroll the BOOK NOW button into view
+  const scrollToBook = () => {
     const btn = document.getElementById("book-now-button");
-    btn?.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (btn) {
+      btn.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   };
 
   const navLinks = [
     { name: "Book Now", action: onBookNow, icon: <BookOnlineIcon /> },
-    { name: "Home",     action: scrollToTop,  icon: <HomeIcon /> },
+    { name: "Home",     action: scrollToBook,  icon: <HomeIcon /> },
     {
       name: "About",
       action: () => {
-        const el = document.getElementById("about");
-        el?.scrollIntoView({ behavior: "smooth", block: "start" });
+        document
+          .getElementById("about")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
       },
       icon: <InfoIcon />,
     },
@@ -95,9 +99,8 @@ const Navbar = ({ onBookNow }) => {
                     key={link.name}
                     onClick={link.action}
                     sx={{
-                      mx: 5,
+                      mx: 3,
                       color: "#fafafa",
-                      fontSize: "1rem",
                       position: "relative",
                       "&::after": {
                         content: '""',
@@ -110,7 +113,10 @@ const Navbar = ({ onBookNow }) => {
                         backgroundColor: "#e6853b",
                         transition: "width 0.3s ease",
                       },
-                      "&:hover": { "&::after": { width: "80%" } },
+                      "&:hover": {
+                        backgroundColor: "transparent",
+                        "&::after": { width: "80%" },
+                      },
                     }}
                   >
                     {link.name}
@@ -156,13 +162,7 @@ const Navbar = ({ onBookNow }) => {
         open={drawerOpen}
         onClose={toggleDrawer}
         PaperProps={{
-          sx: {
-            width: "70%",
-            maxWidth: "300px",
-            bgcolor: "#35281f",
-            color: "#fafafa",
-            pt: 2,
-          },
+          sx: { width: "70%", maxWidth: "300px", bgcolor: "#35281f", color: "#fafafa", pt: 2 },
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "flex-end", px: 2 }}>
@@ -172,14 +172,7 @@ const Navbar = ({ onBookNow }) => {
         </Box>
 
         <Box sx={{ textAlign: "center", mt: 2, mb: 4 }}>
-          <Typography
-            variant="h5"
-            sx={{
-              fontFamily: '"Oleo Script", cursive',
-              fontWeight: "bold",
-              color: "#e6853b",
-            }}
-          >
+          <Typography variant="h5" sx={{ fontFamily: '"Oleo Script", cursive', fontWeight: "bold", color: "#e6853b" }}>
             erpre
           </Typography>
           <Typography variant="subtitle1">Barber & Shop</Typography>
@@ -193,13 +186,8 @@ const Navbar = ({ onBookNow }) => {
               key={link.name}
               button
               onClick={() => {
-                if (link.name === "Book Now") {
-                  link.action();
-                  toggleDrawer();
-                } else {
-                  toggleDrawer();
-                  setTimeout(link.action, 250);
-                }
+                toggleDrawer();
+                setTimeout(link.action, 250);
               }}
               sx={{ py: 2 }}
             >
@@ -220,16 +208,8 @@ const Navbar = ({ onBookNow }) => {
               </Typography>
             </Box>
           ) : (
-            <ListItem
-              button
-              component={Link}
-              href="/login"
-              onClick={toggleDrawer}
-              sx={{ py: 2, bgcolor: "rgba(230, 133, 59, 0.2)" }}
-            >
-              <Box sx={{ mr: 2, color: "#e6853b" }}>
-                <LoginIcon />
-              </Box>
+            <ListItem button component={Link} href="/login" onClick={toggleDrawer} sx={{ py: 2, bgcolor: "rgba(230,133,59,0.2)" }}>
+              <Box sx={{ mr: 2, color: "#e6853b" }}><LoginIcon /></Box>
               <ListItemText primary="Login" />
             </ListItem>
           )}

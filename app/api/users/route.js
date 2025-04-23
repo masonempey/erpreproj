@@ -17,7 +17,7 @@ import {
   getBarberUsers,
 } from "@/lib/services/userService";
 import adminInstance from "@/lib/firebase/admin";
-
+import { pool } from "@/lib/database";
 /**
  * GET request handler with query parameters for different operations:
  * /api/users - get all users
@@ -137,17 +137,20 @@ export async function POST(request) {
  */
 export async function PUT(request) {
   try {
-    const body = await request.json();
-    const { action } = body;
+    const { searchParams } = new URL(request.url);
+    const action = searchParams.get("action") || "updateRole";
 
-    if (!action || action === "updateRole") {
-      return await updateUserRoleHandler(body);
+    switch (action) {
+      case "updateRole":
+        return await updateUserRoleHandler(await request.json());
+      case "makeBarber":
+        return await handleMakeBarber(request);
+      default:
+        return NextResponse.json(
+          { error: `Unknown action: ${action}` },
+          { status: 400 }
+        );
     }
-
-    return NextResponse.json(
-      { error: `Unknown action: ${action}` },
-      { status: 400 }
-    );
   } catch (err) {
     console.error("PUT /api/users error:", err);
     return NextResponse.json(
@@ -400,7 +403,92 @@ export async function PATCH(request) {
     );
   }
 }
+async function handleMakeBarber(request) {
+  const { searchParams } = new URL(request.url);
+  const userId = searchParams.get("userId");
+  const { name, email } = await request.json();
 
+  // Validate inputs
+  if (!userId || !name || !email) {
+    return NextResponse.json(
+      { error: "User ID, name and email are required" },
+      { status: 400 }
+    );
+  }
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // 1. Verify user exists and isn't already a barber
+    const userCheck = await client.query(
+      'SELECT "IsBarber" FROM users WHERE user_id = $1 FOR UPDATE',
+      [userId]
+    );
+
+    if (userCheck.rows.length === 0) {
+      throw new Error('User not found');
+    }
+
+    if (userCheck.rows[0].IsBarber) {
+      throw new Error('User is already a barber');
+    }
+
+    // 2. Update user to barber status
+    await client.query(
+      'UPDATE users SET "IsBarber" = true, updated_at = NOW() WHERE user_id = $1',
+      [userId]
+    );
+
+    // 3. Create barber record with NULL working hours
+    const barberResult = await client.query(
+      `INSERT INTO barbers (
+        barber_id, name, email,
+        "Monday_Start", "Monday_End",
+        "Tuesday_Start", "Tuesday_End",
+        "Wednesday_Start", "Wednesday_End",
+        "Thursday_Start", "Thursday_End",
+        "Friday_Start", "Friday_End",
+        "Saturday_Start", "Saturday_End",
+        "Sunday_Start", "Sunday_End"
+      ) VALUES (
+        $1, $2, $3,
+        NULL, NULL,
+        NULL, NULL,
+        NULL, NULL,
+        NULL, NULL,
+        NULL, NULL,
+        NULL, NULL,
+        NULL, NULL
+      ) RETURNING *`,
+      [userId, name, email] // Only need these 3 parameters
+    );
+
+    await client.query('COMMIT');
+
+    return NextResponse.json({
+      success: true,
+      message: "User successfully made a barber",
+      user: { user_id: userId, name, email, IsBarber: true },
+      barber: barberResult.rows[0]
+    });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error("Make barber error:", error);
+    
+    let status = 500;
+    let message = error.message;
+    
+    if (error.message.includes('already exists')) status = 409;
+    else if (error.message.includes('not found')) status = 404;
+    else if (error.message.includes('already a barber')) status = 400;
+
+    return NextResponse.json({ error: message }, { status });
+  } finally {
+    client.release();
+  }
+}
 // Helper functions (add these to your existing helpers)
 async function updateUserProfileHandler(userId, userData) {
   const userFound = await getUserById(userId);

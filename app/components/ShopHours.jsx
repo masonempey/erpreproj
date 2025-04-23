@@ -31,14 +31,14 @@ export default function ShopHours() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState(null); // Changed to null to handle multiple messages
 
   // Fetch shop hours on mount
   useEffect(() => {
     const fetchShopHours = async () => {
       setLoading(true);
       try {
-        const response = await fetch("/api/shop");
+        const response = await fetch("/api/shop?action=hours");
         if (!response.ok) throw new Error("Failed to fetch shop hours");
         const data = await response.json();
         const initialHours = {
@@ -81,11 +81,11 @@ export default function ShopHours() {
   const handleSave = async () => {
     setSaving(true);
     setError(null);
-    setSuccess(false);
+    setSuccess(null);
 
     // Format for API (add seconds back)
     const payload = {
-      action: "updateHours", // Add action parameter
+      action: "updateHours",
     };
     Object.keys(formData).forEach((key) => {
       payload[key] = `${formData[key]}:00`; // "09:00" -> "09:00:00"
@@ -104,10 +104,13 @@ export default function ShopHours() {
       }
 
       const result = await response.json();
-      setShopHours(payload); // Update displayed hours
+      setShopHours(formData); // Update displayed hours
       setIsEditing(false);
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000); // Clear success after 3s
+      setSuccess({
+        message: "Shop hours updated successfully!",
+        additional: result.message, // Display if barber hours were adjusted
+      });
+      setTimeout(() => setSuccess(null), 5000); // Clear success after 5s
     } catch (err) {
       setError(err.message);
       console.error("Error updating shop hours:", err);
@@ -118,7 +121,10 @@ export default function ShopHours() {
 
   const toggleEdit = () => {
     setIsEditing(!isEditing);
-    if (isEditing) setFormData(shopHours); // Reset on cancel
+    if (isEditing) {
+      setFormData(shopHours); // Reset on cancel
+      setError(null); // Clear errors
+    }
   };
 
   if (loading && !shopHours) {
@@ -156,7 +162,13 @@ export default function ShopHours() {
       )}
       {success && (
         <Alert severity="success" sx={{ mb: 3 }}>
-          Shop hours updated successfully!
+          {success.message}
+          {success.additional && (
+            <>
+              <br />
+              {success.additional}
+            </>
+          )}
         </Alert>
       )}
 

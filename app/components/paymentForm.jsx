@@ -1,4 +1,4 @@
-// components/PaymentForm.jsx
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -11,27 +11,31 @@ import {
   Paper,
   Grid,
   Divider,
-  Stack,
+  TextField,
   CircularProgress,
+  useMediaQuery,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { useBooking } from "../../context/BookingContext";
 import { useUser } from "../../context/UserContext";
+import LockIcon from "@mui/icons-material/Lock";
+import Image from "next/image";
 
 export default function PaymentForm() {
   const stripe = useStripe();
   const elements = useElements();
   const { state, dispatch, createAppointment } = useBooking();
   const { user } = useUser();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  // Coerce servicePrice into a number (fallback to 0)
   const price = Number(state.servicePrice) || 0;
   const amount = Math.round(price * 100);
-
   const [clientSecret, setClientSecret] = useState("");
   const [cardError, setCardError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [postalCode, setPostalCode] = useState("");
 
-  // Create PaymentIntent once we have a positive amount
   useEffect(() => {
     if (amount <= 0) return;
     axios
@@ -54,10 +58,17 @@ export default function PaymentForm() {
     try {
       // 1) Create PaymentMethod
       const cardEl = elements.getElement(CardElement);
-      const { error: pmError, paymentMethod } = await stripe.createPaymentMethod({
+      const {
+        error: pmError,
+        paymentMethod,
+      } = await stripe.createPaymentMethod({
         type: "card",
         card: cardEl,
-        billing_details: { name: user?.displayName || "Guest" },
+        billing_details: {
+          name: state.personalInfo.fullName,
+          email: state.personalInfo.email,
+          address: { postal_code: postalCode },
+        },
       });
       if (pmError) throw pmError;
 
@@ -68,7 +79,7 @@ export default function PaymentForm() {
         });
       if (confirmError) throw confirmError;
 
-      // 3) Create the appointment, passing the intent ID
+      // 3) Create the appointment
       const result = await createAppointment({
         paymentIntentId: paymentIntent.id,
       });
@@ -82,82 +93,198 @@ export default function PaymentForm() {
   };
 
   return (
-    <Grid container spacing={3} sx={{ maxWidth: 800, mx: "auto", mt: 2 }}>
-      {/* Decorative card */}
-      <Grid item xs={12} md={5}>
-        <Paper
-          elevation={3}
-          sx={{
-            p: 3,
-            borderRadius: 2,
-            background: "linear-gradient(145deg,#35281f 0%,#5d4c40 100%)",
-            color: "white",
-            height: 220,
-          }}
-        >
-          <Typography variant="overline" sx={{ opacity: 0.7 }}>
-            PAYMENT DETAILS
-          </Typography>
-          <Box
+    <Box sx={{ maxWidth: 800, mx: "auto", px: isMobile ? 1 : 2 }}>
+      <Grid container spacing={isMobile ? 2 : 3}>
+        <Grid item xs={12} md={5}>
+          <Paper
+            elevation={3}
             sx={{
-              my: 4,
-              fontFamily: "'Courier New',monospace",
-              letterSpacing: 2,
+              p: 0,
+              borderRadius: 2,
+              overflow: "hidden",
+              background: "linear-gradient(145deg,#35281f 0%,#5d4c40 100%)",
+              color: "white",
+              height: { xs: "160px", sm: "180px" },
+              position: "relative",
+              mb: { xs: 2, md: 0 },
             }}
           >
-            •••• •••• •••• ••••
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography variant="body2">
-              {user?.displayName || "Card Holder"}
-            </Typography>
-            <Typography variant="body2">MM/YY</Typography>
-          </Box>
-        </Paper>
-      </Grid>
-
-      {/* Payment form */}
-      <Grid item xs={12} md={7}>
-        <Stack spacing={3}>
-          <Typography variant="h6">Payment Information</Typography>
-
-          {cardError && <Alert severity="error">{cardError}</Alert>}
-
-          <Paper
-            variant="outlined"
-            sx={{ p: 2, borderColor: cardError ? "error.main" : "divider" }}
-          >
-            <CardElement options={{ hidePostalCode: true }} />
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                p: { xs: 1.5, sm: 2 },
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography
+                variant="overline"
+                sx={{
+                  opacity: 0.7,
+                  fontSize: isMobile ? "0.6rem" : "0.7rem",
+                }}
+              >
+                Payment Details
+              </Typography>
+              <Typography
+                variant="h5"
+                sx={{
+                  letterSpacing: 2,
+                  fontSize: { xs: "1.1rem", sm: "1.2rem" },
+                }}
+              >
+                •••• •••• •••• ••••
+              </Typography>
+              <Grid container spacing={1}>
+                <Grid item xs={6}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      opacity: 0.7,
+                      fontSize: isMobile ? "0.65rem" : "0.7rem",
+                    }}
+                  >
+                    CARD HOLDER
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontSize: isMobile ? "0.75rem" : "0.8rem",
+                    }}
+                  >
+                    {state.personalInfo.fullName || "Your Name"}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      opacity: 0.7,
+                      fontSize: isMobile ? "0.65rem" : "0.7rem",
+                    }}
+                  >
+                    EXPIRY
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontSize: isMobile ? "0.75rem" : "0.8rem",
+                    }}
+                  >
+                    MM/YY
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Box>
           </Paper>
+        </Grid>
 
-          <Divider />
+        <Grid item xs={12} md={7}>
+          <form onSubmit={handleSubmit}>
+            <Typography
+              variant="h6"
+              sx={{ mb: 1.5, fontSize: isMobile ? "1.1rem" : "1.25rem" }}
+            >
+              Payment Details
+            </Typography>
 
-          <Typography>
-            Amount: <strong>${price.toFixed(2)}</strong>
-          </Typography>
+            {cardError && (
+              <Alert severity="error" sx={{ mb: 1.5 }}>
+                {cardError}
+              </Alert>
+            )}
 
-          <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-            <Button
+            <Paper
               variant="outlined"
-              onClick={() => dispatch({ type: "GO_BACK" })}
-              sx={{ flex: 1 }}
+              sx={{
+                p: { xs: 1.5, sm: 2 },
+                borderColor: cardError ? "error.main" : "divider",
+                mb: 2,
+              }}
             >
-              Back
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleSubmit}
-              disabled={!clientSecret || loading}
-              sx={{ flex: 2 }}
-              startIcon={
-                loading && <CircularProgress size={20} color="inherit" />
-              }
+              <CardElement
+                options={{
+                  hidePostalCode: true,
+                  style: {
+                    base: {
+                      fontSize: isMobile ? "14px" : "16px",
+                      color: "#424770",
+                      "::placeholder": {
+                        color: "#aab7c4",
+                      },
+                    },
+                    invalid: { color: "#9e2146" },
+                  },
+                }}
+              />
+            </Paper>
+
+            <TextField
+              fullWidth
+              label="Postal Code"
+              placeholder="A1A 1A1"
+              value={postalCode}
+              onChange={(e) => setPostalCode(e.target.value.toUpperCase())}
+              helperText="Canadian postal code"
+              sx={{ mb: 2 }}
+            />
+
+            <Box sx={{ mb: 2 }}>
+              <Typography>
+                Amount: <strong>${price.toFixed(2)}</strong>
+              </Typography>
+            </Box>
+
+            <Box sx={{ mb: 2 }}>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                disabled={loading || !clientSecret}
+                startIcon={<LockIcon />}
+                sx={{
+                  bgcolor: "#35281f",
+                  py: { xs: 1, sm: 1.5 },
+                  "&:hover": { bgcolor: "#4a3c32" },
+                }}
+              >
+                {loading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  `Pay $${price.toFixed(2)} & Confirm`
+                )}
+              </Button>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+                p: 2,
+                border: "1px solid #e0e0e0",
+                borderRadius: 1,
+                bgcolor: "rgba(0,0,0,0.02)",
+              }}
             >
-              {loading ? "Processing…" : "Pay & Confirm"}
-            </Button>
-          </Stack>
-        </Stack>
+              <Image
+                src="/images/stripe-logo.png"
+                alt="Stripe"
+                width={60}
+                height={21}
+              />
+              <Typography variant="body2" color="text.secondary">
+                Secure payments by Stripe. We don't store your card details.
+              </Typography>
+            </Box>
+          </form>
+        </Grid>
       </Grid>
-    </Grid>
+    </Box>
   );
 }

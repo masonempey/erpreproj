@@ -1,26 +1,16 @@
-/**
- * Consolidated API for all shop operations.
- * This file handles fetching and updating shop information and hours.
- */
-
 import {
   getShopInfo,
   updateShopInfo,
   updateShopHours,
 } from "@/lib/services/shopService";
+import { getAllBarbers, updateBarberHours } from "@/lib/services/barberService"; // Import barber services
 import { NextResponse } from "next/server";
 
-/**
- * GET request handler with query parameters for different operations:
- * /api/shop - get all shop information (default)
- * /api/shop?action=hours - get shop hours specifically
- */
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const action = searchParams.get("action");
 
-    // Default action - get all shop info
     if (!action) {
       return await getShopInfoHandler();
     }
@@ -43,12 +33,6 @@ export async function GET(request) {
   }
 }
 
-/**
- * POST request handler for updating shop data:
- * Action types:
- * - updateInfo: updates shop basic information
- * - updateHours: updates shop operating hours
- */
 export async function POST(request) {
   try {
     const body = await request.json();
@@ -83,21 +67,13 @@ export async function POST(request) {
 
 // Helper functions
 
-/**
- * Get shop information
- */
 async function getShopInfoHandler() {
   const shopInfo = await getShopInfo();
   return NextResponse.json(shopInfo);
 }
 
-/**
- * Get shop hours specifically
- */
 async function getShopHoursHandler() {
   const shopInfo = await getShopInfo();
-
-  // Extract only hours-related fields
   const hoursFields = [
     "monday_open",
     "monday_close",
@@ -125,17 +101,11 @@ async function getShopHoursHandler() {
   return NextResponse.json(shopHours);
 }
 
-/**
- * Update shop information
- */
 async function updateShopInfoHandler(data) {
   const result = await updateShopInfo(data);
   return NextResponse.json({ success: true, updated: result }, { status: 200 });
 }
 
-/**
- * Update shop hours
- */
 async function updateShopHoursHandler(data) {
   // Validate required fields
   const requiredFields = [
@@ -163,6 +133,86 @@ async function updateShopHoursHandler(data) {
     );
   }
 
+  // Fetch current shop hours to compare
+  const currentShopInfo = await getShopInfo();
+  const daysOfWeek = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+  ];
+
+  // Identify changed hours
+  const changedDays = [];
+  daysOfWeek.forEach((day) => {
+    const openField = `${day}_open`;
+    const closeField = `${day}_close`;
+    if (
+      data[openField] !== currentShopInfo[openField] ||
+      data[closeField] !== currentShopInfo[closeField]
+    ) {
+      changedDays.push(day);
+    }
+  });
+
+  // Update shop hours
   const result = await updateShopHours(data);
-  return NextResponse.json({ success: true, updated: result }, { status: 200 });
+
+  // If hours changed, adjust barber hours
+  if (changedDays.length > 0) {
+    const barbers = await getAllBarbers();
+    for (const barber of barbers) {
+      const updatedHours = {};
+      let needsUpdate = false;
+
+      daysOfWeek.forEach((day) => {
+        const capitalizedDay = day.charAt(0).toUpperCase() + day.slice(1);
+        const barberStartField = `${capitalizedDay}_Start`;
+        const barberEndField = `${capitalizedDay}_End`;
+        const shopOpenField = `${day}_open`;
+        const shopCloseField = `${day}_close`;
+
+        let barberStart = barber[barberStartField]?.slice(0, 5) || "09:00";
+        let barberEnd = barber[barberEndField]?.slice(0, 5) || "17:00";
+        const shopOpen = data[shopOpenField].slice(0, 5);
+        const shopClose = data[shopCloseField].slice(0, 5);
+
+        // Adjust hours if they are outside new shop hours
+        if (changedDays.includes(day)) {
+          if (barberStart < shopOpen) {
+            barberStart = shopOpen;
+            needsUpdate = true;
+          }
+          if (barberEnd > shopClose) {
+            barberEnd = shopClose;
+            needsUpdate = true;
+          }
+          // Ensure end is after start
+          if (barberStart >= barberEnd) {
+            barberEnd = shopClose; // Fallback to shop close
+            needsUpdate = true;
+          }
+        }
+
+        updatedHours[barberStartField] = `${barberStart}:00`;
+        updatedHours[barberEndField] = `${barberEnd}:00`;
+      });
+
+      if (needsUpdate) {
+        await updateBarberHours(barber.barber_id, updatedHours);
+      }
+    }
+  }
+
+  return NextResponse.json(
+    {
+      success: true,
+      updated: result,
+      message: changedDays.length > 0 ? "Barber hours adjusted where necessary" : undefined,
+    },
+    { status: 200 }
+  );
 }
