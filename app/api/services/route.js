@@ -1,6 +1,6 @@
 /**
  * Consolidated API for all service operations.
- * This file replaces multiple separate service API endpoints with a single, parameter-driven API.
+ * Handles service creation, updates, deletion, and barber-specific service management.
  */
 
 import { NextResponse } from "next/server";
@@ -10,19 +10,17 @@ import {
   updateService,
   deleteService,
   getServiceById,
+  getAvailableServices,
+  getBarberServices,
+  addBarberService,
+  updateBarberService,
 } from "@/lib/services/serviceService";
 
-/**
- * GET request handler with query parameters for different operations:
- * /api/services - get all services
- * /api/services?action=byId&id=123 - get service by ID
- */
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const action = searchParams.get("action");
 
-    // Default action - get all services
     if (!action) {
       return await getAllServicesHandler();
     }
@@ -37,6 +35,28 @@ export async function GET(request) {
           );
         }
         return await getServiceByIdHandler(Number(id));
+      }
+      case "available": {
+        const barberId = searchParams.get("barberId");
+        if (!barberId) {
+          return NextResponse.json(
+            { error: "Barber ID is required" },
+            { status: 400 }
+          );
+        }
+        const services = await getAvailableServices(barberId);
+        return NextResponse.json(services);
+      }
+      case "barberServices": {
+        const barberId = searchParams.get("barberId");
+        if (!barberId) {
+          return NextResponse.json(
+            { error: "Barber ID is required" },
+            { status: 400 }
+          );
+        }
+        const services = await getBarberServices(barberId);
+        return NextResponse.json(services);
       }
       default:
         return NextResponse.json(
@@ -53,9 +73,6 @@ export async function GET(request) {
   }
 }
 
-/**
- * POST request handler for creating a service
- */
 export async function POST(request) {
   try {
     const body = await request.json();
@@ -64,6 +81,20 @@ export async function POST(request) {
     switch (action) {
       case "create":
         return await createServiceHandler(data);
+      case "addBarberService": {
+        const { barberId, serviceId, price, durationMinutes } = data;
+        if (!barberId || !serviceId || price === undefined || !durationMinutes) {
+          return NextResponse.json(
+            { error: "Barber ID, service ID, price, and duration are required" },
+            { status: 400 }
+          );
+        }
+        const newBarberService = await addBarberService(barberId, serviceId, price, durationMinutes);
+        return NextResponse.json(
+          { message: "Barber service added", barberService: newBarberService },
+          { status: 201 }
+        );
+      }
       default:
         return NextResponse.json(
           { error: `Unknown action: ${action}` },
@@ -73,15 +104,12 @@ export async function POST(request) {
   } catch (error) {
     console.error("POST /api/services error:", error);
     return NextResponse.json(
-      { error: error.message || "Failed to create service" },
+      { error: error.message || "Failed to process request" },
       { status: 500 }
     );
   }
 }
 
-/**
- * PUT request handler for updating a service
- */
 export async function PUT(request) {
   try {
     const body = await request.json();
@@ -90,6 +118,32 @@ export async function PUT(request) {
     switch (action) {
       case "update":
         return await updateServiceHandler(data);
+      case "updateBarberService": {
+        const { barberId, serviceId, price, durationMinutes } = data;
+        if (!barberId || !serviceId) {
+          return NextResponse.json(
+            { error: "Barber ID and service ID are required" },
+            { status: 400 }
+          );
+        }
+        if (price === undefined && durationMinutes === undefined) {
+          return NextResponse.json(
+            { error: "At least one field (price or duration) is required" },
+            { status: 400 }
+          );
+        }
+        const updatedBarberService = await updateBarberService(barberId, serviceId, price, durationMinutes);
+        if (!updatedBarberService) {
+          return NextResponse.json(
+            { error: "Barber service not found" },
+            { status: 404 }
+          );
+        }
+        return NextResponse.json(
+          { message: "Barber service updated", barberService: updatedBarberService },
+          { status: 200 }
+        );
+      }
       default:
         return NextResponse.json(
           { error: `Unknown action: ${action}` },
@@ -99,23 +153,20 @@ export async function PUT(request) {
   } catch (error) {
     console.error("PUT /api/services error:", error);
     return NextResponse.json(
-      { error: error.message || "Failed to update service" },
+      { error: error.message || "Failed to process request" },
       { status: 500 }
     );
   }
 }
 
-/**
- * DELETE request handler for removing a service
- */
 export async function DELETE(request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
-    if (!id) {
+    if (!id || isNaN(Number(id))) {
       return NextResponse.json(
-        { error: "Service ID is required" },
+        { error: "Valid service ID is required" },
         { status: 400 }
       );
     }
@@ -138,32 +189,27 @@ async function getAllServicesHandler() {
 
 async function getServiceByIdHandler(id) {
   const service = await getServiceById(id);
-
   if (!service) {
     return NextResponse.json({ error: "Service not found" }, { status: 404 });
   }
-
   return NextResponse.json(service);
 }
 
 async function createServiceHandler(data) {
-  const { serviceName, description, price, duration_minutes } = data;
+  const { serviceName, description, price, durationMinutes } = data;
 
-  if (!serviceName || !description || !price) {
+  if (!serviceName || !description || price === undefined || !durationMinutes) {
     return NextResponse.json(
-      { error: "Service name, description, and price are required" },
+      { error: "Service name, description, price, and duration are required" },
       { status: 400 }
     );
   }
-
-  // Ensure duration_minutes is a number
-  const duration = parseInt(duration_minutes, 10) || 45;
 
   const savedService = await createService(
     serviceName,
     description,
     price,
-    duration
+    durationMinutes
   );
 
   return NextResponse.json(
@@ -176,16 +222,16 @@ async function createServiceHandler(data) {
 }
 
 async function updateServiceHandler(data) {
-  const { id, serviceName, description, price, duration_minutes } = data;
+  const { id, serviceName, description, price, durationMinutes } = data;
 
-  if (!id) {
+  if (!id || isNaN(Number(id))) {
     return NextResponse.json(
-      { error: "Service ID is required" },
+      { error: "Valid service ID is required" },
       { status: 400 }
     );
   }
 
-  if (!serviceName && !description && !price && !duration_minutes) {
+  if (!serviceName && !description && price === undefined && durationMinutes === undefined) {
     return NextResponse.json(
       { error: "At least one field is required to update" },
       { status: 400 }
@@ -197,7 +243,7 @@ async function updateServiceHandler(data) {
     serviceName,
     description,
     price,
-    duration_minutes
+    durationMinutes
   );
 
   if (!updatedService) {
@@ -212,10 +258,8 @@ async function updateServiceHandler(data) {
 
 async function deleteServiceHandler(id) {
   const deletedService = await deleteService(id);
-
   if (!deletedService) {
     return NextResponse.json({ error: "Service not found" }, { status: 404 });
   }
-
   return NextResponse.json({ message: "Service deleted successfully" });
 }

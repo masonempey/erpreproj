@@ -8,6 +8,7 @@ import {
   getAllAppointments,
   getAppointmentsFromBarberOnOneDay,
   getAppointmentsByUserId,
+  getAllAppointmentsByDate,
 } from "@/lib/services/bookingService";
 
 export async function GET(request) {
@@ -66,13 +67,7 @@ export async function GET(request) {
           );
         }
 
-        // Filter by date
-        const allApps = await getAllAppointments();
-        const dateApps = allApps.filter((app) => {
-          const appDate = new Date(app.date).toISOString().split("T")[0];
-          return appDate === dateParam;
-        });
-
+        const dateApps = await getAllAppointmentsByDate(new Date(dateParam));
         return NextResponse.json(dateApps);
 
       default:
@@ -97,7 +92,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { action, ...data } = body;
+    const { action = "create", ...data } = body;
 
     switch (action) {
       case "create": {
