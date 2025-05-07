@@ -1,6 +1,6 @@
 import { Metadata } from "next";
-import AdminLayout from "@/app/components/AdminLayout";
-import AdminNavBar from "@/app/components/AdminNavBar";
+import AdminLayout from "@/app/components/Admin/AdminLayout";
+import AdminNavBar from "@/app/components/Admin/AdminNavBar";
 
 export const metadata: Metadata = {
     title: "Erpre Admin | Erpre"
