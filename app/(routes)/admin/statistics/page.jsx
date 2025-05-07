@@ -16,9 +16,9 @@ import {
   Avatar,
   CircularProgress,
 } from "@mui/material";
-import AdminLayout from "@/app/components/AdminLayout";
-import AdminNavBar from "@/app/components/AdminNavBar";
-import BarberPanel from "@/app/components/AdminBarberPanel";
+import AdminLayout from "@/app/components/Admin/AdminLayout";
+import AdminNavBar from "@/app/components/Admin/AdminNavBar";
+import BarberPanel from "@/app/components/Admin/AdminBarberPanel";
 import PersonIcon from "@mui/icons-material/Person";
 
 export default function Statistics() {

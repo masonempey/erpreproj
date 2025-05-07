@@ -9,8 +9,8 @@ import "./styles/globals.css";
 import { BookingProvider } from "../context/BookingContext";
 import { ShopProvider } from "../context/ShopContext";
 import { UserProvider } from "../context/UserContext";
-import Navbar from "./components/navBar";
-import Footer from "./components/footer";
+import Navbar from "./components/Client/Misc/navBar";
+import Footer from "./components/Client/Misc/footer";
 import styles from "./styles/Layout.module.css";
 import { usePathname } from "next/navigation";
 

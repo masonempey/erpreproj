@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useUser } from "@/context/UserContext";
-import AdminLayout from "@/app/components/AdminLayout";
-import AdminNavBar from "@/app/components/AdminNavBar";
-import AdminDayView from "@/app/components/AdminDayView";
-import BarberPanel from "@/app/components/AdminBarberPanel";
+import AdminLayout from "@/app/components/Admin/AdminLayout";
+import AdminNavBar from "@/app/components/Admin/AdminNavBar";
+import AdminDayView from "@/app/components/Admin/AdminDayView";
+import BarberPanel from "@/app/components/Admin/AdminBarberPanel";
 import {
   Box,
   Paper,

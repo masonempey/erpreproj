@@ -3,8 +3,8 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useUser } from "../../context/UserContext";
-import ProfilePopup from "./ProfilePopup";
+import { useUser } from "../../../../context/UserContext";
+import ProfilePopup from "../Profile/ProfilePopup";
 import {
   AppBar,
   Toolbar,
