@@ -1,11 +1,11 @@
 "use client";
 
 import { Grid, Paper, Typography, Divider } from "@mui/material";
-import AdminLayout from "@/app/components/AdminLayout";
-import AdminNavBar from "@/app/components/AdminNavBar";
-import ShopCreds from "@/app/components/ShopCreds";
-import ShopHours from "@/app/components/ShopHours";
-import ManageServices from "@/app/components/ManageServices";
+import AdminLayout from "@/app/components/Admin/AdminLayout";
+import AdminNavBar from "@/app/components/Admin/AdminNavBar";
+import ShopCreds from "@/app/components/Client/Profile/ShopCreds";
+import ShopHours from "@/app/components/Admin/ShopHours";
+import ManageServices from "@/app/components/Client/Booking/ManageServices";
 
 export default function Management() {
   return (

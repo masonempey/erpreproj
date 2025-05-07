@@ -26,8 +26,8 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import AdminLayout from "@/app/components/AdminLayout";
-import AdminNavBar from "@/app/components/AdminNavBar";
+import AdminLayout from "@/app/components/Admin/AdminLayout";
+import AdminNavBar from "@/app/components/Admin/AdminNavBar";
 
 const roleColors = {
   User: "default",

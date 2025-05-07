@@ -1,6 +1,6 @@
 // app/components/AboutMap.js
 import React from "react";
-import aboutStyles from "../styles/About.module.css";
+import aboutStyles from "../../../styles/About.module.css";
 
 const AboutMap = () => {
   return (

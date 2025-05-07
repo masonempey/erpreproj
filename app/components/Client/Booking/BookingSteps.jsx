@@ -1,6 +1,6 @@
 import React from "react";
-import { useBooking } from "../../context/BookingContext";
-import styles from "../styles/BookingSteps.module.css";
+import { useBooking } from "../../../../context/BookingContext";
+import styles from "../../../styles/BookingSteps.module.css";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 

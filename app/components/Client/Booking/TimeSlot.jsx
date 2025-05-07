@@ -16,7 +16,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import NightsStayIcon from "@mui/icons-material/NightsStay";
 import WbTwilightIcon from "@mui/icons-material/WbTwilight";
-import { useShop } from "../../context/ShopContext";
+import { useShop } from "../../../../context/ShopContext";
 import dayjs from "dayjs";
 
 export default function TimeSelector({

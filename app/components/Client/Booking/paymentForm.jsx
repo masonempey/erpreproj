@@ -16,8 +16,8 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useBooking } from "../../context/BookingContext";
-import { useUser } from "../../context/UserContext";
+import { useBooking } from "../../../../context/BookingContext";
+import { useUser } from "../../../../context/UserContext";
 import LockIcon from "@mui/icons-material/Lock";
 import Image from "next/image";
 

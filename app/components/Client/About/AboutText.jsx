@@ -1,6 +1,6 @@
 // components/AboutText.js
 import React from "react";
-import aboutStyles from "../styles/About.module.css";
+import aboutStyles from "../../../styles/About.module.css";
 
 const AboutText = () => {
   return (

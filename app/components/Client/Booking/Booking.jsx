@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import styles from "../styles/Booking.module.css";
+import styles from "../../../styles/Booking.module.css";
 import BookingForm from "./BookingForm";
 import { IoClose } from "react-icons/io5";
 import BookingSteps from "./BookingSteps";
