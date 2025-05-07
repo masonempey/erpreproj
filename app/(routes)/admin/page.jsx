@@ -63,8 +63,6 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <AdminLayout title="Admin Dashboard">
-      <AdminNavBar />
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
           <Paper
@@ -142,6 +140,5 @@ export default function AdminDashboard() {
           </Paper>
         </Grid>
       </Grid>
-    </AdminLayout>
   );
 }

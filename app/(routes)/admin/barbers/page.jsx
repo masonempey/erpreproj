@@ -206,8 +206,6 @@ export default function BarberRoleManagement() {
   }, []);
 
   return (
-    <AdminLayout title="Barber Role Management">
-      <AdminNavBar />
       <Container sx={{ py: 4 }}>
         {/* Header */}
         <Stack
@@ -401,6 +399,5 @@ export default function BarberRoleManagement() {
           </Alert>
         </Snackbar>
       </Container>
-    </AdminLayout>
   );
 }
