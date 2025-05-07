@@ -1,5 +1,5 @@
 import React from "react";
-import { useBooking } from "../../context/BookingContext";
+import { useBooking } from "../../../../context/BookingContext";
 import SelectService from "./SelectService";
 import ChooseBarber from "./ChooseBarber";
 import ChooseDateTime from "./ChooseDateTime";

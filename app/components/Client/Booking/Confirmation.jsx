@@ -19,7 +19,7 @@ import {
   ContentCut,
   CalendarMonth,
 } from "@mui/icons-material";
-import { useBooking } from "../../context/BookingContext";
+import { useBooking } from "../../../../context/BookingContext";
 import dayjs from "dayjs"; // Import dayjs
 
 export default function Confirmation({ onClose }) {

@@ -1,10 +1,10 @@
 "use client";
 
 import { Grid, Paper, Typography, Divider } from "@mui/material";
-import AdminLayout from "@/app/components/AdminLayout";
-import AdminNavBar from "@/app/components/AdminNavBar";
-import BarberHours from "@/app/components/BarberTimeManagment";
-import AddBarberService from "@/app/components/AddBarberService";
+import AdminLayout from "@/app/components/Admin/AdminLayout";
+import AdminNavBar from "@/app/components/Admin/AdminNavBar";
+import BarberHours from "@/app/components/Client/Booking/BarberTimeManagment";
+import AddBarberService from "@/app/components/Admin/AddBarberService";
 
 export default function Profile({ barberId = "barber2" }) {
   return (

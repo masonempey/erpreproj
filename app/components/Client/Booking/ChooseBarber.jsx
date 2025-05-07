@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useBooking } from "../../context/BookingContext";
+import { useBooking } from "../../../../context/BookingContext";
 import {
   Box,
   Grid,

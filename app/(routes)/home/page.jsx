@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import Navbar from "../../components/navBar";
+import Navbar from "../../components/Client/Misc/navBar";
 import landingStyles from "../../styles/Landing.module.css";
 import reviewStyles from "../../styles/Reviews.module.css";
 import aboutStyles from "../../styles/About.module.css";
 import newsletterStyles from "../../styles/Newsletter.module.css";
-import BookingPopUp from "../../components/Booking";
+import BookingPopUp from "../../components/Client/Booking/Booking";
 import {
   Button,
   Typography,
@@ -20,9 +20,9 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CustomerReviewCard from "../../components/customerReviewCard";
 import NewsLetter from "./homeScreens/newsLetter";
-import AboutText from "../../components/AboutText";
-import AboutImages from "../../components/AboutImages";
-import AboutMap from "../../components/AboutMap";
+import AboutText from "../../components/Client/About/AboutText";
+import AboutImages from "../../components/Client/About/AboutImages";
+import AboutMap from "../../components/Client/About/AboutMap";
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);

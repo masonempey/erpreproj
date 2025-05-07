@@ -14,8 +14,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Person, Email, Phone, Home, LocationOn } from "@mui/icons-material";
-import { useBooking } from "../../context/BookingContext";
-import { useUser } from "../../context/UserContext";
+import { useBooking } from "../../../../context/BookingContext";
+import { useUser } from "../../../../context/UserContext";
 
 export default function PersonalInfo() {
   const { state, dispatch } = useBooking();
