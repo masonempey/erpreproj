@@ -1,4 +1,4 @@
-import styles from "../styles/Reviews.module.css";
+import styles from "../../../styles/Reviews.module.css";
 import Rating from "@mui/material/Rating";
 import { Box, Avatar, Paper, Typography } from "@mui/material";
 

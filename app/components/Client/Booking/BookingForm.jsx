@@ -6,7 +6,7 @@ import ChooseDateTime from "./ChooseDateTime";
 import PersonalInfo from "./PersonalInfo";
 import PaymentForm from "./paymentForm";
 import Confirmation from "./Confirmation";
-import styles from "../styles/Booking.module.css";
+import styles from "../../../styles/Booking.module.css";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 export default function BookingForm({ onClose }) {

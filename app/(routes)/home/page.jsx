@@ -18,7 +18,7 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import CustomerReviewCard from "../../components/customerReviewCard";
+import CustomerReviewCard from "../../components/Client/Reviews/customerReviewCard";
 import NewsLetter from "./homeScreens/newsLetter";
 import AboutText from "../../components/Client/About/AboutText";
 import AboutImages from "../../components/Client/About/AboutImages";
