@@ -9,8 +9,6 @@ import ManageServices from "@/app/components/ManageServices";
 
 export default function Management() {
   return (
-    <AdminLayout title="Shop Management">
-      <AdminNavBar />
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
@@ -49,6 +47,5 @@ export default function Management() {
           </Paper>
         </Grid>
       </Grid>
-    </AdminLayout>
   );
 }

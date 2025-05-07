@@ -81,8 +81,6 @@ export default function Statistics() {
   };
 
   return (
-    <AdminLayout title="Barber Statistics">
-      <AdminNavBar />
       <Grid container spacing={3}>
         <Grid item xs={12} md={4} lg={3}>
           <Paper elevation={2} sx={{ p: 2, borderRadius: 2 }}>
@@ -194,6 +192,5 @@ export default function Statistics() {
           </Paper>
         </Grid>
       </Grid>
-    </AdminLayout>
   );
 }
