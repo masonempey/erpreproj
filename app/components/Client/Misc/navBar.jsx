@@ -1,9 +1,9 @@
-// app/components/navBar.jsx
 "use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useUser } from "../../../../context/UserContext";
+import { UseStateContext } from "../../../../context/StateContext";
 import ProfilePopup from "../Profile/ProfilePopup";
 import {
   AppBar,
@@ -27,16 +27,21 @@ import BookOnlineIcon from "@mui/icons-material/BookOnline";
 import HomeIcon from "@mui/icons-material/Home";
 import InfoIcon from "@mui/icons-material/Info";
 import LoginIcon from "@mui/icons-material/Login";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 const Navbar = ({ onBookNow }) => {
-  const { user, loading } = useUser();
+  const { user, role, loading } = useUser();
+  const { ToggleOpen } = UseStateContext();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const toggleDrawer = () => setDrawerOpen((o) => !o);
 
-  // ⬇️ scroll the BOOK NOW button into view
+  const defaultBookNow = () => ToggleOpen();
+  const handleBookNow = onBookNow || defaultBookNow;
+
+  // Scroll the BOOK NOW button into view
   const scrollToBook = () => {
     const btn = document.getElementById("book-now-button");
     if (btn) {
@@ -45,8 +50,8 @@ const Navbar = ({ onBookNow }) => {
   };
 
   const navLinks = [
-    { name: "Book Now", action: onBookNow, icon: <BookOnlineIcon /> },
-    { name: "Home",     action: scrollToBook,  icon: <HomeIcon /> },
+    { name: "Book Now", action: handleBookNow, icon: <BookOnlineIcon /> },
+    { name: "Home", action: scrollToBook, icon: <HomeIcon /> },
     {
       name: "About",
       action: () => {
@@ -57,6 +62,26 @@ const Navbar = ({ onBookNow }) => {
       icon: <InfoIcon />,
     },
   ];
+
+  if (role === "admin") {
+    navLinks.push({
+      name: "Admin Dashboard",
+      action: () => {
+        window.location.href = "/admin/dashboard";
+      },
+      icon: <DashboardIcon />,
+    });
+  }
+
+  if (role === "barber") {
+    navLinks.push({
+      name: "Barber Dashboard",
+      action: () => {
+        window.location.href = "/barber/dashboard";
+      },
+      icon: <DashboardIcon />,
+    });
+  }
 
   if (loading) {
     return (

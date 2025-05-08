@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
-import Navbar from "../../components/Client/Misc/navBar";
+import React, { useEffect, useRef, useState } from "react";
+import { UseStateContext } from "../../../context/StateContext";
 import landingStyles from "../../styles/Landing.module.css";
 import reviewStyles from "../../styles/Reviews.module.css";
 import aboutStyles from "../../styles/About.module.css";
@@ -25,7 +25,7 @@ import AboutImages from "../../components/Client/About/AboutImages";
 import AboutMap from "../../components/Client/About/AboutMap";
 
 export default function Home() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, ToggleOpen } = UseStateContext();
   const [reviews, setReviews] = useState([]);
   const cardsWrapperRef = useRef(null);
   const theme = useTheme();
@@ -87,8 +87,6 @@ export default function Home() {
 
   return (
     <>
-      <Navbar onBookNow={() => setIsOpen(true)} />
-
       <main
         className={landingStyles.main}
         style={{ paddingTop: "64px" }}
@@ -136,7 +134,7 @@ export default function Home() {
                 id="book-now-button"
                 variant="contained"
                 size="large"
-                onClick={() => setIsOpen(true)}
+                onClick={ToggleOpen}
                 sx={{
                   background: "#fafafa",
                   color: "#0C0C0C",
@@ -161,7 +159,7 @@ export default function Home() {
 
         <BookingPopUp
           isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
+          onClose={ToggleOpen}
         >
           <h2>Book Appointment</h2>
         </BookingPopUp>
